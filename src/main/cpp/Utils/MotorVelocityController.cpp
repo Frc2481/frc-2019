@@ -1,7 +1,7 @@
-#include "MotorVelocityController.h"
+#include "Utils/MotorVelocityController.h"
 #include "frc/WPILib.h"
-#include "../RobotParameters.h"
-#include "Sign.h"
+#include "RobotParameters.h"
+#include "Utils/Sign.h"
 
 MotorVelocityController::MotorVelocityController()
 	: m_pDriveMotor(nullptr),

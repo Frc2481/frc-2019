@@ -1,15 +1,15 @@
-#include "SwerveDrivePathGenerator.h"
+#include "Utils/SwerveDrivePathGenerator.h"
 #include <limits>
 #include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
 #include <cmath>
-#include "Interpolate.h"
-#include "MathConstants.h"
-#include "NormalizeToRange.h"
-#include "Translation2D.h"
-#include "Sign.h"
+#include "Utils/Interpolate.h"
+#include "Utils/MathConstants.h"
+#include "Utils/NormalizeToRange.h"
+#include "Utils/Translation2D.h"
+#include "Utils/Sign.h"
 
 SwerveDrivePathGenerator::SwerveDrivePathGenerator(
     std::vector<waypoint_t> &waypoints,
