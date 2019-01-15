@@ -63,6 +63,6 @@ void MotorPositionController::update(double refP, double refV, double refA) {
 		ka = m_kan;
 	}
 
-    double feedforwardControl = refV * m_kv + refA * ka + Sign::sign(refV) * m_ksf;
+    double feedforwardControl = refV * m_kv + refA * ka + Sign::Sign(refV) * m_ksf;
     m_pDriveMotor->Set(ControlMode::Position, refP, DemandType::DemandType_ArbitraryFeedForward, feedforwardControl);
 }

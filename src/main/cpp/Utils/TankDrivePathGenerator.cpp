@@ -181,7 +181,7 @@ void TankDrivePathGenerator::generatePath() {
 
             // generate points along arc
             double phiStep = (MATH_CONSTANTS_PI - theta) / TANK_NUM_PHI_STEPS;
-            double phi = Sign::sign(v21.cross(v23)) * (MATH_CONSTANTS_PI - theta) / 2.0;
+            double phi = Sign::Sign(v21.cross(v23)) * (MATH_CONSTANTS_PI - theta) / 2.0;
             for(unsigned j = 1; j <= TANK_NUM_PHI_STEPS; j++) {
                 Translation2D p7 = p6 - v26.rotateBy(Rotation2D::fromRadians(phi)).scaleBy(arcRad / v26.norm());
                 tempPathGenPoint.xPos = p7.getX();
@@ -205,7 +205,7 @@ void TankDrivePathGenerator::generatePath() {
 
                 // add point to path gen points and increment phi
                 m_tempPath.push_back(tempPathGenPoint);
-                phi = phi - Sign::sign(v21.cross(v23)) * phiStep;
+                phi = phi - Sign::Sign(v21.cross(v23)) * phiStep;
             }
         }
     }

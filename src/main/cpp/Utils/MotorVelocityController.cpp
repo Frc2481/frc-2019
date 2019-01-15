@@ -91,10 +91,10 @@ void MotorVelocityController::updateClosedLoopControl(double refV, double refA) 
 		ka = m_kan;
 	}
 
-    double feedforwardControl = refV * m_kv + refA * ka + Sign::sign(refV) * m_ksf;
+    double feedforwardControl = refV * m_kv + refA * ka + Sign::Sign(refV) * m_ksf;
     printf("1 = %0.1f\n", refV * m_kv);
     printf("2 = %0.1f\n", refA * ka);
-    printf("3 = %0.1f\n", Sign::sign(refV) * m_ksf);
+    printf("3 = %0.1f\n", Sign::Sign(refV) * m_ksf);
     frc::SmartDashboard::PutNumber("feedforwardControl", feedforwardControl);
 
     m_pDriveMotor->Set(ControlMode::Velocity, refV, DemandType::DemandType_ArbitraryFeedForward, feedforwardControl);

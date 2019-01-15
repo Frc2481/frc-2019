@@ -2,6 +2,7 @@
 
 std::unique_ptr<OI> CommandBase::m_pOI;
 std::unique_ptr<TankDrivetrain> CommandBase::m_pTankDrivetrain;
+std::unique_ptr<LineFinder> CommandBase::m_pLineFinder;
 // std::unique_ptr<SwerveDrivetrain> CommandBase::m_pSwerveDrivetrain;
 
 CommandBase::CommandBase(const std::string &name) : Command(name) {
@@ -15,6 +16,8 @@ void CommandBase::Init() {
 
 	m_pOI.reset(new OI()); // OI must be last subsystem to reset
 
+	m_pLineFinder.reset(new LineFinder());
+
 	Wait(1); // avoid race condition after constructing objects
 	CommandBase::m_pTankDrivetrain->zeroDriveEncoders();
 	CommandBase::m_pTankDrivetrain->zeroGyroYaw();
@@ -26,4 +29,5 @@ void CommandBase::Init() {
 void CommandBase::Periodic() {
 	m_pTankDrivetrain->Periodic();
 	// m_pSwerveDrivetrain->Periodic();
+	m_pLineFinder->Periodic();
 }

@@ -58,6 +58,9 @@ namespace RobotParameters {
     // encoders
     static constexpr unsigned k_ctreMagEncoderTicksPerRev = 4096;
     static constexpr unsigned k_grayhillEncoderTicksPerRev = 512;
+
+    // limelight
+    static constexpr double k_limeLightHeight = 23.75;
 }
 
 #endif // ROBOT_PARAMETERS_H

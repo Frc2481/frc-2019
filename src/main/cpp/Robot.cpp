@@ -39,14 +39,17 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopPeriodic() {
+	frc::Scheduler::GetInstance()->Run();
 	CommandBase::Periodic();
 }
 
 void Robot::DisabledPeriodic() {
+	frc::Scheduler::GetInstance()->Run();
 	CommandBase::Periodic();
 }
 
 void Robot::TestPeriodic() {
+	frc::Scheduler::GetInstance()->Run();
 	CommandBase::Periodic();
 }
 
