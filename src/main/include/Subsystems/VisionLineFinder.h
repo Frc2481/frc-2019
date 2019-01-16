@@ -5,8 +5,8 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef LINE_FINDER_H
-#define LINE_FINDER_H
+#ifndef VISION_LINE_FINDER_H
+#define VISION_LINE_FINDER_H
 
 #include <frc/WPILib.h>
 #include "RobotParameters.h"
@@ -14,10 +14,10 @@
 
 #define LIMELIGHT_FOV_YAW 54
 
-class LineFinder : public frc::Subsystem {
+class VisionLineFinder : public frc::Subsystem {
 public:
-    LineFinder();
-    ~LineFinder();
+    VisionLineFinder();
+    ~VisionLineFinder();
 
     virtual void InitDefaultCommand();
     virtual void Periodic();
@@ -32,4 +32,4 @@ private:
     bool m_targetValid;
 };
 
-#endif // LINE_FINDER_H
+#endif // VISION_LINE_FINDER_H

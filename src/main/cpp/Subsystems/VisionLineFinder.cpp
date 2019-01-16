@@ -5,26 +5,26 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "Subsystems/LineFinder.h"
+#include "Subsystems/VisionLineFinder.h"
 #include <math.h>
 #include "Utils/MathConstants.h"
 #include "Utils/Sign.h"
 
-LineFinder::LineFinder()
-    : Subsystem("LineFinder"),
+VisionLineFinder::VisionLineFinder()
+    : Subsystem("VisionLineFinder"),
     m_x(0),
     m_xVel(0),
     m_targetValid(false) {
     m_pLimeLightTable = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
 }
 
-LineFinder::~LineFinder() { 
+VisionLineFinder::~VisionLineFinder() { 
 }
 
-void LineFinder::InitDefaultCommand() {
+void VisionLineFinder::InitDefaultCommand() {
 }
 
-void LineFinder::Periodic() {
+void VisionLineFinder::Periodic() {
     bool oldTargetValid = m_targetValid;
     m_targetValid = m_pLimeLightTable->GetNumber("tv", false);
     
@@ -48,10 +48,10 @@ void LineFinder::Periodic() {
     frc::SmartDashboard::PutNumber("xVelTarget", m_xVel);
 }
 
-double LineFinder::getX() {
+double VisionLineFinder::getX() {
     return m_x;
 }
 
-double LineFinder::getXVel() {
+double VisionLineFinder::getXVel() {
     return m_xVel;
 }

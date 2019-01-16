@@ -1,42 +1,42 @@
-// #ifndef COMMANDS_SWERVE_DRIVETRAIN_STOP_H
-// #define COMMANDS_SWERVE_DRIVETRAIN_STOP_H
+#ifndef COMMANDS_SWERVE_DRIVETRAIN_STOP_H
+#define COMMANDS_SWERVE_DRIVETRAIN_STOP_H
 
-// #include <vector>
-// #include <limits>
-// #include "../CommandBase.h"
+#include <vector>
+#include <limits>
+#include "CommandBase.h"
 
-// class SwerveDrivetrainStop : public CommandBase {
-// public:
-// 	SwerveDrivetrainStop()
-// 		: CommandBase("SwerveDrivetrainStop") {
+class SwerveDrivetrainStop : public CommandBase {
+public:
+	SwerveDrivetrainStop()
+		: CommandBase("SwerveDrivetrainStop") {
 		
-// 		Requires(CommandBase::m_pSwerveDrivetrain.get());
-// 		SetInterruptible(false);
-// 	}
+		Requires(CommandBase::m_pSwerveDrivetrain.get());
+		SetInterruptible(false);
+	}
 
-// 	~SwerveDrivetrainStop() {
-// 	}
+	~SwerveDrivetrainStop() {
+	}
 
-// 	void Initialize() {
-// 		m_pSwerveDrivetrain->stop();
-// 	}
+	void Initialize() {
+		m_pSwerveDrivetrain->stop();
+	}
 
-// 	void Execute() {
-// 	}
+	void Execute() {
+	}
 
-// 	void Interrupted() {
-// 		End();
-// 	}
+	void Interrupted() {
+		End();
+	}
 
-// 	bool IsFinished() {
-// 		return true;
-// 	}
+	bool IsFinished() {
+		return true;
+	}
 
-// 	void End() {
-// 	}
+	void End() {
+	}
 
-// private:
+private:
 
-// };
+};
 
-// #endif // COMMANDS_SWERVE_DRIVETRAIN_STOP_H
+#endif // COMMANDS_SWERVE_DRIVETRAIN_STOP_H

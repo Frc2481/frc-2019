@@ -1,42 +1,42 @@
-// #ifndef COMMANDS_SWERVE_DRIVETRAIN_SHIFT_LOW_GEAR_H
-// #define COMMANDS_SWERVE_DRIVETRAIN_SHIFT_LOW_GEAR_H
+#ifndef COMMANDS_SWERVE_DRIVETRAIN_SHIFT_LOW_GEAR_H
+#define COMMANDS_SWERVE_DRIVETRAIN_SHIFT_LOW_GEAR_H
 
-// #include <vector>
-// #include <limits>
-// #include "../CommandBase.h"
+#include <vector>
+#include <limits>
+#include "CommandBase.h"
 
-// class SwerveDrivetrainShiftLowGear : public CommandBase {
-// public:
-// 	SwerveDrivetrainShiftLowGear()
-// 		: CommandBase("SwerveDrivetrainShiftLowGear") {
+class SwerveDrivetrainShiftLowGear : public CommandBase {
+public:
+	SwerveDrivetrainShiftLowGear()
+		: CommandBase("SwerveDrivetrainShiftLowGear") {
 		
-// 		Requires(CommandBase::m_pSwerveDrivetrain.get());
-// 		SetInterruptible(false);
-// 	}
+		Requires(CommandBase::m_pSwerveDrivetrain.get());
+		SetInterruptible(false);
+	}
 
-// 	~SwerveDrivetrainShiftLowGear() {
-// 	}
+	~SwerveDrivetrainShiftLowGear() {
+	}
 
-// 	void Initialize() {
-// 		m_pSwerveDrivetrain->setShiftState(false);
-// 	}
+	void Initialize() {
+		m_pSwerveDrivetrain->setShiftState(false);
+	}
 
-// 	void Execute() {
-// 	}
+	void Execute() {
+	}
 
-// 	void Interrupted() {
-// 		End();
-// 	}
+	void Interrupted() {
+		End();
+	}
 
-// 	bool IsFinished() {
-// 		return true;
-// 	}
+	bool IsFinished() {
+		return true;
+	}
 
-// 	void End() {
-// 	}
+	void End() {
+	}
 
-// private:
+private:
 
-// };
+};
 
-// #endif // COMMANDS_SWERVE_DRIVETRAIN_SHIFT_LOW_GEAR_H
+#endif // COMMANDS_SWERVE_DRIVETRAIN_SHIFT_LOW_GEAR_H
