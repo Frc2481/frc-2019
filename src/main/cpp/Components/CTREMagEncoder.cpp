@@ -31,11 +31,6 @@ void CTREMagEncoder::zero() {
     frc::Preferences::GetInstance()->PutDouble(m_calibrationKey, m_encoderTicksZero);
 }
 
-void CTREMagEncoder::zeroTalon() {
-	m_pTalon->SetSelectedSensorPosition(0, 0, 0);
-    zero();
-}
-
 int CTREMagEncoder::getTicks() const {
 	return m_encoderTicks - m_encoderTicksZero;
 }
@@ -52,44 +47,44 @@ double CTREMagEncoder::getWheelDistance(double wheelRadius, double gearRatioEnco
     return getRevs() * gearRatioEncoderToWheel * wheelRadius * 2.0 * MATH_CONSTANTS_PI;
 }
 
-double CTREMagEncoder::convertRevsToTicks(double revs) const {
-    return revs * (double)RobotParameters::k_ctreMagEncoderTicksPerRev;
+int CTREMagEncoder::convertRevsToTicks(double revs) const {
+    return revs * RobotParameters::k_ctreMagEncoderTicksPerRev;
 }
 
-double CTREMagEncoder::convertRevsToTickSetpoint(double revs) const {
+int CTREMagEncoder::convertRevsToTickSetpoint(double revs) const {
     return convertRevsToTicks(revs) + m_encoderTicksZero;
 }
 
-double CTREMagEncoder::convertAngleToTicks(double angle) const {
-    return convertRevsToTicks(angle * MATH_CONSTANTS_PI / 180.0);
+int CTREMagEncoder::convertAngleToTicks(double angle) const {
+    return convertRevsToTicks(angle / 360.0);
 }
 
-double CTREMagEncoder::convertAngleToTickSetpoint(double angle) const {
-    double angleTicks = convertAngleToTicks(angle);
-    double currentTicks = getTicks();
+int CTREMagEncoder::convertAngleToTickSetpoint(double angle) const {
+    int angleTicks = convertAngleToTicks(angle);
+    int currentTicks = getTicks();
     
-    double error = angleTicks - currentTicks;
-    if(fabs(error) > (double)RobotParameters::k_ctreMagEncoderTicksPerRev / 2.0) {
+    int error = angleTicks - currentTicks;
+    if(fabs(error) > RobotParameters::k_ctreMagEncoderTicksPerRev / 2) {
         if(error > 0) {
-            error = error - (double)RobotParameters::k_ctreMagEncoderTicksPerRev;
+            error = error - RobotParameters::k_ctreMagEncoderTicksPerRev;
         }
         else {
-            error = error + (double)RobotParameters::k_ctreMagEncoderTicksPerRev;
+            error = error + RobotParameters::k_ctreMagEncoderTicksPerRev;
         }
     }
     
-    return currentTicks + error;
+    return currentTicks + error + m_encoderTicksZero;
 }
 
 double CTREMagEncoder::convertWheelDistanceToRevs(double wheelRadius, double wheelDistance) const {
     return wheelDistance / (wheelRadius * 2.0 * MATH_CONSTANTS_PI);
 }
 
-double CTREMagEncoder::convertWheelDistanceToTicks(double wheelRadius, double wheelDistance) const {
+int CTREMagEncoder::convertWheelDistanceToTicks(double wheelRadius, double wheelDistance) const {
     return convertRevsToTicks(convertWheelDistanceToRevs(wheelRadius, wheelDistance));
 }
 
-double CTREMagEncoder::convertWheelDistanceToTickSetpoint(double wheelRadius, double wheelDistance) const {
+int CTREMagEncoder::convertWheelDistanceToTickSetpoint(double wheelRadius, double wheelDistance) const {
     return convertWheelDistanceToTicks(wheelRadius, wheelDistance) + m_encoderTicksZero;
 }
 

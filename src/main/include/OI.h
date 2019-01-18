@@ -14,8 +14,8 @@ public:
 
     Joystick2481 *m_pDriverStick;
     Joystick2481 *m_pOperatorStick;
-    JoystickButton *m_pSetFieldFrameButton;
-    JoystickButton *m_pDriveShiftButton;
+    frc::JoystickButton *m_pSetFieldFrameButton;
+    frc::JoystickButton *m_pDriveShiftButton;
 };
 
 #endif // OI_H

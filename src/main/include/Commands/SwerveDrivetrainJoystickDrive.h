@@ -26,7 +26,7 @@ public:
 		// get joystick input
 		double percentVelX = CommandBase::m_pOI->GetDriverStick()->GetRawAxis(XBOX_LEFT_X_AXIS);
 		double percentVelY = -CommandBase::m_pOI->GetDriverStick()->GetRawAxis(XBOX_LEFT_Y_AXIS);
-		double percentYawRate = -CommandBase::m_pOI->GetDriverStick()->GetRawAxis(XBOX_RIGHT_Y_AXIS);
+		double percentYawRate = -CommandBase::m_pOI->GetDriverStick()->GetRawAxis(XBOX_RIGHT_X_AXIS);
 
 		// update drive
 		m_pSwerveDrivetrain->driveOpenLoopControl(percentVelX, percentVelY, percentYawRate);

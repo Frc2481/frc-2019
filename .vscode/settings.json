@@ -58,7 +58,8 @@
     "utility": "cpp",
     "cstdarg": "cpp",
     "iomanip": "cpp",
-    "algorithm": "cpp"
+    "algorithm": "cpp",
+    "*.inc": "cpp"
   },
   "C_Cpp.configurationWarnings": "Disabled"
 }

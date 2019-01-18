@@ -301,18 +301,44 @@ void SwerveDrivetrain::driveOpenLoopControl(
 		flWheelPercent.scaleBy(1.0 / maxWheelSpeed);
 	}
 
-	// update steer motors
+	// steer optimization
+	Rotation2D steerError;
 	Rotation2D frWheelYaw = Rotation2D(frWheelPercent.getX(), frWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
-	Rotation2D brWheelYaw = Rotation2D(brWheelPercent.getX(), brWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
-	Rotation2D blWheelYaw = Rotation2D(blWheelPercent.getX(), blWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
-	Rotation2D flWheelYaw = Rotation2D(flWheelPercent.getX(), flWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
+	steerError = frWheelYaw - Rotation2D::fromDegrees(m_pFRSteerEncoder->getAngle());
+	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
+		frWheelYaw = frWheelYaw.inverse();
+	}
 
-	m_pFRSteerMotorController->update(frWheelYaw.getDegrees(), 0, 0);
-	m_pBRSteerMotorController->update(brWheelYaw.getDegrees(), 0, 0);
-	m_pBLSteerMotorController->update(blWheelYaw.getDegrees(), 0, 0);
-	m_pFLSteerMotorController->update(flWheelYaw.getDegrees(), 0, 0);
+	Rotation2D brWheelYaw = Rotation2D(brWheelPercent.getX(), brWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
+	steerError = brWheelYaw - Rotation2D::fromDegrees(m_pBRSteerEncoder->getAngle());
+	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
+		brWheelYaw = brWheelYaw.inverse();
+	}
+
+	Rotation2D blWheelYaw = Rotation2D(blWheelPercent.getX(), blWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
+	steerError = blWheelYaw - Rotation2D::fromDegrees(m_pBLSteerEncoder->getAngle());
+	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
+		blWheelYaw = blWheelYaw.inverse();
+	}
+
+	Rotation2D flWheelYaw = Rotation2D(flWheelPercent.getX(), flWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
+	steerError = flWheelYaw - Rotation2D::fromDegrees(m_pFLSteerEncoder->getAngle());
+	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
+		flWheelYaw = flWheelYaw.inverse();
+	}
+
+	// update steer motors
+	m_pFRSteerMotor->Set(ControlMode::Position, m_pFRSteerEncoder->convertAngleToTickSetpoint(frWheelYaw.getDegrees()));
+	m_pBRSteerMotor->Set(ControlMode::Position, m_pBRSteerEncoder->convertAngleToTickSetpoint(brWheelYaw.getDegrees()));
+	m_pBLSteerMotor->Set(ControlMode::Position, m_pBLSteerEncoder->convertAngleToTickSetpoint(blWheelYaw.getDegrees()));
+	m_pFLSteerMotor->Set(ControlMode::Position, m_pFLSteerEncoder->convertAngleToTickSetpoint(flWheelYaw.getDegrees()));
+	// m_pFRSteerMotorController->update(frWheelYaw.getDegrees(), 0, 0);
+	// m_pBRSteerMotorController->update(brWheelYaw.getDegrees(), 0, 0);
+	// m_pBLSteerMotorController->update(blWheelYaw.getDegrees(), 0, 0);
+	// m_pFLSteerMotorController->update(flWheelYaw.getDegrees(), 0, 0);
 
 	// update drive motors
+	printf("frWheelPercent = %0.1f\n", frWheelPercent.rotateBy(frWheelYaw.inverse()).getY());
 	m_pFRDriveMotorController->updateOpenLoopControl(frWheelPercent.rotateBy(frWheelYaw.inverse()).getY());
 	m_pBRDriveMotorController->updateOpenLoopControl(brWheelPercent.rotateBy(brWheelYaw.inverse()).getY());
 	m_pBLDriveMotorController->updateOpenLoopControl(blWheelPercent.rotateBy(blWheelYaw.inverse()).getY());
@@ -400,7 +426,7 @@ void SwerveDrivetrain::driveClosedLoopControl(
 }
 
 void SwerveDrivetrain::stop() {
-    driveOpenLoopControl(0, 0, 0, false);
+	driveOpenLoopControl(0, 0, 0);
 }
 
 void SwerveDrivetrain::setShiftState(bool isHighGear) {

@@ -31,9 +31,9 @@ namespace RobotParameters {
     static constexpr double k_driveMotorControllerKan = 0;
 
     // steer motors
-    static constexpr double k_steerMotorControllerKp = 0;
+    static constexpr double k_steerMotorControllerKp = 3;
     static constexpr double k_steerMotorControllerKi = 0;
-    static constexpr double k_steerMotorControllerKd = 0;
+    static constexpr double k_steerMotorControllerKd = 40;
     static constexpr double k_steerMotorControllerKsf = 0;
     static constexpr double k_steerMotorControllerKv = 0;
     static constexpr double k_steerMotorControllerKap = 0;

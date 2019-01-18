@@ -16,13 +16,13 @@ public:
     double getRevs() const;
     double getAngle() const;
     double getWheelDistance(double wheelRadius, double gearRatioEncoderToWheel) const;
-    double convertRevsToTicks(double revs) const;
-    double convertRevsToTickSetpoint(double revs) const;
-    double convertAngleToTicks(double angle) const;
-    double convertAngleToTickSetpoint(double angle) const;
+    int convertRevsToTicks(double revs) const;
+    int convertRevsToTickSetpoint(double revs) const;
+    int convertAngleToTicks(double angle) const;
+    int convertAngleToTickSetpoint(double angle) const;
     double convertWheelDistanceToRevs(double wheelRadius,  double wheelDistance) const;
-    double convertWheelDistanceToTicks(double wheelRadius, double wheelDistance) const;
-    double convertWheelDistanceToTickSetpoint(double wheelRadius, double wheelDistance) const;
+    int convertWheelDistanceToTicks(double wheelRadius, double wheelDistance) const;
+    int convertWheelDistanceToTickSetpoint(double wheelRadius, double wheelDistance) const;
     bool IsConnected() const;
 
 private:
