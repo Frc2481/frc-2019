@@ -23,7 +23,7 @@ public:
     double convertWheelDistanceToRevs(double wheelRadius,  double wheelDistance) const;
     int convertWheelDistanceToTicks(double wheelRadius, double wheelDistance) const;
     int convertWheelDistanceToTickSetpoint(double wheelRadius, double wheelDistance) const;
-    bool IsConnected() const;
+    bool isConnected() const;
 
 private:
     TalonSRX* m_pTalon;

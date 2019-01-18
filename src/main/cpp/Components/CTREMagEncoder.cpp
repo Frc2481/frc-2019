@@ -60,20 +60,9 @@ int CTREMagEncoder::convertAngleToTicks(double angle) const {
 }
 
 int CTREMagEncoder::convertAngleToTickSetpoint(double angle) const {
-    int angleTicks = convertAngleToTicks(angle);
-    int currentTicks = getTicks();
-    
-    int error = angleTicks - currentTicks;
-    if(fabs(error) > RobotParameters::k_ctreMagEncoderTicksPerRev / 2) {
-        if(error > 0) {
-            error = error - RobotParameters::k_ctreMagEncoderTicksPerRev;
-        }
-        else {
-            error = error + RobotParameters::k_ctreMagEncoderTicksPerRev;
-        }
-    }
-    
-    return currentTicks + error + m_encoderTicksZero;
+    double error = normalizeToRange::rangedDifference(angle - getAngle(), -180, 180);
+
+    return getTicks() + convertAngleToTicks(error) + m_encoderTicksZero;
 }
 
 double CTREMagEncoder::convertWheelDistanceToRevs(double wheelRadius, double wheelDistance) const {
@@ -88,6 +77,6 @@ int CTREMagEncoder::convertWheelDistanceToTickSetpoint(double wheelRadius, doubl
     return convertWheelDistanceToTicks(wheelRadius, wheelDistance) + m_encoderTicksZero;
 }
 
-bool CTREMagEncoder::IsConnected() const {
+bool CTREMagEncoder::isConnected() const {
 	return m_pTalon->GetSensorCollection().GetPulseWidthRiseToRiseUs() > 0;
 }

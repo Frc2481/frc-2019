@@ -1,8 +1,6 @@
 #ifndef COMMANDS_SWERVE_DRIVETRAIN_SHIFT_HIGH_GEAR_H
 #define COMMANDS_SWERVE_DRIVETRAIN_SHIFT_HIGH_GEAR_H
 
-#include <vector>
-#include <limits>
 #include "CommandBase.h"
 
 class SwerveDrivetrainShiftHighGear : public CommandBase {

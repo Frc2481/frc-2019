@@ -2,12 +2,14 @@
 #define MOTOR_POSITION_CONTROLLER_H
 
 #include "ctre/Phoenix.h"
+#include "CTREMagEncoder.h"
 
 class MotorPositionController {
 public:
     MotorPositionController();
     MotorPositionController(
 		TalonSRX* pTalon,
+        CTREMagEncoder* pEncoder,
         bool inverted,
         double kp,
 		double ki,
@@ -31,6 +33,7 @@ public:
 
 private:
     TalonSRX* m_pDriveMotor;
+    CTREMagEncoder* m_pEncoder;
     double m_kv;
     double m_kap;
     double m_kan;

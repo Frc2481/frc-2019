@@ -1,8 +1,6 @@
 #ifndef COMMANDS_SWERVE_DRIVETRAIN_JOYSTICK_DRIVE_H
 #define COMMANDS_SWERVE_DRIVETRAIN_JOYSTICK_DRIVE_H
 
-#include <vector>
-#include <limits>
 #include "CommandBase.h"
 #include "Components/Joystick2481.h"
 #include "Components/XboxController2481.h"

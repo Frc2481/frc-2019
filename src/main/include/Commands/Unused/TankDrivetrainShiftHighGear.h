@@ -1,8 +1,6 @@
 // #ifndef COMMANDS_TANK_DRIVETRAIN_SHIFT_HIGH_GEAR_H
 // #define COMMANDS_TANK_DRIVETRAIN_SHIFT_HIGH_GEAR_H
 
-// #include <vector>
-// #include <limits>
 // #include "CommandBase.h"
 
 // class TankDrivetrainShiftHighGear : public CommandBase {

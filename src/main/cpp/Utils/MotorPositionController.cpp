@@ -11,6 +11,7 @@ MotorPositionController::MotorPositionController()
 
 MotorPositionController::MotorPositionController(
 	TalonSRX* pTalon,
+    CTREMagEncoder* pEncoder,
     bool inverted,
     double kp,
     double ki,
@@ -24,6 +25,7 @@ MotorPositionController::MotorPositionController(
     unsigned ticksPerRev)
     
     : m_pDriveMotor(pTalon),
+    m_pEncoder(pEncoder),
 	m_kv(kv),
 	m_kap(kap),
 	m_kan(kan),
@@ -53,7 +55,7 @@ MotorPositionController::~MotorPositionController() {
 }
 
 void MotorPositionController::update(double refP, double refV, double refA) {
-	refP *= m_ticksPerRev / 360.0;
+	refP = m_pEncoder->convertAngleToTickSetpoint(refP);
     refV *= m_ticksPerRev / 360.0 / 10.0; // convert to talon native units
     refA *= m_ticksPerRev / 360.0 / 10.0; // convert to talon native units
 

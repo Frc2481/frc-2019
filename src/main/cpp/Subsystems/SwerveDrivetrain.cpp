@@ -89,8 +89,10 @@ SwerveDrivetrain::SwerveDrivetrain()
 	m_pFLDriveEncoder = new GrayhillEncoder(m_pFLDriveMotor, "FL_DRIVE_MOTOR_ENCODER");
 
 	m_pFRSteerMotor = new TalonSRX(FR_STEER_MOTOR_ID);
+	m_pFRSteerEncoder = new CTREMagEncoder(m_pFRSteerMotor, "FR_STEER_MOTOR_ENCODER");
 	m_pFRSteerMotorController = new MotorPositionController(
 		m_pFRSteerMotor,
+		m_pFRSteerEncoder,
 		false,
 		RobotParameters::k_steerMotorControllerKp,
 		RobotParameters::k_steerMotorControllerKi,
@@ -102,11 +104,12 @@ SwerveDrivetrain::SwerveDrivetrain()
 		0,
 		0,
 		RobotParameters::k_ctreMagEncoderTicksPerRev);
-	m_pFRSteerEncoder = new CTREMagEncoder(m_pFRSteerMotor, "FR_STEER_MOTOR_ENCODER");
 
 	m_pBRSteerMotor = new TalonSRX(BR_STEER_MOTOR_ID);
+	m_pBRSteerEncoder = new CTREMagEncoder(m_pBRSteerMotor, "BR_STEER_MOTOR_ENCODER");
 	m_pBRSteerMotorController = new MotorPositionController(
 		m_pBRSteerMotor,
+		m_pBRSteerEncoder,
 		false,
 		RobotParameters::k_steerMotorControllerKp,
 		RobotParameters::k_steerMotorControllerKi,
@@ -118,11 +121,12 @@ SwerveDrivetrain::SwerveDrivetrain()
 		0,
 		0,
 		RobotParameters::k_ctreMagEncoderTicksPerRev);
-	m_pBRSteerEncoder = new CTREMagEncoder(m_pBRSteerMotor, "BR_STEER_MOTOR_ENCODER");
 
 	m_pBLSteerMotor = new TalonSRX(BL_STEER_MOTOR_ID);
+	m_pBLSteerEncoder = new CTREMagEncoder(m_pBLSteerMotor, "BL_STEER_MOTOR_ENCODER");
 	m_pBLSteerMotorController = new MotorPositionController(
 		m_pBLSteerMotor,
+		m_pBLSteerEncoder,
 		false,
 		RobotParameters::k_steerMotorControllerKp,
 		RobotParameters::k_steerMotorControllerKi,
@@ -134,11 +138,12 @@ SwerveDrivetrain::SwerveDrivetrain()
 		0,
 		0,
 		RobotParameters::k_ctreMagEncoderTicksPerRev);
-	m_pBLSteerEncoder = new CTREMagEncoder(m_pBLSteerMotor, "BL_STEER_MOTOR_ENCODER");
 
 	m_pFLSteerMotor = new TalonSRX(FL_STEER_MOTOR_ID);
+	m_pFLSteerEncoder = new CTREMagEncoder(m_pFLSteerMotor, "FL_STEER_MOTOR_ENCODER");
 	m_pFLSteerMotorController = new MotorPositionController(
 		m_pFLSteerMotor,
+		m_pFLSteerEncoder,
 		false,
 		RobotParameters::k_steerMotorControllerKp,
 		RobotParameters::k_steerMotorControllerKi,
@@ -150,7 +155,6 @@ SwerveDrivetrain::SwerveDrivetrain()
 		0,
 		0,
 		RobotParameters::k_ctreMagEncoderTicksPerRev);
-	m_pFLSteerEncoder = new CTREMagEncoder(m_pFLSteerMotor, "FL_STEER_MOTOR_ENCODER");
 
    m_pShifter = new Solenoid(DRIVE_XMSN_SHIFTER_ID);
    setShiftState(false);
@@ -303,46 +307,49 @@ void SwerveDrivetrain::driveOpenLoopControl(
 
 	// steer optimization
 	Rotation2D steerError;
+	int frInvertDrive = 1;
 	Rotation2D frWheelYaw = Rotation2D(frWheelPercent.getX(), frWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 	steerError = frWheelYaw - Rotation2D::fromDegrees(m_pFRSteerEncoder->getAngle());
 	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
 		frWheelYaw = frWheelYaw.inverse();
+		frInvertDrive = -1;
 	}
 
+	int brInvertDrive = 1;
 	Rotation2D brWheelYaw = Rotation2D(brWheelPercent.getX(), brWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 	steerError = brWheelYaw - Rotation2D::fromDegrees(m_pBRSteerEncoder->getAngle());
 	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
 		brWheelYaw = brWheelYaw.inverse();
+		brInvertDrive = -1;
 	}
 
+	int blInvertDrive = 1;
 	Rotation2D blWheelYaw = Rotation2D(blWheelPercent.getX(), blWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 	steerError = blWheelYaw - Rotation2D::fromDegrees(m_pBLSteerEncoder->getAngle());
 	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
 		blWheelYaw = blWheelYaw.inverse();
+		blInvertDrive = -1;
 	}
 
+	int flInvertDrive = 1;
 	Rotation2D flWheelYaw = Rotation2D(flWheelPercent.getX(), flWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 	steerError = flWheelYaw - Rotation2D::fromDegrees(m_pFLSteerEncoder->getAngle());
 	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
 		flWheelYaw = flWheelYaw.inverse();
+		flInvertDrive = -1;
 	}
 
 	// update steer motors
-	m_pFRSteerMotor->Set(ControlMode::Position, m_pFRSteerEncoder->convertAngleToTickSetpoint(frWheelYaw.getDegrees()));
-	m_pBRSteerMotor->Set(ControlMode::Position, m_pBRSteerEncoder->convertAngleToTickSetpoint(brWheelYaw.getDegrees()));
-	m_pBLSteerMotor->Set(ControlMode::Position, m_pBLSteerEncoder->convertAngleToTickSetpoint(blWheelYaw.getDegrees()));
-	m_pFLSteerMotor->Set(ControlMode::Position, m_pFLSteerEncoder->convertAngleToTickSetpoint(flWheelYaw.getDegrees()));
-	// m_pFRSteerMotorController->update(frWheelYaw.getDegrees(), 0, 0);
-	// m_pBRSteerMotorController->update(brWheelYaw.getDegrees(), 0, 0);
-	// m_pBLSteerMotorController->update(blWheelYaw.getDegrees(), 0, 0);
-	// m_pFLSteerMotorController->update(flWheelYaw.getDegrees(), 0, 0);
+	m_pFRSteerMotorController->update(frWheelYaw.getDegrees(), 0, 0);
+	m_pBRSteerMotorController->update(brWheelYaw.getDegrees(), 0, 0);
+	m_pBLSteerMotorController->update(blWheelYaw.getDegrees(), 0, 0);
+	m_pFLSteerMotorController->update(flWheelYaw.getDegrees(), 0, 0);
 
 	// update drive motors
-	printf("frWheelPercent = %0.1f\n", frWheelPercent.rotateBy(frWheelYaw.inverse()).getY());
-	m_pFRDriveMotorController->updateOpenLoopControl(frWheelPercent.rotateBy(frWheelYaw.inverse()).getY());
-	m_pBRDriveMotorController->updateOpenLoopControl(brWheelPercent.rotateBy(brWheelYaw.inverse()).getY());
-	m_pBLDriveMotorController->updateOpenLoopControl(blWheelPercent.rotateBy(blWheelYaw.inverse()).getY());
-	m_pFLDriveMotorController->updateOpenLoopControl(flWheelPercent.rotateBy(flWheelYaw.inverse()).getY());
+	m_pFRDriveMotorController->updateOpenLoopControl(frInvertDrive * frWheelPercent.norm());
+	m_pBRDriveMotorController->updateOpenLoopControl(brInvertDrive * brWheelPercent.norm());
+	m_pBLDriveMotorController->updateOpenLoopControl(blInvertDrive * blWheelPercent.norm());
+	m_pFLDriveMotorController->updateOpenLoopControl(flInvertDrive * flWheelPercent.norm());
 }
 
 void SwerveDrivetrain::driveClosedLoopControl(

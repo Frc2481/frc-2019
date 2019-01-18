@@ -70,20 +70,9 @@ int GrayhillEncoder::convertAngleToTicks(double angle) const {
 }
 
 int GrayhillEncoder::convertAngleToTickSetpoint(double angle) const {
-    int angleTicks = convertAngleToTicks(angle);
-    int currentTicks = getTicks();
-    
-    int error = angleTicks - currentTicks;
-    if(fabs(error) > RobotParameters::k_grayhillEncoderTicksPerRev / 2) {
-        if(error > 0) {
-            error = error - RobotParameters::k_grayhillEncoderTicksPerRev;
-        }
-        else {
-            error = error + RobotParameters::k_grayhillEncoderTicksPerRev;
-        }
-    }
-    
-    return currentTicks + error + m_encoderTicksZero;
+    double error = normalizeToRange::rangedDifference(angle - getAngle(), -180, 180);
+
+    return getTicks() + convertAngleToTicks(error) + m_encoderTicksZero;
 }
 
 double GrayhillEncoder::convertWheelDistanceToRevs(double wheelRadius, double wheelDistance) const {
