@@ -93,7 +93,7 @@ SwerveDrivetrain::SwerveDrivetrain()
 	m_pFRSteerMotorController = new MotorPositionController(
 		m_pFRSteerMotor,
 		m_pFRSteerEncoder,
-		false,
+		true,
 		RobotParameters::k_steerMotorControllerKp,
 		RobotParameters::k_steerMotorControllerKi,
 		RobotParameters::k_steerMotorControllerKd,
@@ -110,7 +110,7 @@ SwerveDrivetrain::SwerveDrivetrain()
 	m_pBRSteerMotorController = new MotorPositionController(
 		m_pBRSteerMotor,
 		m_pBRSteerEncoder,
-		false,
+		true,
 		RobotParameters::k_steerMotorControllerKp,
 		RobotParameters::k_steerMotorControllerKi,
 		RobotParameters::k_steerMotorControllerKd,
@@ -127,7 +127,7 @@ SwerveDrivetrain::SwerveDrivetrain()
 	m_pBLSteerMotorController = new MotorPositionController(
 		m_pBLSteerMotor,
 		m_pBLSteerEncoder,
-		false,
+		true,
 		RobotParameters::k_steerMotorControllerKp,
 		RobotParameters::k_steerMotorControllerKi,
 		RobotParameters::k_steerMotorControllerKd,
@@ -144,7 +144,7 @@ SwerveDrivetrain::SwerveDrivetrain()
 	m_pFLSteerMotorController = new MotorPositionController(
 		m_pFLSteerMotor,
 		m_pFLSteerEncoder,
-		false,
+		true,
 		RobotParameters::k_steerMotorControllerKp,
 		RobotParameters::k_steerMotorControllerKi,
 		RobotParameters::k_steerMotorControllerKd,
@@ -281,7 +281,7 @@ void SwerveDrivetrain::driveOpenLoopControl(
 	// field reference frame driving
 	if(m_isOpenLoopFieldFrame) {
 		Rotation2D gyroYaw = Rotation2D::fromDegrees(m_gyroYaw);
-		percentVel.rotateBy(gyroYaw.inverse());
+		percentVel = percentVel.rotateBy(gyroYaw.inverse());
 	}
 
 	Translation2D frWheelPercent;
@@ -311,7 +311,7 @@ void SwerveDrivetrain::driveOpenLoopControl(
 	Rotation2D frWheelYaw = Rotation2D(frWheelPercent.getX(), frWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 	steerError = frWheelYaw - Rotation2D::fromDegrees(m_pFRSteerEncoder->getAngle());
 	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
-		frWheelYaw = frWheelYaw.inverse();
+		frWheelYaw = frWheelYaw.rotateBy(Rotation2D::fromDegrees(180));
 		frInvertDrive = -1;
 	}
 
@@ -319,7 +319,7 @@ void SwerveDrivetrain::driveOpenLoopControl(
 	Rotation2D brWheelYaw = Rotation2D(brWheelPercent.getX(), brWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 	steerError = brWheelYaw - Rotation2D::fromDegrees(m_pBRSteerEncoder->getAngle());
 	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
-		brWheelYaw = brWheelYaw.inverse();
+		brWheelYaw = brWheelYaw.rotateBy(Rotation2D::fromDegrees(180));
 		brInvertDrive = -1;
 	}
 
@@ -327,7 +327,7 @@ void SwerveDrivetrain::driveOpenLoopControl(
 	Rotation2D blWheelYaw = Rotation2D(blWheelPercent.getX(), blWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 	steerError = blWheelYaw - Rotation2D::fromDegrees(m_pBLSteerEncoder->getAngle());
 	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
-		blWheelYaw = blWheelYaw.inverse();
+		blWheelYaw = blWheelYaw.rotateBy(Rotation2D::fromDegrees(180));
 		blInvertDrive = -1;
 	}
 
@@ -335,7 +335,7 @@ void SwerveDrivetrain::driveOpenLoopControl(
 	Rotation2D flWheelYaw = Rotation2D(flWheelPercent.getX(), flWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 	steerError = flWheelYaw - Rotation2D::fromDegrees(m_pFLSteerEncoder->getAngle());
 	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
-		flWheelYaw = flWheelYaw.inverse();
+		flWheelYaw = flWheelYaw.rotateBy(Rotation2D::fromDegrees(180));
 		flInvertDrive = -1;
 	}
 
@@ -437,11 +437,11 @@ void SwerveDrivetrain::stop() {
 }
 
 void SwerveDrivetrain::setShiftState(bool isHighGear) {
-	m_pShifter->Set(isHighGear);
+	m_pShifter->Set(isHighGear * RobotParameters::k_isDriveShiftInverted);
 }
 
 bool SwerveDrivetrain::getShiftState() {
-	bool isHighGear = m_pShifter->Get();
+	bool isHighGear = m_pShifter->Get() * RobotParameters::k_isDriveShiftInverted;
 
 	// set appropriate motor controller gear ratio
 	if(isHighGear) {
@@ -572,6 +572,6 @@ void SwerveDrivetrain::SetIsOpenLoopFieldFrame(bool isOpenLoopFieldFrame) {
 	if(m_isOpenLoopFieldFrame != isOpenLoopFieldFrame) {
 		zeroGyroYaw();
 	}
-
+	
 	m_isOpenLoopFieldFrame = isOpenLoopFieldFrame;
 }

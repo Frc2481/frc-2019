@@ -6,7 +6,8 @@ namespace RobotParameters {
 	static constexpr unsigned k_updateRate = 50; // Hz
 
     // drivetrain
-    static constexpr double k_openLoopSteerLimitPercent = 0.05; // limit open loop steer for controllability
+    static constexpr bool k_isDriveShiftInverted = true;
+    static constexpr double k_openLoopSteerLimitPercent = 0.5; // limit open loop steer for controllability
     static constexpr double k_wheelRad = 0; // in
     static constexpr double k_wheelTrack = 22.375; // in
     static constexpr double k_wheelBase = 27; // in

@@ -7,8 +7,9 @@
 
 class SwerveDrivetrainJoystickSetFieldFrame : public CommandBase {
 public:
-	SwerveDrivetrainJoystickSetFieldFrame()
-		: CommandBase("SwerveDrivetrainJoystickSetFieldFrame") {
+	SwerveDrivetrainJoystickSetFieldFrame(bool isFieldFrame)
+		: CommandBase("SwerveDrivetrainJoystickSetFieldFrame"),
+		m_isFieldFrame(isFieldFrame) {
 	
 		Requires(CommandBase::m_pSwerveDrivetrain.get());
 		SetInterruptible(true);
@@ -18,7 +19,7 @@ public:
 	}
 
 	void Initialize() {
-		m_pSwerveDrivetrain->SetIsOpenLoopFieldFrame(true);
+		m_pSwerveDrivetrain->SetIsOpenLoopFieldFrame(m_isFieldFrame);
 	}
 
 	void Execute() {
@@ -29,11 +30,10 @@ public:
 	}
 
 	bool IsFinished() {
-		return false;
+		return true;
 	}
 
 	void End() {
-		m_pSwerveDrivetrain->SetIsOpenLoopFieldFrame(false);
 	}
 
 private:

@@ -2,7 +2,7 @@
 #define MOTOR_POSITION_CONTROLLER_H
 
 #include "ctre/Phoenix.h"
-#include "CTREMagEncoder.h"
+#include "Components/CTREMagEncoder.h"
 
 class MotorPositionController {
 public:

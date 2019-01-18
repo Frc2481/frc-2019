@@ -1,19 +1,19 @@
 #include "OI.h"
 #include "RobotMap.h"
 #include "Commands/SwerveDrivetrainJoystickSetFieldFrame.h"
-#include "Commands/SwerveDrivetrainShiftHighGear.h"
-#include "Commands/SwerveDrivetrainShiftLowGear.h"
+#include "Commands/SwerveDrivetrainShiftGear.h"
 
 OI::OI() {
 	m_pDriverStick = new Joystick2481(DRIVER_XBOX_CONTROLLER_ID);
 	m_pOperatorStick = new Joystick2481(OPERATOR_XBOX_CONTROLLER_ID);
 
 	m_pSetFieldFrameButton = new JoystickButton(m_pDriverStick, XBOX_LEFT_BUMPER);
-	m_pSetFieldFrameButton->WhileHeld(new SwerveDrivetrainJoystickSetFieldFrame());
+	m_pSetFieldFrameButton->WhenPressed(new SwerveDrivetrainJoystickSetFieldFrame(true));
+	m_pSetFieldFrameButton->WhenReleased(new SwerveDrivetrainJoystickSetFieldFrame(false));
 
 	m_pDriveShiftButton = new JoystickButton(m_pDriverStick, XBOX_RIGHT_BUMPER);
-	m_pDriveShiftButton->WhenPressed(new SwerveDrivetrainShiftHighGear());
-	m_pDriveShiftButton->WhenReleased(new SwerveDrivetrainShiftLowGear());
+	m_pDriveShiftButton->WhenPressed(new SwerveDrivetrainShiftGear(false));
+	m_pDriveShiftButton->WhenReleased(new SwerveDrivetrainShiftGear(true));
 }
 
 OI::~OI() {
