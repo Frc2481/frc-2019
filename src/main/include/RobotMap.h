@@ -18,4 +18,7 @@
 
 #define LINE_FOLLOWER_MOTOR_ID 20
 
+#define MASTER_ELEVATOR 99
+#define SLAVE_ELEVATOR 100
+
 #endif // ROBOT_MAP_H

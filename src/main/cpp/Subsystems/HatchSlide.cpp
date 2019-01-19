@@ -46,7 +46,6 @@ void HatchSlide::setSetPoint(int value) {
 
 void HatchSlide::ZeroHatchPosition() {
   m_motor->SetSelectedSensorPosition(0, 0, 10);
-  printf("got here\n");
   m_isHatchZeroed = true;
 }
 
@@ -70,4 +69,3 @@ void HatchSlide::Periodic() {
 void HatchSlide::InitDefaultCommand() {
   SetDefaultCommand(new HatchSlideGoToPosition());
 }
-
