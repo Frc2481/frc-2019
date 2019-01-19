@@ -156,9 +156,6 @@ SwerveDrivetrain::SwerveDrivetrain()
 		0,
 		RobotParameters::k_ctreMagEncoderTicksPerRev);
 
-   m_pShifter = new Solenoid(DRIVE_XMSN_SHIFTER_ID);
-   setShiftState(false);
-
     m_pChassisIMU = new AHRS(SPI::kMXP);
 
     resetPose(Pose2D(Translation2D(0, 0), Rotation2D::fromDegrees(0)), PoseDot2D(0, 0, 0));
@@ -258,9 +255,6 @@ void SwerveDrivetrain::Periodic() {
 	m_pBRSteerEncoder->update();
 	m_pBLSteerEncoder->update();
 	m_pFLSteerEncoder->update();
-
-    // update shift state
-	getShiftState();
 
 	// update pose
     updatePose();
@@ -436,29 +430,29 @@ void SwerveDrivetrain::stop() {
 	driveOpenLoopControl(0, 0, 0);
 }
 
-void SwerveDrivetrain::setShiftState(bool isHighGear) {
-	m_pShifter->Set(isHighGear * RobotParameters::k_isDriveShiftInverted);
-}
+// void SwerveDrivetrain::setShiftState(bool isHighGear) {
+	// m_pShifter->Set(isHighGear * RobotParameters::k_isDriveShiftInverted);
+// }
 
-bool SwerveDrivetrain::getShiftState() {
-	bool isHighGear = m_pShifter->Get() * RobotParameters::k_isDriveShiftInverted;
+// bool SwerveDrivetrain::getShiftState() {
+// 	bool isHighGear = m_pShifter->Get() * RobotParameters::k_isDriveShiftInverted;
 
-	// set appropriate motor controller gear ratio
-	if(isHighGear) {
-		m_pFRDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioHigh);
-		m_pBRDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioHigh);
-		m_pBLDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioHigh);
-		m_pFLDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioHigh);
-	}
-	else {
-		m_pFRDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioLow);
-		m_pBRDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioLow);
-		m_pBLDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioLow);
-		m_pFLDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioLow);
-	}
+// 	// set appropriate motor controller gear ratio
+// 	if(isHighGear) {
+// 		m_pFRDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioHigh);
+// 		m_pBRDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioHigh);
+// 		m_pBLDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioHigh);
+// 		m_pFLDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioHigh);
+// 	}
+// 	else {
+// 		m_pFRDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioLow);
+// 		m_pBRDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioLow);
+// 		m_pBLDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioLow);
+// 		m_pFLDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioLow);
+// 	}
 
-	return isHighGear;
-}
+// 	return isHighGear;
+// }
 
 Pose2D SwerveDrivetrain::getPose() {
     return m_swerveDrivePose.getPose();

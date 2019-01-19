@@ -22,7 +22,6 @@ public:
     Joystick2481 *m_pOperatorStick;
 
     frc::JoystickButton *m_pSetFieldFrameButton;
-    frc::JoystickButton *m_pDriveShiftButton;
 
     frc::Button* m_centerHatch;
 };
