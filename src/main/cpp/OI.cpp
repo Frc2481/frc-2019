@@ -2,6 +2,14 @@
 #include "RobotMap.h"
 #include "Commands/SwerveDrivetrainJoystickSetFieldFrame.h"
 #include "Commands/SwerveDrivetrainShiftGear.h"
+#include "frc/buttons/JoystickButton.h"
+#include "frc/WPILib.h"
+#include "frc/XboxController.h"
+#include "Components/Joystick2481.h"
+#include "Subsystems/HatchSlide.h"
+#include "Components/XboxController2481.h"
+#include "Commands/HatchSlideToCenterCommand.h"
+#include "Subsystems/LineFinder.h"
 
 OI::OI() {
 	m_pDriverStick = new Joystick2481(DRIVER_XBOX_CONTROLLER_ID);
@@ -14,6 +22,9 @@ OI::OI() {
 	m_pDriveShiftButton = new JoystickButton(m_pDriverStick, XBOX_RIGHT_BUMPER);
 	m_pDriveShiftButton->WhenPressed(new SwerveDrivetrainShiftGear(false));
 	m_pDriveShiftButton->WhenReleased(new SwerveDrivetrainShiftGear(true));
+
+	m_centerHatch = new JoystickButton(m_pDriverStick, XBOX_A_BUTTON);
+	m_centerHatch->WhenPressed(new HatchSlideToCenterCommand(0));
 }
 
 OI::~OI() {

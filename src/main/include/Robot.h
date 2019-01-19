@@ -2,6 +2,7 @@
 #define ROBOT_H
 
 #include <frc/WPILib.h>
+#include "CommandBase.h"
 
 class Robot : public frc::TimedRobot {
 public:
@@ -16,6 +17,7 @@ public:
 	void TestPeriodic() override;
 
 private:
+	std::unique_ptr<Command> m_pVibrate;
 };
 
 #endif // ROBOT_H
