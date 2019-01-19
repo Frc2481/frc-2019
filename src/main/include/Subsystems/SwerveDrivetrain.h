@@ -62,7 +62,7 @@ public:
     void zeroDriveEncoders();
     void zeroSteerEncoders();
     void zeroGyroYaw();
-    void SetIsOpenLoopFieldFrame(bool isOpenLoopFieldFrame);
+    void setIsOpenLoopFieldFrame(bool isOpenLoopFieldFrame);
 
 private:
     TalonSRX* m_pFRDriveMotor;

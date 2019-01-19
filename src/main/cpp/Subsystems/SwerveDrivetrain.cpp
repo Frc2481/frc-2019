@@ -340,10 +340,10 @@ void SwerveDrivetrain::driveOpenLoopControl(
 	}
 
 	// update steer motors
-	m_pFRSteerMotorController->update(frWheelYaw.getDegrees(), 0, 0);
-	m_pBRSteerMotorController->update(brWheelYaw.getDegrees(), 0, 0);
-	m_pBLSteerMotorController->update(blWheelYaw.getDegrees(), 0, 0);
-	m_pFLSteerMotorController->update(flWheelYaw.getDegrees(), 0, 0);
+	m_pFRSteerMotorController->updateAngular(frWheelYaw.getDegrees(), 0, 0);
+	m_pBRSteerMotorController->updateAngular(brWheelYaw.getDegrees(), 0, 0);
+	m_pBLSteerMotorController->updateAngular(blWheelYaw.getDegrees(), 0, 0);
+	m_pFLSteerMotorController->updateAngular(flWheelYaw.getDegrees(), 0, 0);
 
 	// update drive motors
 	m_pFRDriveMotorController->updateOpenLoopControl(frInvertDrive * frWheelPercent.norm());
@@ -410,10 +410,10 @@ void SwerveDrivetrain::driveClosedLoopControl(
 	Rotation2D blWheelYaw = Rotation2D(blWheelVel.getX(), blWheelVel.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 	Rotation2D flWheelYaw = Rotation2D(flWheelVel.getX(), flWheelVel.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 
-	m_pFRSteerMotorController->update(frWheelYaw.getDegrees(), 0, 0);
-	m_pBRSteerMotorController->update(brWheelYaw.getDegrees(), 0, 0);
-	m_pBLSteerMotorController->update(blWheelYaw.getDegrees(), 0, 0);
-	m_pFLSteerMotorController->update(flWheelYaw.getDegrees(), 0, 0);
+	m_pFRSteerMotorController->updateAngular(frWheelYaw.getDegrees(), 0, 0);
+	m_pBRSteerMotorController->updateAngular(brWheelYaw.getDegrees(), 0, 0);
+	m_pBLSteerMotorController->updateAngular(blWheelYaw.getDegrees(), 0, 0);
+	m_pFLSteerMotorController->updateAngular(flWheelYaw.getDegrees(), 0, 0);
 
     // convert wheel vel from translational to rotational
     double frWheelAngVel = frWheelVel.rotateBy(frWheelYaw.inverse()).getY() / RobotParameters::k_wheelRad * 180.0 / MATH_CONSTANTS_PI;
@@ -567,7 +567,7 @@ void SwerveDrivetrain::zeroGyroYaw() {
 	m_pChassisIMU->ZeroYaw();
 }
 
-void SwerveDrivetrain::SetIsOpenLoopFieldFrame(bool isOpenLoopFieldFrame) {
+void SwerveDrivetrain::setIsOpenLoopFieldFrame(bool isOpenLoopFieldFrame) {
 	// zero gyro yaw if changed state
 	if(m_isOpenLoopFieldFrame != isOpenLoopFieldFrame) {
 		zeroGyroYaw();

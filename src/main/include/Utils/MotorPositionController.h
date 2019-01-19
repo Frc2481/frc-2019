@@ -23,13 +23,23 @@ public:
         unsigned ticksPerRev);
     ~MotorPositionController();
 
+    void setMotionMagic(bool isEnabled, double maxVel, double maxAccel, double kf);
+
     //////////////////////////////////////////////////////////////////////
     // @brief update reference points of motor controller
     // @param refP - position reference point (deg)
     // @param refV - angular velocity reference point (deg/s)
     // @param refA - angular acceleration reference point (deg/s^2)
     //////////////////////////////////////////////////////////////////////
-    void update(double refP, double refV, double refA);
+    void updateAngular(double refP, double refV, double refA);
+
+    //////////////////////////////////////////////////////////////////////
+    // @brief update reference points of motor controller
+    // @param refP - position reference point (in)
+    // @param refV - angular velocity reference point (in/s)
+    // @param refA - angular acceleration reference point (in/s^2)
+    //////////////////////////////////////////////////////////////////////
+    void updateLinear(double refP, double refV, double refA, double wheelRadius);
 
 private:
     TalonSRX* m_pDriveMotor;
@@ -39,6 +49,7 @@ private:
     double m_kan;
     double m_ksf;
     unsigned m_ticksPerRev;
+    bool m_enableMotionMagic;
 };
 
 #endif // MOTOR_POSITION_CONTROLLER_H

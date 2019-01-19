@@ -2,6 +2,8 @@
 #include "CommandBase.h"
 #include "RobotParameters.h"
 #include "Commands/SwerveDrivetrainZeroSteer.h"
+#include "Commands/LineFollowerZeroEncoder.h"
+#include "Commands/LineFollowerFollowLine.h"
 
 Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 }
@@ -10,6 +12,8 @@ void Robot::RobotInit() {
 	CommandBase::Init();
 
 	SmartDashboard::PutData("SwerveDrivetrainZeroSteer", new SwerveDrivetrainZeroSteer());
+	SmartDashboard::PutData("LineFollowerZeroEncoder", new LineFollowerZeroEncoder());
+	SmartDashboard::PutData("LineFollowerFollowLine", new LineFollowerFollowLine());
 }
 
 void Robot::AutonomousInit() {

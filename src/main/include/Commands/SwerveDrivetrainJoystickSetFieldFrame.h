@@ -19,7 +19,7 @@ public:
 	}
 
 	void Initialize() {
-		m_pSwerveDrivetrain->SetIsOpenLoopFieldFrame(m_isFieldFrame);
+		m_pSwerveDrivetrain->setIsOpenLoopFieldFrame(m_isFieldFrame);
 	}
 
 	void Execute() {

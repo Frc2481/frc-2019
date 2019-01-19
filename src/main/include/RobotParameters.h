@@ -46,6 +46,20 @@ namespace RobotParameters {
 
     // limelight
     static constexpr double k_limeLightHeight = 23.75;
+
+    // line follower
+    static constexpr double k_lineFollowerPulleyRadius = 1.675 / 2.0;
+    static constexpr double k_lineFollowerEncoderToPulleyGearRatio = 1;
+    static constexpr double k_lineFollowerMotorControllerKp = 0;
+	static constexpr double k_lineFollowerMotorControllerKi = 0;
+	static constexpr double k_lineFollowerMotorControllerKd = 0;
+	static constexpr double k_lineFollowerMotorControllerKv = 0;
+	static constexpr double k_lineFollowerMotorControllerKap = 0;
+	static constexpr double k_lineFollowerMotorControllerKan = 0;
+	static constexpr double k_lineFollowerMotorControllerKsf = 0;
+    static constexpr double k_lineFollowerMaxVel = 6900;
+    static constexpr double k_lineFollowerMaxAccel = 50000;
+    static constexpr double k_lineFollowerKf = 1024.0 / 6900.0;
 }
 
 #endif // ROBOT_PARAMETERS_H

@@ -54,8 +54,22 @@ MotorPositionController::MotorPositionController(
 MotorPositionController::~MotorPositionController() {
 }
 
-void MotorPositionController::update(double refP, double refV, double refA) {
-	refP = m_pEncoder->convertAngleToTickSetpoint(refP);
+void MotorPositionController::setMotionMagic(
+    bool isEnabled,
+    double maxVel,
+    double maxAccel,
+    double kf) {
+    
+    m_enableMotionMagic = isEnabled;
+    
+    m_pDriveMotor->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
+    m_pDriveMotor->ConfigMotionCruiseVelocity(maxVel, 0);
+	m_pDriveMotor->ConfigMotionAcceleration(maxAccel, 0);
+    m_pDriveMotor->Config_kF(0, kf, 0);
+}
+
+void MotorPositionController::updateAngular(double refP, double refV, double refA) {
+    refP = m_pEncoder->convertAngleToTickSetpoint(refP);
     refV *= m_ticksPerRev / 360.0 / 10.0; // convert to talon native units
     refA *= m_ticksPerRev / 360.0 / 10.0; // convert to talon native units
 
@@ -66,5 +80,32 @@ void MotorPositionController::update(double refP, double refV, double refA) {
 	}
 
     double feedforwardControl = refV * m_kv + refA * ka + Sign::Sign(refV) * m_ksf;
-    m_pDriveMotor->Set(ControlMode::Position, refP, DemandType::DemandType_ArbitraryFeedForward, feedforwardControl);
+
+    if(!m_enableMotionMagic) {
+        m_pDriveMotor->Set(ControlMode::Position, refP, DemandType::DemandType_ArbitraryFeedForward, feedforwardControl);
+    }
+    else {
+        m_pDriveMotor->Set(ControlMode::MotionMagic, refP, DemandType::DemandType_ArbitraryFeedForward, feedforwardControl);
+    }
+}
+
+void MotorPositionController::updateLinear(double refP, double refV, double refA, double wheelRadius) {
+    refP = m_pEncoder->convertWheelDistanceToTickSetpoint(wheelRadius, refP);
+    refV = m_pEncoder->convertWheelDistanceToTicks(wheelRadius, refV) / 10.0; // convert to talon native units
+    refA = m_pEncoder->convertWheelDistanceToTicks(wheelRadius, refA) / 10.0; // convert to talon native units
+
+    // use different ka if vel and accel have opposite direction
+	double ka = m_kap;
+	if((refV > 0) != (refA > 0)) {
+		ka = m_kan;
+	}
+
+    double feedforwardControl = refV * m_kv + refA * ka + Sign::Sign(refV) * m_ksf;
+    
+    if(!m_enableMotionMagic) {
+        m_pDriveMotor->Set(ControlMode::Position, refP, DemandType::DemandType_ArbitraryFeedForward, feedforwardControl);
+    }
+    else {
+        m_pDriveMotor->Set(ControlMode::MotionMagic, refP, DemandType::DemandType_ArbitraryFeedForward, feedforwardControl);
+    }
 }
