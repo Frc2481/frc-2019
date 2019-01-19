@@ -8,22 +8,14 @@
 #ifndef COMMANDS_ELEVATOR_ZERO_COMMAND
 #define COMMANDS_ELEVATOR_ZERO_COMMAND
 
-#include <frc/commands/Command.h>
+#include <frc/commands/InstantCommand.h>
 #include "Subsystems/Elevator.h"
 
-class ElevatorZeroCommand : public frc::Command {
+class ElevatorZeroCommand : public frc::InstantCommand {
  public:
-  ElevatorZeroCommand() : Command("ElevatorZeroCommand"){}
+  ElevatorZeroCommand() : InstantCommand("ElevatorZeroCommand"){}
   void Initialize() override {
     CommandBase::m_pElevator->ZeroElevatorEncoder();
-  }
-  void Execute() override {}
-  bool IsFinished() override {
-    return true;
-  }
-  void End() override {}
-  void Interrupted() override {
-    End();
   }
 };
 

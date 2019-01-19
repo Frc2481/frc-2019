@@ -14,25 +14,15 @@
 
 template <double HEIGHT>
 class ElevatorBaseCommand : public frc::Command {
-  private:
-  bool m_isOnTarget;
-
  public:
   ElevatorBaseCommand(std::string name) : Command(name) {
     Requires(CommandBase::m_pElevator.get());
   }
   void Initialize() override {
-    m_isOnTarget = false;
     CommandBase::m_pElevator->SetElevatorPosition(HEIGHT);
   }
-  void Execute() override {}
   bool IsFinished() override {
-    m_isOnTarget = fabs(CommandBase::m_pElevator->GetElevatorError()) < 0.5;
-    return m_isOnTarget;
-  }
-  void End() override {}
-  void Interrupted()override {
-    End();
+    return fabs(CommandBase::m_pElevator->GetElevatorError()) < 0.5;
   }
 };
 

@@ -14,14 +14,8 @@
 class ElevatorWaitForPositionCommand : public frc::Command {
  public:
   ElevatorWaitForPositionCommand() : Command("ElevatorWaitForPositionCommand") {}
-  void Initialize() override {}
-  void Execute() override {}
   bool IsFinished() override {
     return fabs(CommandBase::m_pElevator->GetElevatorError()) < 1;
-  }
-  void End() override {}
-  void Interrupted() override {
-    End();
   }
 };
 

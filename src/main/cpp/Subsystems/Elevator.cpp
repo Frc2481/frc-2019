@@ -17,6 +17,11 @@ Elevator::Elevator() : Subsystem("ExampleSubsystem") {
   m_masterElevator->ConfigForwardLimitSwitchSource(LimitSwitchSource_FeedbackConnector, LimitSwitchNormal_NormallyOpen, 0); //change if needed
   m_masterElevator->ConfigReverseLimitSwitchSource(LimitSwitchSource_FeedbackConnector, LimitSwitchNormal_NormallyOpen, 0);
 
+  m_masterElevator->ConfigMotionCruiseVelocity(0, 0);
+  m_masterElevator->ConfigMotionAcceleration(0, 0);
+
+  m_masterElevator->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
+
  // m_masterElevator->Config_kP();
   // m_masterElevator->Config_kI();
   // m_masterElevator->Config_kD();

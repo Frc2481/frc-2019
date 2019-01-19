@@ -20,12 +20,12 @@ class ElevatorHomeCommand : public frc::Command {
   void Initialize() override {
     CommandBase::m_pElevator->Set(ControlMode::PercentOutput, -0.75); //might need to change direction
   }
-  void Execute() override {}
   bool IsFinished() override {
     return CommandBase::m_pElevator->IsRevLimitSwitchClosed();
   }
   void End() override {
    CommandBase::m_pElevator->Set(ControlMode::PercentOutput, 0); 
+   CommandBase::m_pElevator->ZeroElevatorEncoder();
   }
   void Interrupted() override {
     End();
