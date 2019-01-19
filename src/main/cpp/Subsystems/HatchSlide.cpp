@@ -40,6 +40,8 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
 
 void HatchSlide::setSetPoint(int value) {
   m_motor->Set(ControlMode::MotionMagic, value);
+  m_desiredSetpoint = value;
+  // m_motor->Set(ControlMode::MotionMagic, value, DemandType_ArbitraryFeedForward, m_motor->Config_kF(0, RobotParameters::k_feedForwardHatch + CommandBase::m_pLineFinder->getXVel() / 100, 0));
 }
 
 void HatchSlide::ZeroHatchPosition() {
@@ -52,14 +54,20 @@ double HatchSlide::GetHatchPosition() {
   return m_motor->GetSelectedSensorPosition(0);
 }
 
+double HatchSlide::GetDesiredPos() {
+  return m_desiredSetpoint;
+}
+
 int HatchSlide::ConvertInchesToTicks(double inches) {
   return inches * RobotParameters::k_ctreMagEncoderTicksPerRev / RobotParameters::k_beltCircumference;
 }
 
 void HatchSlide::Periodic() {
   frc::SmartDashboard::GetNumber("Lime Light Chain Dist: ", GetHatchPosition());
+  SmartDashboard::PutNumber("belt x dist", CommandBase::m_pHatchSlide->GetHatchPosition());
 }
 
 void HatchSlide::InitDefaultCommand() {
   SetDefaultCommand(new HatchSlideGoToPosition());
 }
+

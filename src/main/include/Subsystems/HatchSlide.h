@@ -26,6 +26,7 @@ class HatchSlide : public frc::Subsystem {
   void ZeroHatchPosition();
   double GetHatchPosition();
   int ConvertInchesToTicks(double inches);
+  double GetDesiredPos();
 
   virtual void Periodic();
 };

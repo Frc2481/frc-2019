@@ -2,11 +2,13 @@
 #include "CommandBase.h"
 #include "RobotParameters.h"
 #include "Commands/SwerveDrivetrainZeroSteer.h"
+#include <frc/WPILib.h>
 #include "Commands/TankDrivetrainZeroPose.h"
 #include "Commands/TankDrivetrainFollowPath.h"
 #include "Commands/TankDrivetrainCalibrate.h"
 #include "Commands/TankDrivetrainRotateToAngle.h"
 #include "Commands/HatchSlideZeroCommand.h"
+#include "Commands/VibrateCommand.h"
 
 Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 }
@@ -29,6 +31,8 @@ void Robot::RobotInit() {
 	SmartDashboard::PutData("TankDrivetrainRotateToAngle", new TankDrivetrainRotateToAngle(180));
 
 	SmartDashboard::PutData(frc::Scheduler::GetInstance());
+
+	m_pVibrate.reset(new VibrateCommand());
 }
 
 void Robot::AutonomousInit() {
@@ -47,6 +51,11 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopPeriodic() {
 	frc::Scheduler::GetInstance()->Run();
 	CommandBase::Periodic();
+
+	if(CommandBase::m_pLineFinder->isVibratable()) {
+		m_pVibrate->Start();
+		CommandBase::m_pLineFinder->resetVibratable();
+	}
 }
 
 void Robot::DisabledPeriodic() {

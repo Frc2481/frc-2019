@@ -64,6 +64,7 @@ namespace RobotParameters {
 
     // HatchSlide
     static constexpr double k_beltCircumference = 5.105; //1.625in * pi
+    static constexpr double k_feedForwardHatch = 0.148;
 }
 
 #endif // ROBOT_PARAMETERS_H

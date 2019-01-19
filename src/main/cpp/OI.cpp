@@ -9,6 +9,7 @@
 #include "Subsystems/HatchSlide.h"
 #include "Components/XboxController2481.h"
 #include "Commands/HatchSlideToCenterCommand.h"
+#include "Subsystems/LineFinder.h"
 
 OI::OI() {
 	m_pDriverStick = new Joystick2481(DRIVER_XBOX_CONTROLLER_ID);
