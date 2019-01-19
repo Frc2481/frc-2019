@@ -6,6 +6,7 @@
 #include "Subsystems/SwerveDrivetrain.h"
 #include "Subsystems/LineFinder.h"
 #include "Subsystems/HatchSlide.h"
+#include "Subsystems/Elevator.h"
 
 class CommandBase: public Command
 {
@@ -20,6 +21,7 @@ public:
     static std::unique_ptr<SwerveDrivetrain> m_pSwerveDrivetrain;
     static std::unique_ptr<LineFinder> m_pLineFinder;
     static std::unique_ptr<HatchSlide> m_pHatchSlide;
+    static std::unique_ptr<Elevator> m_pElevator;
 };
 
 #endif // COMMAND_BASE_H
