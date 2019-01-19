@@ -10,7 +10,7 @@ namespace RobotParameters {
     static constexpr double k_drivetrainTrimKv = 0.01; // range of -0.5 to 0.5
     static constexpr double k_wheelRad = 2.9; // in
     static constexpr double k_wheelTrack = 20; // in
-    // static constexpr double k_wheelBase = 20; // in
+    static constexpr double k_wheelBase = 20; // in
     static constexpr double k_maxSpeed = 110; // in/s
     static constexpr double k_maxAccel = 100; // in/s^2
     static constexpr double k_maxDeccel = -50; // in/s^2
@@ -31,13 +31,15 @@ namespace RobotParameters {
     static constexpr double k_driveMotorControllerKan = 0.00005;
 
     // // steer motors
-    // static constexpr double k_steerMotorControllerKp = 0;
-    // static constexpr double k_steerMotorControllerKi = 0;
-    // static constexpr double k_steerMotorControllerKd = 0;
-    // static constexpr double k_steerMotorControllerKsf = 0;
-    // static constexpr double k_steerMotorControllerKv = 0;
-    // static constexpr double k_steerMotorControllerKap = 0;
-    // static constexpr double k_steerMotorControllerKan = 0;
+    static constexpr double k_steerMotorControllerKp = 0;
+    static constexpr double k_steerMotorControllerKi = 0;
+    static constexpr double k_steerMotorControllerKd = 0;
+    static constexpr double k_steerMotorControllerKsf = 0;
+    static constexpr double k_steerMotorControllerKv = 0;
+    static constexpr double k_steerMotorControllerKap = 0;
+    static constexpr double k_steerMotorControllerKan = 0;
+
+    static constexpr double k_openLoopSteerLimitPercent = 0;
 
     // path follower
     static constexpr double k_pathFollowerTimeoutAllowance = 0.5; // timeout path if takes longer than total path time plus this allowance (s)
