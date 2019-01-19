@@ -30,11 +30,12 @@ LineFollower::LineFollower()
 		0,
 		RobotParameters::k_ctreMagEncoderTicksPerRev * RobotParameters::k_lineFollowerEncoderToPulleyGearRatio);
 
-    m_pLineFollowerMotorController->setMotionMagic(
+    m_pLineFollowerMotorController->setMotionMagicLinear(
         true,
         RobotParameters::k_lineFollowerMaxVel,
         RobotParameters::k_lineFollowerMaxAccel,
-        RobotParameters::k_lineFollowerKf);
+        RobotParameters::k_lineFollowerKf,
+        RobotParameters::k_lineFollowerPulleyRadius);
 }
 
 LineFollower::~LineFollower() { 

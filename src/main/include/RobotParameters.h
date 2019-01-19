@@ -57,9 +57,9 @@ namespace RobotParameters {
 	static constexpr double k_lineFollowerMotorControllerKap = 0;
 	static constexpr double k_lineFollowerMotorControllerKan = 0;
 	static constexpr double k_lineFollowerMotorControllerKsf = 0;
-    static constexpr double k_lineFollowerMaxVel = 6900;
-    static constexpr double k_lineFollowerMaxAccel = 50000;
-    static constexpr double k_lineFollowerKf = 1024.0 / 6900.0;
+    static constexpr double k_lineFollowerMaxVel = 9;
+    static constexpr double k_lineFollowerMaxAccel = 64;
+    static constexpr double k_lineFollowerKf = 1024.0 / 9.0;
 }
 
 #endif // ROBOT_PARAMETERS_H

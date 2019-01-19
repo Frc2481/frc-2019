@@ -23,7 +23,8 @@ public:
         unsigned ticksPerRev);
     ~MotorPositionController();
 
-    void setMotionMagic(bool isEnabled, double maxVel, double maxAccel, double kf);
+    void setMotionMagicAngular(bool isEnabled, double maxVel, double maxAccel, double kf);
+    void setMotionMagicLinear(bool isEnabled, double maxVel, double maxAccel, double kf, double wheelRadius);
 
     //////////////////////////////////////////////////////////////////////
     // @brief update reference points of motor controller

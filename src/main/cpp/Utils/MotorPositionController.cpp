@@ -54,24 +54,45 @@ MotorPositionController::MotorPositionController(
 MotorPositionController::~MotorPositionController() {
 }
 
-void MotorPositionController::setMotionMagic(
+void MotorPositionController::setMotionMagicAngular(
     bool isEnabled,
     double maxVel,
     double maxAccel,
     double kf) {
     
     m_enableMotionMagic = isEnabled;
-    
     m_pDriveMotor->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
+
+    maxVel = m_pEncoder->convertAngleToTicks(maxVel) / 10.0; // convert to talon native units
     m_pDriveMotor->ConfigMotionCruiseVelocity(maxVel, 0);
-	m_pDriveMotor->ConfigMotionAcceleration(maxAccel, 0);
     m_pDriveMotor->Config_kF(0, kf, 0);
+
+    maxAccel = m_pEncoder->convertAngleToTicks(maxAccel) / 10.0; // convert to talon native units
+	m_pDriveMotor->ConfigMotionAcceleration(maxAccel, 0);
+}
+
+void MotorPositionController::setMotionMagicLinear(
+    bool isEnabled,
+    double maxVel,
+    double maxAccel,
+    double kf,
+    double wheelRadius) {
+    
+    m_enableMotionMagic = isEnabled;
+    m_pDriveMotor->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
+
+    maxVel = m_pEncoder->convertWheelDistanceToTicks(wheelRadius, maxVel) / 10.0; // convert to talon native units
+    m_pDriveMotor->ConfigMotionCruiseVelocity(maxVel, 0);
+    m_pDriveMotor->Config_kF(0, kf, 0);
+
+    maxAccel = m_pEncoder->convertWheelDistanceToTicks(wheelRadius, maxAccel) / 10.0; // convert to talon native units
+	m_pDriveMotor->ConfigMotionAcceleration(maxAccel, 0);
 }
 
 void MotorPositionController::updateAngular(double refP, double refV, double refA) {
     refP = m_pEncoder->convertAngleToTickSetpoint(refP);
-    refV *= m_ticksPerRev / 360.0 / 10.0; // convert to talon native units
-    refA *= m_ticksPerRev / 360.0 / 10.0; // convert to talon native units
+    refV = m_pEncoder->convertAngleToTicks(refV) / 10.0; // convert to talon native units
+    refA = m_pEncoder->convertAngleToTicks(refA) / 10.0; // convert to talon native units
 
     // use different ka if vel and accel have opposite direction
 	double ka = m_kap;
