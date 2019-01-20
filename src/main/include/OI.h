@@ -9,6 +9,8 @@
 #include "frc/WPILib.h"
 #include "frc/XboxController.h"
 #include "frc/buttons/trigger.h"
+#include "Subsystems/Elevator.h"
+#include "Subsystems/CargoIntake.h"
 
 class OI {
 public:
