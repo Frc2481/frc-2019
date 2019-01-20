@@ -7,6 +7,7 @@
 #include "Subsystems/LineFinder.h"
 #include "Subsystems/HatchSlide.h"
 #include "Subsystems/Elevator.h"
+#include "Subsystems/CargoIntake.h"
 
 class CommandBase: public Command
 {
@@ -22,6 +23,7 @@ public:
     static std::unique_ptr<LineFinder> m_pLineFinder;
     static std::unique_ptr<HatchSlide> m_pHatchSlide;
     static std::unique_ptr<Elevator> m_pElevator;
+    static std::unique_ptr<CargoIntake> m_pCargoIntake;
 };
 
 #endif // COMMAND_BASE_H

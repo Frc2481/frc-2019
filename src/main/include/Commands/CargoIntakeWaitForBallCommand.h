@@ -5,18 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef COMMANDS_ELEVATOR_ZERO_COMMAND
-#define COMMANDS_ELEVATOR_ZERO_COMMAND
+#ifndef COMMANDS_CARGO_INTAKE_WAIT_FOR_BALL_COMMAND_H
+#define COMMANDS_CARGO_INTAKE_WAIT_FOR_BALL_COMMAND_H
 
-#include <frc/commands/InstantCommand.h>
-#include "Subsystems/Elevator.h"
+#include <frc/commands/Command.h>
+#include "Subsystems/CargoIntake.h"
 
-class ElevatorZeroCommand : public frc::InstantCommand {
+class CargoIntakeWaitForBallCommand : public frc::Command {
  public:
-  ElevatorZeroCommand() : InstantCommand("ElevatorZeroCommand"){}
-  void Initialize() override {
-    CommandBase::m_pElevator->ZeroElevatorEncoder();
+  CargoIntakeWaitForBallCommand() : Command("CargoIntakeWaitForBallCommand"){}
+  bool IsFinished() override {
+    //fill with whatever we decide to use to detect ball
   }
 };
 
-#endif // COMMANDS_ELEVATOR_ZERO_COMMAND
+#endif //COMMANDS_CARGO_INTAKE_WAIT_FOR_BALL_COMMAND_H
