@@ -9,8 +9,6 @@
 #include "frc/WPILib.h"
 #include "frc/XboxController.h"
 #include "frc/buttons/trigger.h"
-#include "Subsystems/Elevator.h"
-#include "Subsystems/CargoIntake.h"
 
 class OI {
 public:
@@ -26,6 +24,21 @@ public:
     frc::JoystickButton *m_pSetFieldFrameButton;
 
     frc::Button* m_centerHatch;
+
+//driver
+    frc::Button* m_intakeBall;
+    frc::Button* m_acquireBall;
+    frc::Button* m_zeroGyro;
+    frc::Button* m_elevatorHome;
+    frc::Button* m_fieldCentric;
+
+//operator
+    frc::Button* m_ejectBall;
+    frc::Button* m_elevatorHigh;
+    frc::Button* m_elevatorMid;
+    frc::Button* m_elevatorLow;
+    AnalogJoystickButton* m_elevatorRise;
+    AnalogJoystickButton* m_elevatorFall;
 };
 
 #endif // OI_H

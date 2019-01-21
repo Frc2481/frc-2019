@@ -16,6 +16,7 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
   m_motor->SelectProfileSlot(0, 0);
 
   m_motor->Config_kF(0, 0.1528, 0);
+  m_motor->Config_kF(0, 0, 0);
 
   m_motor->SetNeutralMode(Brake);
 
@@ -38,10 +39,20 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
   m_isHatchZeroed = false;
 }
 
+void HatchSlide::InitDefaultCommand() {
+  SetDefaultCommand(new HatchSlideGoToPosition());
+}
+
+void HatchSlide::Periodic() {
+  SmartDashboard::PutNumber("Hatch Slide error", m_desiredSetpoint - m_hatchPosition);
+  SmartDashboard::PutNumber("Is Hatch Zeroed", m_isHatchZeroed);
+  SmartDashboard::GetNumber("Lime Light Chain Dist: ", GetHatchPosition());
+}
+
 void HatchSlide::setSetPoint(int value) {
-  m_motor->Set(ControlMode::MotionMagic, value);
+  // m_motor->Config_kF(0, CommandBase::m_pLineFinder->getXVel() * RobotParameters::k_lineFinderKp, 0);
+  m_motor->Set(ControlMode::MotionMagic, value, DemandType_ArbitraryFeedForward, value);
   m_desiredSetpoint = value;
-  // m_motor->Set(ControlMode::MotionMagic, value, DemandType_ArbitraryFeedForward, m_motor->Config_kF(0, RobotParameters::k_feedForwardHatch + CommandBase::m_pLineFinder->getXVel() / 100, 0));
 }
 
 void HatchSlide::ZeroHatchPosition() {
@@ -59,13 +70,4 @@ double HatchSlide::GetDesiredPos() {
 
 int HatchSlide::ConvertInchesToTicks(double inches) {
   return inches * RobotParameters::k_ctreMagEncoderTicksPerRev / RobotParameters::k_beltCircumference;
-}
-
-void HatchSlide::Periodic() {
-  frc::SmartDashboard::GetNumber("Lime Light Chain Dist: ", GetHatchPosition());
-  SmartDashboard::PutNumber("belt x dist", CommandBase::m_pHatchSlide->GetHatchPosition());
-}
-
-void HatchSlide::InitDefaultCommand() {
-  SetDefaultCommand(new HatchSlideGoToPosition());
 }
