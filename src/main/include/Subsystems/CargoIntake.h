@@ -21,6 +21,7 @@ private:
 public:
   CargoIntake();
   void InitDefaultCommand() override;
+  virtual void Periodic();
   void SetSpeedIn(double speed);
   void SetSpeedOut(double speed);
   void StopIntake();

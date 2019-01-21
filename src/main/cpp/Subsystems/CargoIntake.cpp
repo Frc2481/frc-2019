@@ -16,6 +16,10 @@ CargoIntake::CargoIntake() : Subsystem("CargoIntake") {
 
 void CargoIntake::InitDefaultCommand() {}
 
+void CargoIntake::Periodic() {
+  frc::SmartDashboard::PutNumber("Is Extended", m_isExtended);
+}
+
 void CargoIntake::SetSpeedIn(double speed) {
   m_intakeMotor->Set(ControlMode::PercentOutput, speed);
 }

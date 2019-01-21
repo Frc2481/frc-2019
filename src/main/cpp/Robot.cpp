@@ -5,6 +5,7 @@
 #include <frc/WPILib.h>
 #include "Commands/HatchSlideZeroCommand.h"
 #include "Commands/VibrateCommand.h"
+#include "Commands/ElevatorHomeCommand.h"
 
 Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 }
@@ -14,6 +15,7 @@ void Robot::RobotInit() {
 
 	SmartDashboard::PutData("SwerveDrivetrainZeroSteer", new SwerveDrivetrainZeroSteer());
 	SmartDashboard::PutData("HatchSlideZeroCommand", new HatchSlideZeroCommand());
+	SmartDashboard::PutData("ElevatorHomeCommand", new ElevatorHomeCommand());
 
 	SmartDashboard::PutData(frc::Scheduler::GetInstance());
 

@@ -22,13 +22,12 @@ class HatchSlide : public frc::Subsystem {
  public:
   HatchSlide();
   void InitDefaultCommand() override;
+  virtual void Periodic();
   void setSetPoint(int value);
   void ZeroHatchPosition();
   double GetHatchPosition();
   int ConvertInchesToTicks(double inches);
   double GetDesiredPos();
-
-  virtual void Periodic();
 };
 
 #endif //SRC_HATCH_SLIDE_H

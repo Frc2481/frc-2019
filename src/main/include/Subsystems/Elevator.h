@@ -27,6 +27,7 @@ class Elevator : public frc::Subsystem {
  public:
   Elevator();
   void InitDefaultCommand() override;
+  virtual void Periodic();
 
   void SetElevatorPosition(double setPos);
   void ZeroElevatorEncoder();
@@ -41,6 +42,8 @@ class Elevator : public frc::Subsystem {
 
   double ConvertTicksToInches(int ticks);
   int ConvertInchesToTicks(double inches);
+
+  void SetOpenLoopSpeed(double speed);
 };
 
 #endif //SRC_ELEVATOR_H

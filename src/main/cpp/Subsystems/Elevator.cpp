@@ -32,6 +32,11 @@ Elevator::Elevator() : Subsystem("ExampleSubsystem") {
 
 void Elevator::InitDefaultCommand() {}
 
+void Elevator::Periodic() {
+  frc::SmartDashboard::PutNumber("Is Elevator Zeroed", m_isElevatorZeroed);
+  frc::SmartDashboard::PutNumber("Elevator Error", GetElevatorError());
+}
+
 void Elevator::SetElevatorPosition(double setPos) {
   m_masterElevator->Set(ControlMode::PercentOutput, ConvertInchesToTicks(setPos));
   m_desiredElevatorPosition = setPos;
@@ -65,4 +70,8 @@ double Elevator::ConvertTicksToInches(int ticks) {
 }
 int Elevator::ConvertInchesToTicks(double inches) {
   return inches * RobotParameters::k_elevatorTicksPerInch;
+}
+
+void Elevator::SetOpenLoopSpeed(double speed) {
+  m_masterElevator->Set(ControlMode::PercentOutput, speed);
 }

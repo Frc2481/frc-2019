@@ -10,6 +10,7 @@
 
 #include <frc/commands/InstantCommand.h>
 #include "Subsystems/CargoIntake.h"
+#include "CommandBase.h"
 
 class CargoIntakeRetractCommand : public frc::InstantCommand {
  public:
