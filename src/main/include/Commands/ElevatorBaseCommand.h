@@ -10,9 +10,10 @@
 
 #include <frc/commands/Command.h>
 #include "Subsystems/Elevator.h"
-#include "CommandGroup.h"
+#include <frc/commands/CommandGroup.h>
+#include "CommandBase.h"
 
-template <double HEIGHT>
+template <int HEIGHT>
 class ElevatorBaseCommand : public frc::Command {
  public:
   ElevatorBaseCommand(std::string name) : Command(name) {
@@ -22,20 +23,24 @@ class ElevatorBaseCommand : public frc::Command {
     CommandBase::m_pElevator->SetElevatorPosition(HEIGHT);
   }
   bool IsFinished() override {
-    return fabs(CommandBase::m_pElevator->GetElevatorError()) < 0.5;
+    return fabs(CommandBase::m_pElevator->GetElevatorError()) < 1;
   }
 };
 
-template <double HEIGHT>
-class ElevatorBaseCommandGroup() : public CommandGroup {
+template <int HEIGHT>
+class ElevatorBaseCommandGroup : public CommandGroup {
   public:
   ElevatorBaseCommandGroup(std::string name) : CommandGroup(name) {
-    AddSequential(new ElevatorBaseCommand(HEIGHT));
+    AddSequential(new ElevatorBaseCommand<HEIGHT>(name));
   }
-} 
+}; 
 
-typedef ElevatorBaseCommandGroup<0> ElevatorToLevelThreeCommand;
-typedef ElevatorBaseCommandGroup<0> ElevatorToLevelTwoCommand;
-typedef ElevatorBaseCommandGroup<0> ElevatorToLevelOneCommand;
+typedef ElevatorBaseCommandGroup<0> ElevatorHighHatchCommand;
+typedef ElevatorBaseCommandGroup<0> ElevatorMidHatchCommand;
+typedef ElevatorBaseCommandGroup<0> ElevatorLowHatchCommand;
+typedef ElevatorBaseCommandGroup<0> ElevatorHighCargoCommand;
+typedef ElevatorBaseCommandGroup<0> ElevatorMidCargoCommand;
+typedef ElevatorBaseCommandGroup<0> ElevatorLowCargoCommand;
+typedef ElevatorBaseCommandGroup<0> ElevatorCargoShipCommand;
 
-#endif COMMANDS_ELEVATOR_BASE_COMMAND_H
+#endif //COMMANDS_ELEVATOR_BASE_COMMAND_H

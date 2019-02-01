@@ -11,13 +11,17 @@
 #include <frc/commands/Subsystem.h>
 #include "ctre/Phoenix.h"
 #include <frc/WPILib.h>
+#include "networktables/NetworkTableInstance.h"
 
 class HatchSlide : public frc::Subsystem {
  private:
   TalonSRX* m_motor;
+  frc::Counter *m_irSensor;
   double m_desiredSetpoint;
   double m_hatchPosition;
   bool m_isHatchZeroed;
+  double m_pulse;
+  bool m_isVibratable;
 
  public:
   HatchSlide();
@@ -27,7 +31,13 @@ class HatchSlide : public frc::Subsystem {
   void ZeroHatchPosition();
   double GetHatchPosition();
   int ConvertInchesToTicks(double inches);
+  double ConvertTicksToInches(int ticks);
   double GetDesiredPos();
+  double GetPulseDist();
+  bool IsLineVisible();
+  bool IsSlideOnTarget();
+  bool IsVibratable();
+  void ResetVibratable();
 };
 
 #endif //SRC_HATCH_SLIDE_H

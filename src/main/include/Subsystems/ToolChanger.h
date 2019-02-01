@@ -5,21 +5,24 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef COMMANDS_HATCH_SLIDE_TO_CENTER_H
-#define COMMANDS_HATCH_SLIDE_TO_CENTER_H
+#ifndef SRC_TOOLCHANGER
+#define SRC_TOOLCHANGER
 
-#include <frc/commands/InstantCommand.h>
-#include "Robot.h"
-#include "Subsystems/HatchSlide.h"
-#include "CommandBase.h"
+#include <frc/commands/Subsystem.h>
+#include <frc/WPILib.h>
+#include "RobotMap.h"
 
-class HatchSlideToCenterCommand : public frc::InstantCommand {
-  int m_setPoint;
+class ToolChanger : public frc::Subsystem {
+ private:
+  frc::Solenoid* m_changer;
+  bool m_isHatchFront;
+
  public:
-  HatchSlideToCenterCommand() : InstantCommand("HatchSlideToCenterCommand"){}
-    void Initialize(){
-    CommandBase::m_pHatchSlide->setSetPoint(0);
-  }
+  ToolChanger();
+  void InitDefaultCommand() override;
+  void SwitchToHatch();
+  void SwitchToCargo();
+  bool IsHatchToolFront();
 };
 
-#endif
+#endif //SRC_TOOLCHANGER

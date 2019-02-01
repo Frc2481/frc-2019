@@ -13,8 +13,12 @@
 #include "Commands/CargoEjectBallCommand.h"
 #include "Commands/CargoIntakeAcquireBallCommandGroup.h"
 #include "Commands/HatchSlideToCenterCommand.h"
-#include "Commands/ElevatorRiseCommand.h"
-#include "Commands/ElevatorFallCommand.h"
+#include "Commands/ElevatorRaiseCommand.h"
+#include "Commands/ElevatorLowerCommand.h"
+#include "Commands/AutoPlaceHighCommandGroup.h"
+#include "Commands/AutoPlaceMidCommandGroup.h"
+#include "Commands/AutoPlaceLowCommandGroup.h"
+#include "Commands/AutoPlaceCargoShipCommandGroup.h"
 
 OI::OI() {
 	m_pDriverStick = new Joystick2481(DRIVER_XBOX_CONTROLLER_ID);
@@ -32,11 +36,12 @@ OI::OI() {
 	m_intakeBall->WhenPressed(new CargoIntakeBallCommand(0)); //change speed
 
 	m_acquireBall = new JoystickButton(m_pDriverStick, XBOX_RIGHT_TRIGGER);
-	m_acquireBall->WhenPressed(new ElevatorLowCommand("ElevatorLowOICommand"));
+	m_acquireBall->WhenPressed(new CargoIntakeAcquireBallCommandGroup());
 
 	m_zeroGyro = new JoystickButton(m_pDriverStick, XBOX_START_BUTTON);
 
     m_elevatorHome = new JoystickButton(m_pDriverStick, XBOX_Y_BUTTON);
+	m_elevatorHome->WhenPressed(new ElevatorLowHatchCommand("ElevatorLowHatchCommand"));
 
 	m_fieldCentric = new JoystickButton(m_pDriverStick, XBOX_LEFT_BUMPER);
 
@@ -44,21 +49,23 @@ OI::OI() {
 	m_ejectBall = new JoystickButton(m_pOperatorStick, XBOX_LEFT_TRIGGER);
 	m_ejectBall->WhenPressed(new CargoEjectBallCommand(0)); //change speed
 	
-	//automate these
 	m_elevatorHigh = new JoystickButton(m_pOperatorStick, XBOX_Y_BUTTON);
-	m_elevatorHigh->WhenPressed(new ElevatorHighCommand("ElevatorHighOICommand"));
+	m_elevatorHigh->WhenPressed(new AutoPlaceHighCommandGroup());
 
 	m_elevatorMid = new JoystickButton(m_pOperatorStick, XBOX_X_BUTTON);
-	m_elevatorMid->WhenPressed(new ElevatorMidCommand("ElevatorMidOICommand"));
+	m_elevatorMid->WhenPressed(new AutoPlaceMidCommandGroup());
 
 	m_elevatorLow = new JoystickButton(m_pOperatorStick, XBOX_B_BUTTON);
-	m_elevatorLow->WhenPressed(new ElevatorLowCommand("ElevatorLowOICommand"));
+	m_elevatorLow->WhenPressed(new AutoPlaceLowCommandGroup());
 
-	m_elevatorRise = new AnalogJoystickButton(m_pOperatorStick, XBOX_RIGHT_Y_AXIS, -0.25); //right stick up
-	m_elevatorRise->WhileHeld(new ElevatorRiseCommand());
+	m_elevatorRaise = new AnalogJoystickButton(m_pOperatorStick, XBOX_RIGHT_Y_AXIS, -0.25); //right stick up
+	m_elevatorRaise->WhileHeld(new ElevatorRaiseCommand());
 
-	m_elevatorFall = new AnalogJoystickButton(m_pOperatorStick, XBOX_RIGHT_Y_AXIS, 0.25); //right stick down
-	m_elevatorFall->WhileHeld(new ElevatorFallCommand());
+	m_elevatorLower = new AnalogJoystickButton(m_pOperatorStick, XBOX_RIGHT_Y_AXIS, 0.25); //right stick down
+	m_elevatorLower->WhileHeld(new ElevatorLowerCommand());
+
+	m_cargoShip = new JoystickButton(m_pOperatorStick, XBOX_A_BUTTON);
+	m_cargoShip->WhenPressed(new AutoPlaceCargoShipCommandGroup());
 }
 
 OI::~OI() {

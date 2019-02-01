@@ -63,6 +63,9 @@ namespace RobotParameters {
 
     // limelight
     static constexpr double k_limeLightHeight = 23.75;
+    static constexpr double k_lineFinderKf = 0;
+    static constexpr double k_lineFinderKp = 0;
+    static constexpr double k_numVelocities = 10;
 
     // HatchSlide
     static constexpr double k_beltCircumference = 5.105; //1.625in * pi

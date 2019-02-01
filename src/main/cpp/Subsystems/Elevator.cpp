@@ -8,8 +8,9 @@
 #include "subsystems/Elevator.h"
 
 Elevator::Elevator() : Subsystem("ExampleSubsystem") {
- m_masterElevator = new TalonSRX(MASTER_ELEVATOR);
+  m_masterElevator = new TalonSRX(MASTER_ELEVATOR);
   m_slaveElevator = new TalonSRX(SLAVE_ELEVATOR);
+  m_elevatorSlide = new frc::Solenoid(ELEVATOR_SLIDE_SOLENOID);
 
   m_slaveElevator->Set(ControlMode::Follower, MASTER_ELEVATOR);
   m_masterElevator->Set(ControlMode::MotionMagic, 0);
@@ -22,12 +23,14 @@ Elevator::Elevator() : Subsystem("ExampleSubsystem") {
 
   m_masterElevator->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
 
- // m_masterElevator->Config_kP();
+  // m_masterElevator->Config_kP();
   // m_masterElevator->Config_kI();
   // m_masterElevator->Config_kD();
   // m_masterElevator->Config_kF();
 
   m_isElevatorZeroed = false;
+
+  m_isSlideForward = false;
 }
 
 void Elevator::InitDefaultCommand() {}
@@ -74,4 +77,18 @@ int Elevator::ConvertInchesToTicks(double inches) {
 
 void Elevator::SetOpenLoopSpeed(double speed) {
   m_masterElevator->Set(ControlMode::PercentOutput, speed);
+}
+
+void Elevator::SlideElevatorFront() {
+  m_elevatorSlide->Set(true); //potentially reverse
+  m_isSlideForward = true;
+}
+
+void Elevator::SlideElevatorBack() {
+  m_elevatorSlide->Set(false); //potentially reverse
+  m_isSlideForward = false;
+}
+
+bool Elevator::IsSlideFront() {
+  return m_isSlideForward; //potentially reverse
 }

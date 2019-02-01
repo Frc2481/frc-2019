@@ -37,8 +37,9 @@ public:
     frc::Button* m_elevatorHigh;
     frc::Button* m_elevatorMid;
     frc::Button* m_elevatorLow;
-    AnalogJoystickButton* m_elevatorRise;
-    AnalogJoystickButton* m_elevatorFall;
+    AnalogJoystickButton* m_elevatorRaise;
+    AnalogJoystickButton* m_elevatorLower;
+    frc::Button* m_cargoShip;
 };
 
 #endif // OI_H

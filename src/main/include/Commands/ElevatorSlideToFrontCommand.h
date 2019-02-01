@@ -5,21 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef COMMANDS_HATCH_SLIDE_TO_CENTER_H
-#define COMMANDS_HATCH_SLIDE_TO_CENTER_H
-
+#ifndef SRC_ELEVATORSLIDETOFRONTCOMMAND
+#define SRC_ELEVATORSLIDETOFRONTCOMMAND
 #include <frc/commands/InstantCommand.h>
-#include "Robot.h"
-#include "Subsystems/HatchSlide.h"
 #include "CommandBase.h"
+#include "Subsystems/Elevator.h"
 
-class HatchSlideToCenterCommand : public frc::InstantCommand {
-  int m_setPoint;
+class ElevatorSlideToFrontCommand : public frc::InstantCommand {
  public:
-  HatchSlideToCenterCommand() : InstantCommand("HatchSlideToCenterCommand"){}
-    void Initialize(){
-    CommandBase::m_pHatchSlide->setSetPoint(0);
+  ElevatorSlideToFrontCommand() : InstantCommand("ElevatorSlideToFrontCommand") {}
+  void Initialize() override {
+    CommandBase::m_pElevator->SlideElevatorFront();
   }
 };
 
-#endif
+#endif //SRC_ELEVATORSLIDETOFRONTCOMMAND
