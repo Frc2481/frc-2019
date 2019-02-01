@@ -5,21 +5,17 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef COMMANDS_HATCH_SLIDE_TO_CENTER_H
-#define COMMANDS_HATCH_SLIDE_TO_CENTER_H
+#ifndef SRC_WAITFORSLIDEONTARGETCOMMAND
+#define SRC_WAITFORSLIDEONTARGETCOMMAND
+#include <frc/commands/Command.h>
+#include "Subsystems/Elevator.h"
 
-#include <frc/commands/InstantCommand.h>
-#include "Robot.h"
-#include "Subsystems/HatchSlide.h"
-#include "CommandBase.h"
-
-class HatchSlideToCenterCommand : public frc::InstantCommand {
-  int m_setPoint;
+class WaitForSlideOnTargetCommand : public frc::Command {
  public:
-  HatchSlideToCenterCommand() : InstantCommand("HatchSlideToCenterCommand"){}
-    void Initialize(){
-    CommandBase::m_pHatchSlide->setSetPoint(0);
+  WaitForSlideOnTargetCommand() : Command("WaitForSlideOnTargetCommand") {}
+  bool IsFinished() override {
+    CommandBase::m_pHatchSlide->IsSlideOnTarget();
   }
 };
 
-#endif
+#endif // SRC_WAITFORSLIDEONTARGETCOMMAND

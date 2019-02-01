@@ -11,7 +11,6 @@
 #include <frc/commands/InstantCommand.h>
 #include "Robot.h"
 #include "Subsystems/HatchSlide.h"
-#include "Subsystems/LineFinder.h"
 #include "CommandBase.h"
 
 class HatchSlideGoToPosition : public frc::InstantCommand {
@@ -21,7 +20,13 @@ class HatchSlideGoToPosition : public frc::InstantCommand {
       Requires(CommandBase::m_pHatchSlide.get());
     }
     void Initialize() {
-      CommandBase::m_pHatchSlide->setSetPoint(CommandBase::m_pHatchSlide->ConvertInchesToTicks(CommandBase::m_pLineFinder->getX()));
+      m_setPoint = CommandBase::m_pHatchSlide->ConvertInchesToTicks(-CommandBase::m_pHatchSlide->GetPulseDist());
+      if(CommandBase::m_pHatchSlide->IsLineVisible()) {
+        CommandBase::m_pHatchSlide->setSetPoint(m_setPoint);
+      }
+      else {
+        CommandBase::m_pHatchSlide->setSetPoint(0);
+      }
     }
 };
 

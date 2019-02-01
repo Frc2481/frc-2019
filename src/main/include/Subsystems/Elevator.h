@@ -18,8 +18,10 @@ class Elevator : public frc::Subsystem {
  private:
   TalonSRX* m_masterElevator;
   TalonSRX* m_slaveElevator;
+  frc::Solenoid* m_elevatorSlide;
 
   bool m_isElevatorZeroed;
+  bool m_isSlideForward;
   
   double m_elevatorPosition;
   double m_desiredElevatorPosition;
@@ -44,6 +46,11 @@ class Elevator : public frc::Subsystem {
   int ConvertInchesToTicks(double inches);
 
   void SetOpenLoopSpeed(double speed);
+
+  void SlideElevatorFront();
+  void SlideElevatorBack();
+  bool IsSlideFront();
+
 };
 
 #endif //SRC_ELEVATOR_H

@@ -39,9 +39,9 @@ void Robot::TeleopPeriodic() {
 	frc::Scheduler::GetInstance()->Run();
 	CommandBase::Periodic();
 
-	if(CommandBase::m_pLineFinder->isVibratable()) {
+	if(CommandBase::m_pHatchSlide->IsVibratable()) {
 		m_pVibrate->Start();
-		CommandBase::m_pLineFinder->resetVibratable();
+		CommandBase::m_pHatchSlide->ResetVibratable();
 	}
 }
 
