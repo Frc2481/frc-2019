@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Team 2481 Web Dashboard</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				font-family: Monospace;
+				background-color: #000000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#positionData {
+				color: #fff;
+				position: absolute;
+				top: 10px;
+				width: 100%;
+				text-align: center;
+				z-index: 100;
+				display:block;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="positionData"></div>
+
+		<script src="three.min.js"></script>
+		<script src="js/loaders/STLLoader.js"></script>
+		<script src="js/controls/OrbitControls.js"></script>
+		<script src="js/WebGL.js"></script>
+		<script src="/networktables/networktables.js"></script>
+
+		<script>
+			if (WEBGL.isWebGLAvailable() === false)
+			{
+				document.body.appendChild(WEBGL.getWebGLErrorMessage());
+			}
+
+			//Enabling this disables animation and allows meshes to be moved around with the mouse
+			var EDIT_MODE = false;
+
+			var container;
+			var camera, cameraTarget, scene, renderer, controls;
+			var robotFrame, cargoIntakeAssembly, elevatorAssembly;
+			var meshes;
+			var intersectPlane, selection, raycaster, offset;
+
+			//Specify object locations globally here.  This allows us to change locations by offsets from NetworkTables in animation
+			var framePos = new THREE.Vector3(0, 0, 0);
+			var intakePos = new THREE.Vector3(-2.508141780271359, 10.230085621335952, -0.10246555939861768);
+			var elevatorPos = new THREE.Vector3(0.17705429923420057, 5.63207325568694, 26.90591762635841);
+
+			init();
+			animate();
+
+			function init()
+			{
+				container = document.createElement('div');
+				document.body.appendChild(container);
+
+				camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 1500);
+				camera.position.set(125, 100, 125);
+
+				cameraTarget = new THREE.Vector3(0, 20.0, 0);
+
+				scene = new THREE.Scene();
+				scene.background = new THREE.Color(0x940000);
+				scene.fog = new THREE.Fog(0x940000, 50, 500);
+
+				// Ground
+				var plane = new THREE.Mesh(
+					new THREE.PlaneBufferGeometry(800, 800),
+					new THREE.MeshBasicMaterial({ color: 0x000000 })
+				);
+				plane.rotation.x = -Math.PI / 2;
+				plane.position.y = -5.0;
+				scene.add(plane);
+
+				// Model loading
+				meshes = [];
+				var loader = new THREE.STLLoader();
+
+				// Create different materials for each mesh so we can change them (and their colors) individually
+				var frameMaterial = new THREE.MeshPhongMaterial({ color: 0xaaaaaa, specular: 0x111111, shininess: 200 });
+				loader.load('./RobotModels/FrameParts.stl', function (geometry) {
+					robotFrame = new THREE.Mesh(geometry, frameMaterial);
+
+					robotFrame.rotation.set(-Math.PI / 2, 0, 0);
+					robotFrame.position.copy(framePos);
+
+					meshes.push(robotFrame);
+
+					scene.add(robotFrame);
+				});
+
+			var intakeMaterial = new THREE.MeshPhongMaterial({ color: 0xaaaaaa, specular: 0x111111, shininess: 200 });
+				loader.load('./RobotModels/BallIntakeAssembly.stl', function (geometry) {
+					cargoIntakeAssembly = new THREE.Mesh(geometry, intakeMaterial);
+
+					cargoIntakeAssembly.rotation.set(-Math.PI / 2, 0, 0);
+					cargoIntakeAssembly.position.copy(intakePos);
+
+					meshes.push(cargoIntakeAssembly);
+
+					scene.add(cargoIntakeAssembly);
+				});
+
+				var elevatorMaterial = new THREE.MeshPhongMaterial({ color: 0xaaaaaa, specular: 0x111111, shininess: 200 });
+				loader.load('./RobotModels/ElevatorAssembly.stl', function (geometry) {
+					elevatorAssembly = new THREE.Mesh(geometry, elevatorMaterial);
+
+					elevatorAssembly.rotation.set(-Math.PI / 2, 0, Math.PI);
+					elevatorAssembly.position.copy(elevatorPos);
+
+					meshes.push(elevatorAssembly);
+
+					scene.add(elevatorAssembly);
+				});
+
+				// Lights
+				scene.add(new THREE.HemisphereLight(0xffffff, 0x000000));
+				var dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+				dirLight.position.set(250, 250, 0);
+				scene.add(dirLight);
+
+				// Plane that helps to determine an intersection position
+				intersectPlane = new THREE.Mesh(new THREE.PlaneBufferGeometry(5000, 5000, 8, 8), new THREE.MeshBasicMaterial({color: 0xffffff, visible: false}));
+				scene.add(intersectPlane);
+
+				// Objects for helping with dragging and dropping meshes
+				raycaster = new THREE.Raycaster();
+				offset = new THREE.Vector3();
+
+				// World renderer
+				renderer = new THREE.WebGLRenderer({ antialias: true });
+				renderer.setPixelRatio(window.devicePixelRatio);
+				renderer.setSize(window.innerWidth, window.innerHeight);
+
+				renderer.gammaInput = true;
+				renderer.gammaOutput = true;
+
+				container.appendChild(renderer.domElement);
+
+				// Orbital controls for rotating and panning camera
+				controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+				window.addEventListener('resize', onWindowResize, false);
+				if(EDIT_MODE)
+				{
+					// Only allow these events to trigger in edit mode, as they handle dragging and dropping of meshes
+					window.addEventListener('mousedown', onDocumentMouseDown, false);
+        			window.addEventListener('mousemove', onDocumentMouseMove, false);
+					window.addEventListener('mouseup', onDocumentMouseUp, false);
+				}
+
+				NetworkTables.addWsConnectionListener(function(connected) {
+      				console.log("Websocket connected: " + connected);
+  				}, true);
+			}
+
+			function onWindowResize()
+			{
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize(window.innerWidth, window.innerHeight);
+			}
+
+			function onDocumentMouseDown(event)
+			{
+				// Get mouse position
+  				var mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+  				var mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+  				// Get 3D vector from 3D mouse position using 'unproject' function
+  				var vector = new THREE.Vector3(mouseX, mouseY, 1);
+  				vector.unproject(camera);
+  				// Set the raycaster position
+  				raycaster.set(camera.position, vector.sub(camera.position).normalize());
+  				// Find all intersected objects
+  				var intersects = raycaster.intersectObjects(meshes);
+  				if (intersects.length > 0) {
+    				// Disable the controls
+					controls.enableRotate = false;
+    				// Set the selection - first intersected object
+    				selection = intersects[0].object;
+    				// Calculate the offset
+    				var pIntersects = raycaster.intersectObject(intersectPlane);
+    				offset.copy(pIntersects[0].point).sub(intersectPlane.position);
+  				}
+			}
+
+			function onDocumentMouseMove(event)
+			{
+  				event.preventDefault();
+  				// Get mouse position
+  				var mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+  				var mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+  				// Get 3D vector from 3D mouse position using 'unproject' function
+  				var vector = new THREE.Vector3(mouseX, mouseY, 1);
+  				vector.unproject(camera);
+  				// Set the raycaster position
+  				raycaster.set(camera.position, vector.sub(camera.position).normalize());
+  				if (selection)
+				{
+					controls.enableRotate = false;
+    				// Check the position where the plane is intersected
+    				var intersects = raycaster.intersectObject(intersectPlane);
+    				// Reposition the object based on the intersection point with the plane
+    				selection.position.copy(intersects[0].point.sub(offset));
+  				}
+				else
+				{
+					controls.enableRotate = true;
+    				// Update position of the plane to always face the camera
+    				var intersects = raycaster.intersectObjects(meshes);
+    				if (intersects.length > 0)
+					{
+      					intersectPlane.position.copy(intersects[0].object.position);
+      					intersectPlane.lookAt(camera.position);
+    				}	
+  				}
+			}
+
+			function onDocumentMouseUp(event)
+			{
+				if(selection != null && selection != undefined)
+				{
+					// With orbital controls, right-clicking to get to the console doesn't work (since right-clicking is panning)
+					// So instead put the location data in a div at the top of the screen
+					document.getElementById("positionData").innerHTML = selection.position.x + ", " + selection.position.y + ", " + selection.position.z;
+				}
+				// Enable the controls
+				controls.enableRotate = true;
+				selection = null;
+			}
+
+			function animate()
+			{
+				// No animation in edit mode, makes it difficult to grab onto meshes and move them
+				if(!EDIT_MODE)
+				{
+					var pos = NetworkTables.getValue("/SmartDashboard/ElevatorPosition", 0.0);
+					if(elevatorAssembly != null && elevatorAssembly != undefined)
+					{
+						elevatorAssembly.position.setZ(elevatorPos.z - pos);
+						// This was a test of dynamically changing the color of a material based off data from network tables
+						/*if(pos > 3.0)
+							elevatorAssembly.material.color.set(0x0000ff);
+						else
+							elevatorAssembly.material.color.set(0x00ff00);*/
+					}
+				}
+				
+				requestAnimationFrame(animate);
+
+				render();
+			}
+
+			function render()
+			{
+				controls.update();
+
+				renderer.render(scene, camera);
+			}
+
+		</script>
+	</body>
+</html>
