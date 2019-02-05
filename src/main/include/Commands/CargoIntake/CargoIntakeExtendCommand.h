@@ -5,8 +5,8 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef COMMANDS_CARGO_INTAKE_EXTEND_COMMAND_H
-#define COMMANDS_CARGO_INTAKE_EXTEND_COMMAND_H
+#ifndef SRC_CARGOINTAKEEXTENDCOMMAND
+#define SRC_CARGOINTAKEEXTENDCOMMAND
 
 #include <frc/commands/InstantCommand.h>
 #include "Subsystems/CargoIntake.h"
@@ -16,8 +16,18 @@ class CargoIntakeExtendCommand : public frc::InstantCommand {
  public:
   CargoIntakeExtendCommand() : InstantCommand("CargoIntakeExtendCommand") {}
   void Initialize() override {
-    CommandBase::m_pCargoIntake->Extend();
+    if(!CommandBase::m_pCargoIntake->IsExtended() && IsPositionSetPointAllowed()) {
+      Wait(0); //TODO: change amount of time for timeout
+      CommandBase::m_pCargoIntake->Extend();
+    }
+  }
+  
+  bool IsPositionSetPointAllowed() {
+    if(CommandBase::m_pElevator->GetElevatorPosition() > RobotParameters::k_intakeCollisionHeight)
+      return true;
+    else
+      return false;  
   }
 };
 
-#endif //COMMANDS_CARGO_INTAKE_EXTEND_COMMAND_H
+#endif //SRC_CARGOINTAKEEXTENDCOMMAND

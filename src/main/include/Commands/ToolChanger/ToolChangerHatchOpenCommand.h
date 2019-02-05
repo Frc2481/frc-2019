@@ -5,19 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_ELEVATORSWITCHTOOLTOHATCHCOMMAND
-#define SRC_ELEVATORSWITCHTOOLTOHATCHCOMMAND
+#ifndef SRC_TOOLCHANGERHATCHOPENCOMMAND
+#define SRC_TOOLCHANGERHATCHOPENCOMMAND
 
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
-#include "Subsystems/Elevator.h"
+#include "Subsystems/ToolChanger.h"
 
-class ElevatorSwitchToolToHatchCommand : public frc::InstantCommand {
+class ToolChangerHatchOpenCommand : public frc::InstantCommand {
  public:
-  ElevatorSwitchToolToHatchCommand() : InstantCommand("ElevatorSwitchTooolToHatchCommand"){}
-  void Initialize() override {
-    CommandBase::m_pElevator->SwitchToHatch();
+  ToolChangerHatchOpenCommand() : InstantCommand("ToolChangerHatchOpenCommand"){
+    Requires(CommandBase::m_pToolChanger.get());
+  }
+  void Initialize() override{
+    CommandBase::m_pToolChanger->OpenHatch();
   }
 };
 
-#endif // SRC_ELEVATORSWITCHTOOLTOHATCHCOMMAND
+#endif //SRC_TOOLCHANGERHATCHOPENCOMMAND

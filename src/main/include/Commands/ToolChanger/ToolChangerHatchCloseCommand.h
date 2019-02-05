@@ -5,19 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef COMMANDS_CARGO_INTAKE_RETRACT_COMMAND_H
-#define COMMANDS_CARGO_INTAKE_RETRACT_COMMAND_H
+#ifndef SRC_TOOLCHANGERHATCHCLOSECOMMAND
+#define SRC_TOOLCHANGERHATCHCLOSECOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/CargoIntake.h"
 #include "CommandBase.h"
+#include "Subsystems/ToolChanger.h"
 
-class CargoIntakeRetractCommand : public frc::InstantCommand {
+class ToolChangerHatchCloseCommand : public frc::InstantCommand {
  public:
-  CargoIntakeRetractCommand() : InstantCommand("CargoIntakeRetractCommand") {}
-  void Initialize() override {
-    CommandBase::m_pCargoIntake->Retract();
+  ToolChangerHatchCloseCommand() : InstantCommand("ToolChangerHatchCloseCommand"){
+    Requires(CommandBase::m_pToolChanger.get());
+  }
+  void Initialize() override{
+    CommandBase::m_pToolChanger->CloseHatch();
   }
 };
 
-#endif //COMMANDS_CARGO_INTAKE_RETRACT_COMMAND_H
+#endif //SRC_TOOLCHANGERHATCHCLOSECOMMAND

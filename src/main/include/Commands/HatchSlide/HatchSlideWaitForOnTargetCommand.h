@@ -5,30 +5,20 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef COMMANDS_ELEVATORRAISECOMMAND_H
-#define COMMANDS_ELEVATORRAISECOMMAND_H
-
+#ifndef SRC_HATCHSLIDEWAITFORONTARGETCOMMAND
+#define SRC_HATCHSLIDEWAITFORONTARGETCOMMAND
 #include <frc/commands/Command.h>
 #include "Subsystems/Elevator.h"
 #include "CommandBase.h"
 
-class ElevatorRaiseCommand : public frc::Command {
+class HatchSlideWaitForOnTargetCommand : public frc::Command {
  public:
-  ElevatorRaiseCommand() : Command("ElevatorRaiseCommand") {
-      Requires(CommandBase::m_pElevator.get());
-  }
-  void Initialize() override {
-      CommandBase::m_pElevator->SetOpenLoopSpeed(0.75);
-  }
-  void End() override {
-      CommandBase::m_pElevator->SetOpenLoopSpeed(0);
-  }
-  void Interrupted() override {
-    End();
-  }
+  HatchSlideWaitForOnTargetCommand() : Command("HatchSlideWaitForOnTargetCommand") {}
   bool IsFinished() override {
-      return false;
+    if(CommandBase::m_pHatchSlide->IsHatchSlideEnabled()) {
+      CommandBase::m_pHatchSlide->IsSlideOnTarget();
+    }
   }
 };
 
-#endif //COMMANDS_ELEVATORRAISECOMMAND_H
+#endif // SRC_HATCHSLIDEWAITFORONTARGETCOMMAND

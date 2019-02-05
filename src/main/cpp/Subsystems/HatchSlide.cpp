@@ -6,20 +6,19 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Subsystems/HatchSlide.h"
-#include "Commands/HatchSlideGoToPosition.h"
 #include "RobotParameters.h"
+#include "Commands/HatchSlide/HatchSlideGoToPosition.h"
 
 HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
   m_motor = new TalonSRX(20);
+  m_slideEncoder = new CTREMagEncoder(m_motor, "SLIDE_MOTOR_ENCODER");
+
   m_motor->SetSensorPhase(true);
   m_motor->SetInverted(false);
   m_motor->SelectProfileSlot(0, 0);
 
   m_motor->Config_kF(0, 0.1528, 0);
   m_motor->Config_kP(0, 0.07, 0);
-  m_motor->Config_kD(0, 0, 0);
-
-  // m_motor->Config_kF(0, 0, 0);
 
   m_motor->SetNeutralMode(Brake);
 
@@ -31,10 +30,10 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
 
   m_motor->ConfigAllowableClosedloopError(0, 0, 0);
 
-  m_motor->ConfigPeakCurrentDuration(0, 0);
-  m_motor->ConfigContinuousCurrentLimit(30, 0);
+  // m_motor->ConfigPeakCurrentDuration(0, 0); //TODO
+  // m_motor->ConfigContinuousCurrentLimit(30, 0); //TODO
   m_motor->EnableCurrentLimit(false);
-  m_motor->ConfigPeakCurrentLimit(0, 0);
+  // m_motor->ConfigPeakCurrentLimit(0, 0); //TODO
   m_motor->ConfigSelectedFeedbackSensor(CTRE_MagEncoder_Relative, 0, 0);
 
   nt::NetworkTableInstance::GetDefault().SetUpdateRate(.01); 
@@ -48,17 +47,22 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
   m_isHatchZeroed = false;
   m_pulse = 0.0;
   m_isVibratable = false;
+  m_encoderConnected = false;
+  m_hatchSlideEnabled = false;
 }
 
 void HatchSlide::InitDefaultCommand() {
-  SetDefaultCommand(new HatchSlideGoToPosition());
+  if(IsHatchSlideEnabled()) {
+    SetDefaultCommand(new HatchSlideGoToPosition());
+  }
 }
 
 void HatchSlide::Periodic() {
   SmartDashboard::PutNumber("Hatch Slide error", m_desiredSetpoint - m_hatchPosition);
-  SmartDashboard::PutNumber("Is Hatch Zeroed", m_isHatchZeroed);
+  SmartDashboard::PutBoolean("Is Hatch Zeroed", m_isHatchZeroed);
 
   m_pulse = m_irSensor->GetPeriod();
+
   SmartDashboard::PutNumber("Teensy dist", GetPulseDist());
   SmartDashboard::PutNumber("hatch slide dist", ConvertTicksToInches(GetHatchPosition()));
   if(m_motor->GetControlMode() == ControlMode::MotionMagic) {
@@ -67,6 +71,9 @@ void HatchSlide::Periodic() {
   }
 
   SmartDashboard::PutBoolean("is line visible", IsLineVisible());
+  
+  m_encoderConnected = m_slideEncoder->isConnected();
+  SmartDashboard::PutBoolean("slide encoder is connnected", m_encoderConnected);
 
   bool oldTargetValid = IsLineVisible();
 
@@ -76,7 +83,6 @@ void HatchSlide::Periodic() {
   else {
     m_isVibratable = false;
   }
-
 }
 
 void HatchSlide::setSetPoint(int value) {
@@ -113,7 +119,7 @@ double HatchSlide::GetPulseDist() {
 }
 
 bool HatchSlide::IsLineVisible() {
-  return (GetPulseDist() >-1 && GetPulseDist() < 7);
+  return (GetPulseDist() >-1 && GetPulseDist() < 28);
 }
 
 bool HatchSlide::IsSlideOnTarget() {
@@ -126,4 +132,20 @@ bool HatchSlide::IsVibratable() {
 
 void HatchSlide::ResetVibratable() {
     m_isVibratable = false;
+}
+
+bool HatchSlide::SlideEncoderConnected() {
+  return m_encoderConnected;
+}
+
+void HatchSlide::EnableHatchSlide() {
+  m_hatchSlideEnabled = true;
+}
+
+void HatchSlide::DisableHatchSlide() {
+  m_hatchSlideEnabled = false;
+}
+
+bool HatchSlide::IsHatchSlideEnabled() {
+  return m_hatchSlideEnabled;
 }

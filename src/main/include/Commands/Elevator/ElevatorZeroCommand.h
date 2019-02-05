@@ -5,18 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef COMMAND_ELEVATOR_WAIT_FOR_POSITION_COMMAND
-#define COMMAND_ELEVATOR_WAIT_FOR_POSITION_COMMAND
+#ifndef SRC_ELEVATORZEROCOMMAND
+#define SRC_ELEVATORZEROCOMMAND
 
-#include <frc/commands/Command.h>
+#include <frc/commands/InstantCommand.h>
 #include "Subsystems/Elevator.h"
+#include "CommandBase.h"
 
-class ElevatorWaitForPositionCommand : public frc::Command {
+class ElevatorZeroCommand : public frc::InstantCommand {
  public:
-  ElevatorWaitForPositionCommand() : Command("ElevatorWaitForPositionCommand") {}
-  bool IsFinished() override {
-    return fabs(CommandBase::m_pElevator->GetElevatorError()) < 1;
+  ElevatorZeroCommand() : InstantCommand("ElevatorZeroCommand") {
+    SetRunWhenDisabled(true);
+  }
+  void Initialize() override {
+    CommandBase::m_pElevator->ZeroElevatorEncoder();
   }
 };
 
-#endif // COMMAND_ELEVATOR_WAIT_FOR_POSITION_COMMAND
+#endif //SRC_ELEVATORZEROCOMMAND

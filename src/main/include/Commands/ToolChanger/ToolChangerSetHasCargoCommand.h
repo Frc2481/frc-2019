@@ -5,19 +5,22 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef COMMANDS_CARGO_INTAKE_STOP_COMMAND_H
-#define COMMANDS_CARGO_INTAKE_STOP_COMMAND_H
+#ifndef SRC_TOOLCHANGERSETHASCARGOCOMMAND
+#define SRC_TOOLCHANGERSETHASCARGOCOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/CargoIntake.h"
+#include "Subsystems/ToolChanger.h"
 #include "CommandBase.h"
 
-class CargoIntakeStopCommand : public frc::InstantCommand {
+class ToolChangerSetHasCargoCommand: public frc::InstantCommand {
+ private:
+  bool m_hasCargo;
  public:
-  CargoIntakeStopCommand() : InstantCommand("CargoIntakeStopCommand") {}
+  ToolChangerSetHasCargoCommand(bool hasCargo) : InstantCommand("ToolChangerSetHasCargoCommand") {
+    m_hasCargo = hasCargo;
+  }
   void Initialize() override {
-    CommandBase::m_pCargoIntake->StopIntake();
+    CommandBase::m_pToolChanger->SetHasCargo(m_hasCargo);
   }
 };
-
-#endif //COMMANDS_CARGO_INTAKE_STOP_COMMAND_H
+#endif //SRC_TOOLCHANGERSETHASCARGOCOMMAND

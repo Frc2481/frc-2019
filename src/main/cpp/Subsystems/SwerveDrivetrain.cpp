@@ -1,9 +1,9 @@
 #include "Subsystems/SwerveDrivetrain.h"
 #include "RobotMap.h"
 #include "RobotParameters.h"
-#include "Commands/SwerveDrivetrainJoystickDrive.h"
 #include "Utils/Sign.h"
 #include "Utils/MathConstants.h"
+#include "Commands/SwerveDrivetrain/SwerveDrivetrainJoystickDrive.h"
 
 SwerveDrivetrain::SwerveDrivetrain()
     : Subsystem("SwerveDrivetrain"),
@@ -22,7 +22,8 @@ SwerveDrivetrain::SwerveDrivetrain()
     m_blWheelDist(0),
     m_flWheelDist(0),
     m_gyroYaw(0),
-	m_isOpenLoopFieldFrame(false) {
+	m_isOpenLoopFieldFrame(false), 
+	m_areAllSteerEncodersConnected(false) {
     
 	m_pFRDriveMotor = new TalonSRX(FR_DRIVE_MOTOR_ID);
 	m_pFRDriveMotorController = new MotorVelocityController(
@@ -258,6 +259,15 @@ void SwerveDrivetrain::Periodic() {
 
 	// update pose
     updatePose();
+
+	if(frc::DriverStation::GetInstance().IsDisabled()) {
+		SmartDashboard::PutBoolean("FL steer encoder connected", m_pFLSteerEncoder->isConnected());
+		SmartDashboard::PutBoolean("FR steer encoder connected", m_pFRSteerEncoder->isConnected());
+		SmartDashboard::PutBoolean("BL steer encoder connected", m_pBLSteerEncoder->isConnected());
+		SmartDashboard::PutBoolean("BR steer encoder connected", m_pBRSteerEncoder->isConnected());
+		m_areAllSteerEncodersConnected = m_pFLSteerEncoder->isConnected() && m_pFRSteerEncoder->isConnected()
+			 && m_pBLSteerEncoder->isConnected() && m_pBRSteerEncoder->isConnected();
+	}
 }
 
 void SwerveDrivetrain::driveOpenLoopControl(
@@ -430,30 +440,6 @@ void SwerveDrivetrain::stop() {
 	driveOpenLoopControl(0, 0, 0);
 }
 
-// void SwerveDrivetrain::setShiftState(bool isHighGear) {
-	// m_pShifter->Set(isHighGear * RobotParameters::k_isDriveShiftInverted);
-// }
-
-// bool SwerveDrivetrain::getShiftState() {
-// 	bool isHighGear = m_pShifter->Get() * RobotParameters::k_isDriveShiftInverted;
-
-// 	// set appropriate motor controller gear ratio
-// 	if(isHighGear) {
-// 		m_pFRDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioHigh);
-// 		m_pBRDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioHigh);
-// 		m_pBLDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioHigh);
-// 		m_pFLDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioHigh);
-// 	}
-// 	else {
-// 		m_pFRDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioLow);
-// 		m_pBRDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioLow);
-// 		m_pBLDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioLow);
-// 		m_pFLDriveMotorController->setTicksPerRev(RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioLow);
-// 	}
-
-// 	return isHighGear;
-// }
-
 Pose2D SwerveDrivetrain::getPose() {
     return m_swerveDrivePose.getPose();
 }
@@ -568,4 +554,8 @@ void SwerveDrivetrain::setIsOpenLoopFieldFrame(bool isOpenLoopFieldFrame) {
 	}
 	
 	m_isOpenLoopFieldFrame = isOpenLoopFieldFrame;
+}
+
+bool SwerveDrivetrain::areAllSteerEncodersConnected() {
+	return m_areAllSteerEncodersConnected;
 }

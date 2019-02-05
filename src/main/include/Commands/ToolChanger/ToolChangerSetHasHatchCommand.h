@@ -5,21 +5,22 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef COMMANDS_HATCH_SLIDE_TO_CENTER_H
-#define COMMANDS_HATCH_SLIDE_TO_CENTER_H
+#ifndef SRC_TOOLCHANGERSETHASHATCHCOMMAND
+#define SRC_TOOLCHANGERSETHASHATCHCOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Robot.h"
-#include "Subsystems/HatchSlide.h"
+#include "Subsystems/ToolChanger.h"
 #include "CommandBase.h"
 
-class HatchSlideToCenterCommand : public frc::InstantCommand {
-  int m_setPoint;
+class ToolChangerSetHasHatchCommand: public frc::InstantCommand {
+ private:
+  bool m_hasHatch;
  public:
-  HatchSlideToCenterCommand() : InstantCommand("HatchSlideToCenterCommand"){}
-    void Initialize(){
-    CommandBase::m_pHatchSlide->setSetPoint(0);
+  ToolChangerSetHasHatchCommand(bool hasHatch) : InstantCommand("ToolChangerSetHasHatchCommand") {
+    m_hasHatch = hasHatch;
+  }
+  void Initialize() override {
+    CommandBase::m_pToolChanger->SetHasHatch(m_hasHatch);
   }
 };
-
-#endif
+#endif //SRC_TOOLCHANGERSETHASHATCHCOMMAND

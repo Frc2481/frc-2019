@@ -75,6 +75,9 @@ namespace RobotParameters {
     static constexpr double k_elevatorVelocity = 0;
     static constexpr double k_elevatorAccel = 0;
     static constexpr double k_elevatorTicksPerInch = 1;
+    static constexpr double k_elevatorCollisionMin = 0;
+    static constexpr double k_elevatorCollisionMax = 0;
+    static constexpr double k_intakeCollisionHeight = 0; //may or may not be the same as one of the above
 }
 
 #endif // ROBOT_PARAMETERS_H

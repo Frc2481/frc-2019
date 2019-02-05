@@ -63,6 +63,7 @@ public:
     void zeroSteerEncoders();
     void zeroGyroYaw();
     void setIsOpenLoopFieldFrame(bool isOpenLoopFieldFrame);
+    bool areAllSteerEncodersConnected();
 
 private:
     TalonSRX* m_pFRDriveMotor;
@@ -99,6 +100,7 @@ private:
     double m_flWheelDist;
     double m_gyroYaw;
     bool m_isOpenLoopFieldFrame;
+    bool m_areAllSteerEncodersConnected;
 };
 
 #endif // SWERVE_DRIVETRAIN_H

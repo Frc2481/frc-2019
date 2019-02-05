@@ -27,16 +27,16 @@ public:
 
 //driver
     frc::Button* m_intakeBall;
-    frc::Button* m_acquireBall;
+    frc::Button* m_acquireCargo;
+    frc::Button* m_acquireHatch;
     frc::Button* m_zeroGyro;
-    frc::Button* m_elevatorHome;
+    frc::Button* m_elevatorStow;
     frc::Button* m_fieldCentric;
 
 //operator
-    frc::Button* m_ejectBall;
-    frc::Button* m_elevatorHigh;
-    frc::Button* m_elevatorMid;
-    frc::Button* m_elevatorLow;
+    frc::Button* m_scoreHigh;
+    frc::Button* m_scoreMid;
+    frc::Button* m_scoreLow;
     AnalogJoystickButton* m_elevatorRaise;
     AnalogJoystickButton* m_elevatorLower;
     frc::Button* m_cargoShip;

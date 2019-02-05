@@ -12,16 +12,20 @@
 #include "ctre/Phoenix.h"
 #include <frc/WPILib.h>
 #include "networktables/NetworkTableInstance.h"
+#include "Components/CTREMagEncoder.h"
 
 class HatchSlide : public frc::Subsystem {
  private:
   TalonSRX* m_motor;
+  CTREMagEncoder* m_slideEncoder;
   frc::Counter *m_irSensor;
   double m_desiredSetpoint;
   double m_hatchPosition;
   bool m_isHatchZeroed;
   double m_pulse;
   bool m_isVibratable;
+  bool m_encoderConnected;
+  bool m_hatchSlideEnabled;
 
  public:
   HatchSlide();
@@ -38,6 +42,10 @@ class HatchSlide : public frc::Subsystem {
   bool IsSlideOnTarget();
   bool IsVibratable();
   void ResetVibratable();
+  bool SlideEncoderConnected();
+  void EnableHatchSlide();
+  void DisableHatchSlide();
+  bool IsHatchSlideEnabled();
 };
 
 #endif //SRC_HATCH_SLIDE_H
