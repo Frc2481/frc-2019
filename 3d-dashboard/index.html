@@ -30,7 +30,7 @@
 		<script src="js/loaders/STLLoader.js"></script>
 		<script src="js/controls/OrbitControls.js"></script>
 		<script src="js/WebGL.js"></script>
-		<script src="/networktables/networktables.js"></script>
+		<script src="/networktables/networktables.js" onerror="onLoadNTFailed()"></script>
 
 		<script>
 			if (WEBGL.isWebGLAvailable() === false)
@@ -42,15 +42,19 @@
 			var EDIT_MODE = false;
 
 			var container;
-			var camera, cameraTarget, scene, renderer, controls;
+			var camera, cameraTarget, scene, renderer, controls, axesHelper;
 			var robotFrame, cargoIntakeAssembly, elevatorAssembly;
-			var meshes;
+			var meshLoader, meshes;
 			var intersectPlane, selection, raycaster, offset;
 
-			//Specify object locations globally here.  This allows us to change locations by offsets from NetworkTables in animation
+			//Specify object locations and rotations globally here.  This allows us to change locations by offsets from NetworkTables in animation
 			var framePos = new THREE.Vector3(0, 0, 0);
 			var intakePos = new THREE.Vector3(-2.508141780271359, 10.230085621335952, -0.10246555939861768);
 			var elevatorPos = new THREE.Vector3(0.17705429923420057, 5.63207325568694, 26.90591762635841);
+
+			var frameRot = new THREE.Euler(-Math.PI/2, 0, 0);
+			var intakeRot = new THREE.Euler(-Math.PI/2, 0, 0);
+			var elevatorRot = new THREE.Euler(-Math.PI/2, 0, Math.PI);
 
 			init();
 			animate();
@@ -67,56 +71,31 @@
 
 				scene = new THREE.Scene();
 				scene.background = new THREE.Color(0x940000);
-				scene.fog = new THREE.Fog(0x940000, 50, 500);
+				scene.fog = new THREE.Fog(0x940000, 300, 700);
 
 				// Ground
 				var plane = new THREE.Mesh(
-					new THREE.PlaneBufferGeometry(800, 800),
+					new THREE.PlaneBufferGeometry(1500, 1500),
 					new THREE.MeshBasicMaterial({ color: 0x000000 })
 				);
 				plane.rotation.x = -Math.PI / 2;
-				plane.position.y = -5.0;
+				plane.position.y = -50.0;
 				scene.add(plane);
 
 				// Model loading
 				meshes = [];
-				var loader = new THREE.STLLoader();
-
-				// Create different materials for each mesh so we can change them (and their colors) individually
-				var frameMaterial = new THREE.MeshPhongMaterial({ color: 0xaaaaaa, specular: 0x111111, shininess: 200 });
-				loader.load('./RobotModels/FrameParts.stl', function (geometry) {
-					robotFrame = new THREE.Mesh(geometry, frameMaterial);
-
-					robotFrame.rotation.set(-Math.PI / 2, 0, 0);
-					robotFrame.position.copy(framePos);
-
-					meshes.push(robotFrame);
-
-					scene.add(robotFrame);
+				meshLoader = new THREE.STLLoader();
+				
+				meshLoader.load('./RobotModels/FrameParts.stl', function (geometry) {
+					robotFrame = addMesh(geometry, framePos, frameRot);
 				});
 
-			var intakeMaterial = new THREE.MeshPhongMaterial({ color: 0xaaaaaa, specular: 0x111111, shininess: 200 });
-				loader.load('./RobotModels/BallIntakeAssembly.stl', function (geometry) {
-					cargoIntakeAssembly = new THREE.Mesh(geometry, intakeMaterial);
-
-					cargoIntakeAssembly.rotation.set(-Math.PI / 2, 0, 0);
-					cargoIntakeAssembly.position.copy(intakePos);
-
-					meshes.push(cargoIntakeAssembly);
-
-					scene.add(cargoIntakeAssembly);
+				meshLoader.load('./RobotModels/BallIntakeAssembly.stl', function (geometry) {
+					cargoIntakeAssembly = addMesh(geometry, intakePos, intakeRot);
 				});
 
-				var elevatorMaterial = new THREE.MeshPhongMaterial({ color: 0xaaaaaa, specular: 0x111111, shininess: 200 });
-				loader.load('./RobotModels/ElevatorAssembly.stl', function (geometry) {
-					elevatorAssembly = new THREE.Mesh(geometry, elevatorMaterial);
-
-					elevatorAssembly.rotation.set(-Math.PI / 2, 0, Math.PI);
-					elevatorAssembly.position.copy(elevatorPos);
-
-					meshes.push(elevatorAssembly);
-
-					scene.add(elevatorAssembly);
+				meshLoader.load('./RobotModels/ElevatorAssembly.stl', function (geometry) {
+					elevatorAssembly = addMesh(geometry, elevatorPos, elevatorRot);
 				});
 
 				// Lights
@@ -143,21 +122,41 @@
 
 				container.appendChild(renderer.domElement);
 
+				axesHelper = new THREE.AxesHelper(50);
+				scene.add(axesHelper);
+
 				// Orbital controls for rotating and panning camera
 				controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 				window.addEventListener('resize', onWindowResize, false);
-				if(EDIT_MODE)
-				{
-					// Only allow these events to trigger in edit mode, as they handle dragging and dropping of meshes
-					window.addEventListener('mousedown', onDocumentMouseDown, false);
-        			window.addEventListener('mousemove', onDocumentMouseMove, false);
-					window.addEventListener('mouseup', onDocumentMouseUp, false);
-				}
+				window.addEventListener("keydown", onKeyPressed, false);
+				window.addEventListener('mousedown', onDocumentMouseDown, false);
+        		window.addEventListener('mousemove', onDocumentMouseMove, false);
+				window.addEventListener('mouseup', onDocumentMouseUp, false);
 
-				NetworkTables.addWsConnectionListener(function(connected) {
-      				console.log("Websocket connected: " + connected);
-  				}, true);
+				try
+				{
+					NetworkTables.addWsConnectionListener(function(connected) {
+      					console.log("Websocket connected: " + connected);
+  					}, true);
+				} catch(e) {}
+			}
+
+			function addMesh(geometry, position, rotation)
+			{
+				// Create different materials for each mesh so we can change them (and their colors) individually
+				var meshMaterial = new THREE.MeshPhongMaterial({ color: 0xaaaaaa, specular: 0x111111, shininess: 200 });
+				newMesh = new THREE.Mesh(geometry, meshMaterial);
+
+				newMesh.rotation.copy(rotation);
+				newMesh.position.copy(position);
+					
+				newMesh.originalPosition = position;
+				meshes.push(newMesh);
+
+				scene.add(newMesh);
+
+				return newMesh;
 			}
 
 			function onWindowResize()
@@ -170,6 +169,8 @@
 
 			function onDocumentMouseDown(event)
 			{
+				if(!EDIT_MODE) return;
+
 				// Get mouse position
   				var mouseX = (event.clientX / window.innerWidth) * 2 - 1;
   				var mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -193,6 +194,8 @@
 
 			function onDocumentMouseMove(event)
 			{
+				if(!EDIT_MODE) return;
+
   				event.preventDefault();
   				// Get mouse position
   				var mouseX = (event.clientX / window.innerWidth) * 2 - 1;
@@ -225,6 +228,8 @@
 
 			function onDocumentMouseUp(event)
 			{
+				if(!EDIT_MODE) return;
+
 				if(selection != null && selection != undefined)
 				{
 					// With orbital controls, right-clicking to get to the console doesn't work (since right-clicking is panning)
@@ -236,21 +241,82 @@
 				selection = null;
 			}
 
+			function onLoadNTFailed()
+			{
+				alert("Could not load Network Tables library, animation will not be available.  Did you access this page through the py2networktablesjs server?\nRun py2networktablesjs and navigate to http://127.0.0.1:8888");
+			}
+
+			function onKeyPressed(event)
+			{
+				if(event.ctrlKey && event.shiftKey && event.code == "KeyE")
+				{
+					EDIT_MODE = !EDIT_MODE;
+
+					if(EDIT_MODE)
+						resetMeshPositions();
+					else
+						setMeshOriginalPositions();
+				}
+			}
+
+			function setMeshOriginalPositions()
+			{
+				for(var i=0; i<meshes.length; i++)
+				{
+					meshes[i].originalPosition.copy(meshes[i].position);
+				}
+			}
+
+			function resetMeshPositions()
+			{
+				for(var i=0; i<meshes.length; i++)
+				{
+					meshes[i].position.copy(meshes[i].originalPosition);
+				}
+			}
+
 			function animate()
 			{
+				try
+				{
+					// Set sky color depending on whether Network Tables is connected
+					if(NetworkTables.isRobotConnected())
+					{
+						scene.background.set(0x009400);
+						scene.fog.color.set(0x009400);
+					}
+					else
+					{
+						scene.background.set(0x940000);
+						scene.fog.color.set(0x940000);
+					}
+
+					var pos = NetworkTables.getValue("/SmartDashboard/ElevatorPosition", 0.0);
+				}
+				catch(e)
+				{
+					scene.background.set(0x940000);
+					scene.fog.color.set(0x940000);
+				}
+
 				// No animation in edit mode, makes it difficult to grab onto meshes and move them
 				if(!EDIT_MODE)
 				{
-					var pos = NetworkTables.getValue("/SmartDashboard/ElevatorPosition", 0.0);
+					axesHelper.visible = false;
+
 					if(elevatorAssembly != null && elevatorAssembly != undefined)
 					{
 						elevatorAssembly.position.setZ(elevatorPos.z - pos);
-						// This was a test of dynamically changing the color of a material based off data from network tables
+						// This was a test of dynamically changing the color of a material based off data from Network Tables
 						/*if(pos > 3.0)
 							elevatorAssembly.material.color.set(0x0000ff);
 						else
 							elevatorAssembly.material.color.set(0x00ff00);*/
 					}
+				}
+				else
+				{
+					axesHelper.visible = true;
 				}
 				
 				requestAnimationFrame(animate);
