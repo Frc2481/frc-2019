@@ -52,9 +52,7 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
 }
 
 void HatchSlide::InitDefaultCommand() {
-  if(IsHatchSlideEnabled()) {
-    SetDefaultCommand(new HatchSlideGoToPosition());
-  }
+  SetDefaultCommand(new HatchSlideGoToPosition());
 }
 
 void HatchSlide::Periodic() {
