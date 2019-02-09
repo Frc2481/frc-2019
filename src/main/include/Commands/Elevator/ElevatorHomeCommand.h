@@ -5,30 +5,31 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef COMMANDS_ELEVATORLOWERCOMMAND_H
-#define COMMANDS_ELEVATORLOWERCOMMAND_H
+#ifndef SRC_ELEVATORHOMECOMMAND
+#define SRC_ELEVATORHOMECOMMAND 
 
 #include <frc/commands/Command.h>
 #include "Subsystems/Elevator.h"
-#include "CommandBase.h"
 
-class ElevatorLowerCommand : public frc::Command {
+class ElevatorHomeCommand : public frc::Command {
+ private:
+
  public:
-  ElevatorLowerCommand() : Command("ElevatorLowerCommand") {
-      Requires(CommandBase::m_pElevator.get());
-  }
+  ElevatorHomeCommand() : Command("ElevatorHomeCommand"){
+    }
   void Initialize() override {
-      CommandBase::m_pElevator->SetOpenLoopSpeed(-0.75);
+    CommandBase::m_pElevator->SetOpenLoopSpeed(-0.75); //might need to change direction
+  }
+  bool IsFinished() override {
+    return CommandBase::m_pElevator->IsReverseLimitSwitchClosed();
   }
   void End() override {
-      CommandBase::m_pElevator->SetOpenLoopSpeed(0);
+   CommandBase::m_pElevator->SetOpenLoopSpeed(0); 
+   CommandBase::m_pElevator->ZeroElevatorEncoder();
   }
   void Interrupted() override {
     End();
   }
-  bool IsFinished() override {
-    return false;
-  }
 };
 
-#endif //COMMANDS_ELEVATORLOWERCOMMAND_H
+#endif // SRC_ELEVATORHOMECOMMAND

@@ -5,27 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef COMMANDS_HATCH_SLIDE_ZERO_COMMAND_H
-#define COMMANDS_HATCH_SLIDE_ZERO_COMMAND_H
+#ifndef SRC_ACQUIREHATCHCOMMANDGROUP
+#define SRC_ACQUIREHATCHCOMMANDGROUP
 
+#include <frc/commands/CommandGroup.h>
 #include "CommandBase.h"
-#include "Subsystems/HatchSlide.h"
+#include "Commands/ToolChanger/ToolChangerSetHasHatchCommand.h"
 
-class HatchSlideZeroCommand : public frc::Command {
+class AcquireHatchCommandGroup : public frc::CommandGroup {
  public:
-  HatchSlideZeroCommand() : Command("HatchSlideZeroCommand") {
-    SetRunWhenDisabled(true);
-  }
-  void Initialize() {
-    CommandBase::m_pHatchSlide->ZeroHatchPosition();
-  }
-
-  bool IsFinished() {
-    return true;
-  }
-  void Interrupted() {
-    End();
+  AcquireHatchCommandGroup() : CommandGroup("AcquireHatchCommandGroup") {
+    AddParallel(new ToolChangerSetHasHatchCommand(true));
   }
 };
 
-#endif
+#endif //SRC_ACQUIREHATCHCOMMANDGROUP

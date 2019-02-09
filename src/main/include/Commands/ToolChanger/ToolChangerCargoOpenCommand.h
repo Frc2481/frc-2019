@@ -5,18 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef COMMANDS_CARGO_INTAKE_WAIT_FOR_BALL_COMMAND_H
-#define COMMANDS_CARGO_INTAKE_WAIT_FOR_BALL_COMMAND_H
+#ifndef SRC_TOOLCHANGERCARGOOPENCOMMAND
+#define SRC_TOOLCHANGERCARGOOPENCOMMAND
 
-#include <frc/commands/Command.h>
-#include "Subsystems/CargoIntake.h"
+#include <frc/commands/InstantCommand.h>
+#include "CommandBase.h"
+#include "Subsystems/ToolChanger.h"
 
-class CargoIntakeWaitForBallCommand : public frc::Command {
+class ToolChangerCargoOpenCommand : public frc::InstantCommand {
  public:
-  CargoIntakeWaitForBallCommand() : Command("CargoIntakeWaitForBallCommand"){}
-  bool IsFinished() override {
-    //fill with whatever we decide to use to detect ball
+  ToolChangerCargoOpenCommand() : InstantCommand("ToolChangerCargoOpenCommand"){
+    Requires(CommandBase::m_pToolChanger.get());
+  }
+  void Initialize() override {
+    CommandBase::m_pToolChanger->OpenCargo();
   }
 };
 
-#endif //COMMANDS_CARGO_INTAKE_WAIT_FOR_BALL_COMMAND_H
+#endif //SRC_TOOLCHANGERCARGOOPENCOMMAND

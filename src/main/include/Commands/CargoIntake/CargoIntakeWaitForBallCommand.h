@@ -5,17 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_WAITFORSLIDEONTARGETCOMMAND
-#define SRC_WAITFORSLIDEONTARGETCOMMAND
-#include <frc/commands/Command.h>
-#include "Subsystems/Elevator.h"
+#ifndef SRC_CARGOINTAKEWAITFORBALLCOMMAND
+#define SRC_CARGOINTAKEWAITFORBALLCOMMAND
 
-class WaitForSlideOnTargetCommand : public frc::Command {
+#include <frc/commands/Command.h>
+#include "Subsystems/CargoIntake.h"
+
+class CargoIntakeWaitForBallCommand : public frc::Command {
  public:
-  WaitForSlideOnTargetCommand() : Command("WaitForSlideOnTargetCommand") {}
+  CargoIntakeWaitForBallCommand() : Command("CargoIntakeWaitForBallCommand"){}
   bool IsFinished() override {
-    CommandBase::m_pHatchSlide->IsSlideOnTarget();
+    //fill with whatever we decide to use to detect ball
   }
 };
 
-#endif // SRC_WAITFORSLIDEONTARGETCOMMAND
+#endif //SRC_CARGOINTAKEWAITFORBALLCOMMAND

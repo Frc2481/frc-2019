@@ -11,18 +11,32 @@
 #include <frc/commands/Subsystem.h>
 #include <frc/WPILib.h>
 #include "RobotMap.h"
+#include <frc/DigitalInput.h>
 
 class ToolChanger : public frc::Subsystem {
  private:
-  frc::Solenoid* m_changer;
-  bool m_isHatchFront;
+  frc::Solenoid* m_hatchTool;
+  frc::Solenoid* m_cargoTool;
+  frc::DigitalInput* m_limitSwitch;
+  bool m_isHatchToolOpen;
+  bool m_isCargoToolOpen;
+  bool m_hasCargo;
+  bool m_hasHatch;
 
  public:
   ToolChanger();
   void InitDefaultCommand() override;
-  void SwitchToHatch();
-  void SwitchToCargo();
-  bool IsHatchToolFront();
+  void OpenHatch();
+  void CloseHatch();
+  void OpenCargo();
+  void CloseCargo();
+  bool IsHatchToolOpen();
+  bool IsCargoToolOpen();
+  bool HasCargo();
+  bool HasHatch();
+  void SetHasCargo(bool hasCargo);
+  void SetHasHatch(bool hasHatch);
+  bool GetIsLimitSwitchTriggered();
 };
 
 #endif //SRC_TOOLCHANGER

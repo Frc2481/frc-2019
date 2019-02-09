@@ -13,20 +13,16 @@
 #include <frc/WPILib.h>
 #include "RobotParameters.h"
 #include "RobotMap.h"
+#include "Components/CTREMagEncoder.h"
 
 class Elevator : public frc::Subsystem {
- private:
-  TalonSRX* m_masterElevator;
-  TalonSRX* m_slaveElevator;
-  frc::Solenoid* m_elevatorSlide;
-
-  bool m_isElevatorZeroed;
-  bool m_isSlideForward;
-  
-  double m_elevatorPosition;
-  double m_desiredElevatorPosition;
-
  public:
+  enum elevator_slide_position {
+    FRONT,
+    MID,
+    BACK
+  };
+
   Elevator();
   void InitDefaultCommand() override;
   virtual void Periodic();
@@ -47,10 +43,26 @@ class Elevator : public frc::Subsystem {
 
   void SetOpenLoopSpeed(double speed);
 
-  void SlideElevatorFront();
-  void SlideElevatorBack();
-  bool IsSlideFront();
+  void SetElevatorSlidePosition(elevator_slide_position pos);
+  elevator_slide_position GetElevatorSlidePosition();
 
+  bool IsElevatorEncoderConnected();
+
+ private:
+  TalonSRX* m_masterElevator;
+  TalonSRX* m_slaveElevator;
+  frc::Solenoid* m_elevatorSlideA;
+  frc::Solenoid* m_elevatorSlideB;
+  CTREMagEncoder* m_elevatorEncoder;
+
+  bool m_isElevatorZeroed;
+  bool m_isSlideForward;
+  
+  double m_elevatorPosition;
+  double m_desiredElevatorPosition;
+  bool m_encoderConnected;
+
+  elevator_slide_position m_slidePos;
 };
 
 #endif //SRC_ELEVATOR_H

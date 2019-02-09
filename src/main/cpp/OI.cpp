@@ -1,24 +1,21 @@
 #include "OI.h"
 #include "RobotMap.h"
-#include "Commands/SwerveDrivetrainJoystickSetFieldFrame.h"
 #include "frc/buttons/JoystickButton.h"
 #include "frc/WPILib.h"
 #include "frc/XboxController.h"
 #include "Components/Joystick2481.h"
 #include "Components/XboxController2481.h"
 
-#include "Commands/ElevatorBaseCommand.h"
-#include "Commands/CargoEjectBallCommand.h"
-#include "Commands/CargoIntakeBallCommand.h"
-#include "Commands/CargoEjectBallCommand.h"
-#include "Commands/CargoIntakeAcquireBallCommandGroup.h"
-#include "Commands/HatchSlideToCenterCommand.h"
-#include "Commands/ElevatorRaiseCommand.h"
-#include "Commands/ElevatorLowerCommand.h"
-#include "Commands/AutoPlaceHighCommandGroup.h"
-#include "Commands/AutoPlaceMidCommandGroup.h"
-#include "Commands/AutoPlaceLowCommandGroup.h"
-#include "Commands/AutoPlaceCargoShipCommandGroup.h"
+#include "Commands/SwerveDrivetrain/SwerveDrivetrainJoystickSetFieldFrame.h"
+#include "Commands/Elevator/ElevatorBaseCommand.h"
+#include "Commands/CargoIntake/CargoIntakeBallCommand.h"
+#include "Commands/CargoIntake/CargoIntakeEjectCommand.h"
+#include "Commands/CommandGroups/AcquireCargoCommandGroup.h"
+#include "Commands/CommandGroups/AcquireHatchCommandGroup.h"
+#include "Commands/HatchSlide/HatchSlideToCenterCommand.h"
+#include "Commands/Elevator/ElevatorRaiseCommand.h"
+#include "Commands/Elevator/ElevatorLowerCommand.h"
+#include "Commands/Auto/AutoPlaceCommandGroup.h"
 
 OI::OI() {
 	m_pDriverStick = new Joystick2481(DRIVER_XBOX_CONTROLLER_ID);
@@ -35,28 +32,27 @@ OI::OI() {
 	m_intakeBall = new JoystickButton(m_pDriverStick, XBOX_A_BUTTON);
 	m_intakeBall->WhenPressed(new CargoIntakeBallCommand(0)); //change speed
 
-	m_acquireBall = new JoystickButton(m_pDriverStick, XBOX_RIGHT_TRIGGER);
-	m_acquireBall->WhenPressed(new CargoIntakeAcquireBallCommandGroup());
+	m_acquireCargo = new JoystickButton(m_pDriverStick, XBOX_RIGHT_TRIGGER);
+	m_acquireCargo->WhenPressed(new AcquireCargoCommandGroup());
+
+	m_acquireHatch = new JoystickButton(m_pDriverStick, XBOX_LEFT_TRIGGER);
 
 	m_zeroGyro = new JoystickButton(m_pDriverStick, XBOX_START_BUTTON);
 
-    m_elevatorHome = new JoystickButton(m_pDriverStick, XBOX_Y_BUTTON);
-	m_elevatorHome->WhenPressed(new ElevatorLowHatchCommand("ElevatorLowHatchCommand"));
+    m_elevatorStow = new JoystickButton(m_pDriverStick, XBOX_Y_BUTTON);
+	m_elevatorStow->WhenPressed(new ElevatorStowCommand("ElevatorStowCommand"));
 
 	m_fieldCentric = new JoystickButton(m_pDriverStick, XBOX_LEFT_BUMPER);
 
 //operator
-	m_ejectBall = new JoystickButton(m_pOperatorStick, XBOX_LEFT_TRIGGER);
-	m_ejectBall->WhenPressed(new CargoEjectBallCommand(0)); //change speed
-	
-	m_elevatorHigh = new JoystickButton(m_pOperatorStick, XBOX_Y_BUTTON);
-	m_elevatorHigh->WhenPressed(new AutoPlaceHighCommandGroup());
+	m_scoreHigh = new JoystickButton(m_pOperatorStick, XBOX_Y_BUTTON);
+	m_scoreHigh->WhenPressed(new AutoPlaceCommandGroup(new ElevatorHighCommand("ElevatorHighCommand")));
 
-	m_elevatorMid = new JoystickButton(m_pOperatorStick, XBOX_X_BUTTON);
-	m_elevatorMid->WhenPressed(new AutoPlaceMidCommandGroup());
+	m_scoreMid = new JoystickButton(m_pOperatorStick, XBOX_X_BUTTON);
+	m_scoreMid->WhenPressed(new AutoPlaceCommandGroup(new ElevatorMidCommand("ElevatorMidCommand")));
 
-	m_elevatorLow = new JoystickButton(m_pOperatorStick, XBOX_B_BUTTON);
-	m_elevatorLow->WhenPressed(new AutoPlaceLowCommandGroup());
+	m_scoreLow = new JoystickButton(m_pOperatorStick, XBOX_B_BUTTON);
+	m_scoreLow->WhenPressed(new AutoPlaceCommandGroup(new ElevatorLowCommand("ElevatorLowCommand")));
 
 	m_elevatorRaise = new AnalogJoystickButton(m_pOperatorStick, XBOX_RIGHT_Y_AXIS, -0.25); //right stick up
 	m_elevatorRaise->WhileHeld(new ElevatorRaiseCommand());
@@ -65,7 +61,7 @@ OI::OI() {
 	m_elevatorLower->WhileHeld(new ElevatorLowerCommand());
 
 	m_cargoShip = new JoystickButton(m_pOperatorStick, XBOX_A_BUTTON);
-	m_cargoShip->WhenPressed(new AutoPlaceCargoShipCommandGroup());
+	m_cargoShip->WhenPressed(new AutoPlaceCommandGroup(new ElevatorCargoShipCommand("ElevatorCargoShipCommand")));
 }
 
 OI::~OI() {

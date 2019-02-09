@@ -18,6 +18,9 @@ public:
 
 private:
 	std::unique_ptr<Command> m_pVibrate;
+	CameraServer* m_server;
+	cs::UsbCamera m_usbCam1;
+	cs::UsbCamera m_usbCam2;
 };
 
 #endif // ROBOT_H

@@ -5,18 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_ELEVATORSLIDETOBACKCOMMAND
-#define SRC_ELEVATORSLIDETOBACKCOMMAND
+#ifndef SRC_TOOLCHANGERCARGOCLOSECOMMAND
+#define SRC_TOOLCHANGERCARGOCLOSECOMMAND
+
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
-#include "Subsystems/Elevator.h"
+#include "Subsystems/ToolChanger.h"
 
-class ElevatorSlideToBackCommand : public frc::InstantCommand {
+class ToolChangerCargoCloseCommand : public frc::InstantCommand {
  public:
-  ElevatorSlideToBackCommand() : InstantCommand("ElevatorSlideToBackCommand") {}
-  void Initialize() override {
-    CommandBase::m_pElevator->SlideElevatorBack();
+  ToolChangerCargoCloseCommand() : InstantCommand("ToolChangerCargoCloseCommand"){
+    Requires(CommandBase::m_pToolChanger.get());
+  }
+  void Initialize() override{
+    CommandBase::m_pToolChanger->CloseCargo();
   }
 };
 
-#endif // SRC_ELEVATORSLIDETOBACKCOMMAND
+#endif //SRC_TOOLCHANGERCARGOCLOSECOMMAND

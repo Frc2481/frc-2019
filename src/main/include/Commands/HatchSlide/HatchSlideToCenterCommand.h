@@ -5,19 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_ELEVATORSWITCHTOOLTOCARGOCOMMAND
-#define SRC_ELEVATORSWITCHTOOLTOCARGOCOMMAND
+#ifndef SRC_HATCHSLIDETOCENTERCOMMAND
+#define SRC_HATCHSLIDETOCENTERCOMMAND
 
 #include <frc/commands/InstantCommand.h>
+#include "Robot.h"
+#include "Subsystems/HatchSlide.h"
 #include "CommandBase.h"
-#include "Subsystems/Elevator.h"
 
-class ElevatorSwitchToolToCargoCommand : public frc::InstantCommand {
+class HatchSlideToCenterCommand : public frc::InstantCommand {
+  int m_setPoint;
  public:
-  ElevatorSwitchToolToCargoCommand() : InstantCommand("ElevatorSwitchToolToCargoCommand"){}
-  void Initialize() override{
-    CommandBase::m_pElevator->SwitchToCargo();
+  HatchSlideToCenterCommand() : InstantCommand("HatchSlideToCenterCommand"){}
+    void Initialize(){
+    CommandBase::m_pHatchSlide->setSetPoint(0);
   }
 };
 
-#endif //SRC_ELEVATORSWITCHTOOLTOCARGOCOMMAND
+#endif //SRC_HATCHSLIDETOCENTERCOMMAND

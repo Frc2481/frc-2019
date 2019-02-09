@@ -5,18 +5,23 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_ELEVATORSLIDETOFRONTCOMMAND
-#define SRC_ELEVATORSLIDETOFRONTCOMMAND
-#include <frc/commands/InstantCommand.h>
-#include "CommandBase.h"
-#include "Subsystems/Elevator.h"
+#ifndef SRC_CARGOINTAKEEJECTCOMMAND
+#define SRC_CARGOINTAKEEJECTCOMMAND
 
-class ElevatorSlideToFrontCommand : public frc::InstantCommand {
+#include <frc/commands/InstantCommand.h>
+#include "Subsystems/CargoIntake.h"
+#include "CommandBase.h"
+
+class CargoIntakeEjectCommand : public frc::InstantCommand {
+ private:
+  double m_speed;
  public:
-  ElevatorSlideToFrontCommand() : InstantCommand("ElevatorSlideToFrontCommand") {}
+  CargoIntakeEjectCommand(double speed) : InstantCommand("CargoIntakeEjectCommand") {
+    m_speed = speed;
+  }
   void Initialize() override {
-    CommandBase::m_pElevator->SlideElevatorFront();
+    CommandBase::m_pCargoIntake->SetSpeedOut(m_speed);
   }
 };
 
-#endif //SRC_ELEVATORSLIDETOFRONTCOMMAND
+#endif // SRC_CARGOINTAKEEJECTCOMMAND

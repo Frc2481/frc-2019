@@ -5,8 +5,8 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef COMMANDS_HATCH_SLIDE_GO_TO_POSITION_H
-#define COMMANDS_HATCH_SLIDE_GO_TO_POSITION_H
+#ifndef SRC_HATCHSLIDEGOTOPOSITION
+#define SRC_HATCHSLIDEGOTOPOSITION
 
 #include <frc/commands/InstantCommand.h>
 #include "Robot.h"
@@ -30,4 +30,4 @@ class HatchSlideGoToPosition : public frc::InstantCommand {
     }
 };
 
-#endif
+#endif //SRC_HATCHSLIDEGOTOPOSITION

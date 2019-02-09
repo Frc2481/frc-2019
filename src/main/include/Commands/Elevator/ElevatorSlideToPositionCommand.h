@@ -5,23 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef CARGO_EJECT_BALL_COMMAND
-#define CARGO_EJECT_BALL_COMMAND
+#ifndef SRC_ELEVATORSLIDETOPOSITIONCOMMAND
+#define SRC_ELEVATORSLIDETOPOSITIONCOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/CargoIntake.h"
 #include "CommandBase.h"
+#include "Subsystems/Elevator.h"
 
-class CargoEjectBallCommand : public frc::InstantCommand {
+class ElevatorSlideToPositionCommand(Elevator::elevator_slide_position position) : public frc::InstantCommand {
  private:
-  double m_speed;
+ Elevator::elevator_slide_position m_position;
  public:
-  CargoEjectBallCommand(double speed) : InstantCommand("CargoEjectBallCommand") {
-    m_speed = speed;
-  }
+  ElevatorSlideToPositionCommand(m_position) : InstantCommand("ElevatorSlideToPositionCommand") {}
   void Initialize() override {
-    CommandBase::m_pCargoIntake->SetSpeedOut(m_speed);
+    CommandBase::m_pElevator->SetElevatorSlidePosition(m_position);
   }
 };
 
-#endif // CARGO_EJECT_BALL_COMMAND
+#endif // SRC_ELEVATORSLIDETOPOSITIONCOMMAND

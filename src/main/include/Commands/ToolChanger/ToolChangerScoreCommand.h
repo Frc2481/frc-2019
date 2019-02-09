@@ -5,23 +5,24 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef CARGO_INTAKE_BALL_COMMAND
-#define CARGO_INTAKE_BALL_COMMAND
+#ifndef SRC_TOOLCHANGERSCORECOMMAND
+#define SRC_TOOLCHANGERSCORECOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/CargoIntake.h"
-#include "CommandBase.h"
+#include "Subsystems/ToolChanger.h"
+#include "Subsystems/Elevator.h"
 
-class CargoIntakeBallCommand : public frc::InstantCommand {
- private:
-  double m_speed;
+class ToolChangerScoreCommand : public frc::InstantCommand {
  public:
-  CargoIntakeBallCommand(double speed) : InstantCommand("CargoIntakeBallCommand") {
-    m_speed = speed;
-  }
+  ToolChangerScoreCommand() : InstantCommand("ToolChangerScoreCommand") {}
   void Initialize() override {
-    CommandBase::m_pCargoIntake->SetSpeedIn(m_speed);
+    if(CommandBase::m_pToolChanger->HasHatch()) {
+      //whatever's needed to score hatch
+    }
+    else {
+      //whatever's needed to score cargo
+    }
   }
 };
 
-#endif // CARGO_INTAKE_BALL_COMMAND
+#endif //SRC_TOOLCHANGERSCORECOMMAND
