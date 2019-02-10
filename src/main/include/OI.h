@@ -20,18 +20,13 @@ public:
 
     Joystick2481 *m_pDriverStick;
     Joystick2481 *m_pOperatorStick;
-
-    frc::JoystickButton *m_pSetFieldFrameButton;
-
-    frc::Button* m_centerHatch;
-
+    
 //driver
-    frc::Button* m_intakeBall;
     frc::Button* m_acquireCargo;
     frc::Button* m_acquireHatch;
     frc::Button* m_zeroGyro;
     frc::Button* m_elevatorStow;
-    frc::Button* m_fieldCentric;
+    frc::JoystickButton *m_pSetFieldFrameButton;
 
 //operator
     frc::Button* m_scoreHigh;
@@ -40,6 +35,7 @@ public:
     AnalogJoystickButton* m_elevatorRaise;
     AnalogJoystickButton* m_elevatorLower;
     frc::Button* m_cargoShip;
+    frc::Button* m_toggleSlide;
 };
 
 #endif // OI_H

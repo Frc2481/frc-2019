@@ -10,7 +10,9 @@
 
 #include <frc/commands/Command.h>
 #include "Subsystems/Elevator.h"
+#include "Subsystems/CargoIntake.h"
 #include "CommandBase.h"
+#include "RobotParameters.h"
 
 class ElevatorRaiseCommand : public frc::Command {
  public:
@@ -27,7 +29,19 @@ class ElevatorRaiseCommand : public frc::Command {
     End();
   }
   bool IsFinished() override {
+    // if not in (back & in) OR (front & out), return true
+    if(!(((CommandBase::m_pElevator->GetElevatorSlidePosition() == CommandBase::m_pElevator->BACK) && !CommandBase::m_pCargoIntake->IsExtended()) || 
+        ((CommandBase::m_pElevator->GetElevatorSlidePosition() == CommandBase::m_pElevator->FRONT) && CommandBase::m_pCargoIntake->IsExtended()))) {
       return false;
+    }    
+    //if (back & in) OR (front & out) & (current and setpoint above max) OR (current and setpoint below min), move freely
+    else if((CommandBase::m_pElevator->GetElevatorPosition() > RobotParameters::k_elevatorCollisionMax) || 
+          (CommandBase::m_pElevator->GetElevatorPosition() < (RobotParameters::k_elevatorCollisionMin))) {
+        return false;
+    }
+    else {
+      return true;
+    }
   }
 };
 
