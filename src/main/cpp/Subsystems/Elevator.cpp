@@ -15,39 +15,46 @@ Elevator::Elevator() : Subsystem("Elevator") {
 
   m_elevatorEncoder = new CTREMagEncoder(m_masterElevator, "ELEVATOR_ENCODER");
 
+  ctre::phoenix::motorcontrol::can::TalonSRXConfiguration talonConfig;
+
 // up gains
-  m_masterElevator->Config_kF(0, 0, 0); //TODO
-  m_masterElevator->Config_kP(0, 0, 0);
-  m_masterElevator->Config_kP(0, 0, 0);
-  m_masterElevator->Config_kP(0, 0, 0);
+  talonConfig.slot0.kF = 0; //TODO
+  talonConfig.slot0.kP = 0;
+  talonConfig.slot0.kI = 0;
+  talonConfig.slot0.kD = 0;
 
 // down gains
-  m_masterElevator->Config_kF(1, 0, 0);
-  m_masterElevator->Config_kP(1, 0, 0);
-  m_masterElevator->Config_kP(1, 0, 0);
-  m_masterElevator->Config_kP(1, 0, 0);
+  talonConfig.slot1.kF = 0; //TODO
+  talonConfig.slot1.kP = 0;
+  talonConfig.slot1.kI = 0;
+  talonConfig.slot1.kD = 0;
 
   m_slaveElevator->Set(ControlMode::Follower, MASTER_ELEVATOR);
   m_masterElevator->Set(ControlMode::MotionMagic, 0);
   
-  m_masterElevator->ConfigForwardLimitSwitchSource(LimitSwitchSource_FeedbackConnector, LimitSwitchNormal_NormallyOpen, 0); //change if needed
-  m_masterElevator->ConfigReverseLimitSwitchSource(LimitSwitchSource_FeedbackConnector, LimitSwitchNormal_NormallyOpen, 0);
+  talonConfig.forwardLimitSwitchSource = LimitSwitchSource_FeedbackConnector;
+  talonConfig.forwardLimitSwitchNormal = LimitSwitchNormal_NormallyOpen; //change if needed
+  talonConfig.reverseLimitSwitchSource = LimitSwitchSource_FeedbackConnector;
+  talonConfig.reverseLimitSwitchNormal = LimitSwitchNormal_NormallyOpen;
 
-  m_masterElevator->ConfigMotionCruiseVelocity(0, 0); //TODO: change
-  m_masterElevator->ConfigMotionAcceleration(0, 0); //TODO: change
+  talonConfig.motionCruiseVelocity = 0; //TODO: change
+  talonConfig.motionAcceleration = 0; //TODO: change
 
   m_masterElevator->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
 
-  m_masterElevator->ConfigPeakCurrentDuration(0, 0); //TODO:
-  m_masterElevator->ConfigContinuousCurrentLimit(30, 0); //TODO:
+  talonConfig.peakCurrentDuration = 0; //TODO:
+  talonConfig.continuousCurrentLimit = 30; //TODO:
   m_masterElevator->EnableCurrentLimit(false);
-  m_masterElevator->ConfigPeakCurrentLimit(0, 0); //TODO
-  m_masterElevator->ConfigSelectedFeedbackSensor(CTRE_MagEncoder_Relative, 0, 0);
+  talonConfig.peakCurrentLimit = 0; //TODO
+  talonConfig.primaryPID.selectedFeedbackSensor = CTRE_MagEncoder_Relative;
 
-  m_masterElevator->ConfigForwardSoftLimitThreshold(0, 0); //TODO: change soft limit
-  m_masterElevator->ConfigForwardSoftLimitEnable(true);
-  m_masterElevator->ConfigReverseSoftLimitThreshold(0, 0);
-  m_masterElevator->ConfigReverseSoftLimitEnable(true);
+  talonConfig.forwardSoftLimitThreshold = 0; //TODO: change soft limit
+  talonConfig.forwardSoftLimitEnable = true;
+  talonConfig.reverseSoftLimitThreshold = 0;
+  talonConfig.reverseSoftLimitEnable = true;
+
+  m_masterElevator->ConfigAllSettings(talonConfig);
+  m_slaveElevator->ConfigAllSettings(talonConfig);
 
   m_isElevatorZeroed = false;
   m_isSlideForward = false;
