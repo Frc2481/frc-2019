@@ -16,33 +16,27 @@
 #include "Commands/Elevator/ElevatorRaiseCommand.h"
 #include "Commands/Elevator/ElevatorLowerCommand.h"
 #include "Commands/Auto/AutoPlaceCommandGroup.h"
+#include "Commands/HatchSlide/HatchSlideToggleCommand.h"
 
 OI::OI() {
 	m_pDriverStick = new Joystick2481(DRIVER_XBOX_CONTROLLER_ID);
 	m_pOperatorStick = new Joystick2481(OPERATOR_XBOX_CONTROLLER_ID);
-
-	m_pSetFieldFrameButton = new JoystickButton(m_pDriverStick, XBOX_LEFT_BUMPER);
-	m_pSetFieldFrameButton->WhenPressed(new SwerveDrivetrainJoystickSetFieldFrame(true));
-	m_pSetFieldFrameButton->WhenReleased(new SwerveDrivetrainJoystickSetFieldFrame(false));
-
-	m_centerHatch = new JoystickButton(m_pDriverStick, XBOX_B_BUTTON);
-	m_centerHatch->WhenPressed(new HatchSlideToCenterCommand());
-
+	
 //driver
-	m_intakeBall = new JoystickButton(m_pDriverStick, XBOX_A_BUTTON);
-	m_intakeBall->WhenPressed(new CargoIntakeBallCommand(0)); //change speed
-
 	m_acquireCargo = new JoystickButton(m_pDriverStick, XBOX_RIGHT_TRIGGER);
 	m_acquireCargo->WhenPressed(new AcquireCargoCommandGroup());
 
 	m_acquireHatch = new JoystickButton(m_pDriverStick, XBOX_LEFT_TRIGGER);
+	m_acquireHatch->WhenPressed(new AcquireHatchCommandGroup());
 
 	m_zeroGyro = new JoystickButton(m_pDriverStick, XBOX_START_BUTTON);
 
     m_elevatorStow = new JoystickButton(m_pDriverStick, XBOX_Y_BUTTON);
 	m_elevatorStow->WhenPressed(new ElevatorStowCommand("ElevatorStowCommand"));
 
-	m_fieldCentric = new JoystickButton(m_pDriverStick, XBOX_LEFT_BUMPER);
+	m_pSetFieldFrameButton = new JoystickButton(m_pDriverStick, XBOX_LEFT_BUMPER);
+	m_pSetFieldFrameButton->WhenPressed(new SwerveDrivetrainJoystickSetFieldFrame(true));
+	m_pSetFieldFrameButton->WhenReleased(new SwerveDrivetrainJoystickSetFieldFrame(false));
 
 //operator
 	m_scoreHigh = new JoystickButton(m_pOperatorStick, XBOX_Y_BUTTON);
@@ -62,6 +56,9 @@ OI::OI() {
 
 	m_cargoShip = new JoystickButton(m_pOperatorStick, XBOX_A_BUTTON);
 	m_cargoShip->WhenPressed(new AutoPlaceCommandGroup(new ElevatorCargoShipCommand("ElevatorCargoShipCommand")));
+
+	m_toggleSlide = new JoystickButton(m_pOperatorStick, XBOX_START_BUTTON);
+	m_toggleSlide->WhenPressed(new HatchSlideToggleCommand());
 }
 
 OI::~OI() {

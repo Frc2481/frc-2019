@@ -21,7 +21,7 @@ class HatchSlideGoToPosition : public frc::InstantCommand {
     }
     void Initialize() {
       m_setPoint = CommandBase::m_pHatchSlide->ConvertInchesToTicks(-CommandBase::m_pHatchSlide->GetPulseDist());
-      if(CommandBase::m_pHatchSlide->IsLineVisible()) {
+      if(CommandBase::m_pHatchSlide->IsLineVisible() && CommandBase::m_pHatchSlide->IsHatchSlideEnabled()) {
         CommandBase::m_pHatchSlide->setSetPoint(m_setPoint);
       }
       else {
