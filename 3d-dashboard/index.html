@@ -43,18 +43,21 @@
 
 			var container;
 			var camera, cameraTarget, scene, renderer, controls, axesHelper;
-			var robotFrame, cargoIntakeAssembly, elevatorAssembly;
 			var meshLoader, meshes;
 			var intersectPlane, selection, raycaster, offset;
 
 			//Specify object locations and rotations globally here.  This allows us to change locations by offsets from NetworkTables in animation
+			var robotFrame, cargoIntakeAssembly, elevatorAssembly, hatchSlide;
+
 			var framePos = new THREE.Vector3(0, 0, 0);
 			var intakePos = new THREE.Vector3(-2.508141780271359, 10.230085621335952, -0.10246555939861768);
-			var elevatorPos = new THREE.Vector3(0.17705429923420057, 5.63207325568694, 26.90591762635841);
+			var elevatorPos = new THREE.Vector3(0.03925090690609334, 5.475468811153478, 27.381542591082276);
+			var hatchSlideOffset = new THREE.Vector3(5.908163308124815, 0.0, 0.0);  //Offset since this component is attached to the elevator - which moves
 
 			var frameRot = new THREE.Euler(-Math.PI/2, 0, 0);
 			var intakeRot = new THREE.Euler(-Math.PI/2, 0, 0);
 			var elevatorRot = new THREE.Euler(-Math.PI/2, 0, Math.PI);
+			var hatchSlideRot = new THREE.Euler(-Math.PI/2, 0, Math.PI);
 
 			init();
 			animate();
@@ -96,6 +99,12 @@
 
 				meshLoader.load('./RobotModels/ElevatorAssembly.stl', function (geometry) {
 					elevatorAssembly = addMesh(geometry, elevatorPos, elevatorRot);
+				});
+
+				meshLoader.load('./RobotModels/HatchSlide.stl', function (geometry) {
+					var hatchSlidePos = new THREE.Vector3();
+					hatchSlidePos.addVectors(elevatorPos, hatchSlideOffset);
+					hatchSlide = addMesh(geometry, hatchSlidePos, hatchSlideRot);
 				});
 
 				// Lights
@@ -277,6 +286,7 @@
 
 			function animate()
 			{
+				var ntElevatorPos, ntHatchSlidePos;
 				try
 				{
 					// Set sky color depending on whether Network Tables is connected
@@ -291,7 +301,8 @@
 						scene.fog.color.set(0x940000);
 					}
 
-					var pos = NetworkTables.getValue("/SmartDashboard/ElevatorPosition", 0.0);
+					ntElevatorPos = NetworkTables.getValue("/SmartDashboard/ElevatorPosition", 0.0);
+					ntHatchSlidePos = NetworkTables.getValue("/SmartDashboard/HatchSlidePosition", 0.0);
 				}
 				catch(e)
 				{
@@ -306,7 +317,13 @@
 
 					if(elevatorAssembly != null && elevatorAssembly != undefined)
 					{
-						elevatorAssembly.position.setZ(elevatorPos.z - pos);
+						elevatorAssembly.position.setZ(elevatorPos.z - ntElevatorPos);
+
+						var newHatchSlidePos = new THREE.Vector3();
+						newHatchSlidePos.addVectors(elevatorAssembly.position, hatchSlideOffset);
+						newHatchSlidePos.setX(newHatchSlidePos.x - ntHatchSlidePos);
+						hatchSlide.position.copy(newHatchSlidePos);
+
 						// This was a test of dynamically changing the color of a material based off data from Network Tables
 						/*if(pos > 3.0)
 							elevatorAssembly.material.color.set(0x0000ff);
