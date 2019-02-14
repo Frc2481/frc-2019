@@ -47,6 +47,7 @@
 			var intersectPlane, selection, raycaster, offset;
 
 			//Specify object locations and rotations globally here.  This allows us to change locations by offsets from NetworkTables in animation
+			var numMeshes = 8; //6 robot components, 1 cargo, 1 hatch panel
 			var robotFrame, cargoIntakeAssembly, elevatorBase, elevatorMid, elevatorTop, hatchSlide;
 			var cargo, hatchPanel;
 
@@ -111,29 +112,26 @@
 				});
 
 				meshLoader.load('./RobotModels/ElevatorMid.stl', function (geometry) {
-					var elevatorMidPos = new THREE.Vector3();
-					elevatorMidPos.addVectors(elevatorBasePos, elevatorMidOffset);
+					var elevatorMidPos = new THREE.Vector3(0.0, 0.0, 0.0);
 					elevatorMid = addMesh(geometry, elevatorMidPos, elevatorMidRot);
 				});
 
 				meshLoader.load('./RobotModels/ElevatorTop.stl', function (geometry) {
-					var elevatorTopPos = new THREE.Vector3();
-					elevatorTopPos.addVectors(elevatorMid.position, elevatorTopOffset);
+					var elevatorTopPos = new THREE.Vector3(0.0, 0.0, 0.0);
 					elevatorTop = addMesh(geometry, elevatorTopPos, elevatorTopRot);
 				});
 
 				meshLoader.load('./RobotModels/HatchSlide.stl', function (geometry) {
-					var hatchSlidePos = new THREE.Vector3();
-					hatchSlidePos.addVectors(elevatorTop.position, hatchSlideOffset);
+					var hatchSlidePos = new THREE.Vector3(0.0, 0.0, 0.0);
 					hatchSlide = addMesh(geometry, hatchSlidePos, hatchSlideRot);
 				});
 
-				var cargoGeometry = new THREE.SphereGeometry(5, 32, 32);
+				var cargoGeometry = new THREE.SphereGeometry(6.5, 32, 32);
 				cargo = addMesh(cargoGeometry, new THREE.Vector3(0.0, 0.0, 10.0), new THREE.Euler(0.0, 0.0, 0.0));
 				cargo.material.color.set(0xff6000);
 				cargo.material.visible = false;
 
-				var hatchGeometry = new THREE.CircleGeometry(5, 32);
+				var hatchGeometry = new THREE.CircleGeometry(9.5, 32);
 				hatchPanel = addMesh(hatchGeometry, new THREE.Vector3(0.0, 0.0, 40.0), new THREE.Euler(0.0, 0.0, 0.0));
 				hatchPanel.material.color.set(0xffff00);
 				hatchPanel.material.visible = false;
@@ -388,6 +386,15 @@
 				else
 				{
 					axesHelper.visible = true;
+				}
+
+				if(meshes.length < numMeshes)
+				{
+					// Sometimes not all meshes load properly.  This should be fixed
+					// But on the off-chance it's not, make the sky orange to indicate the problem.  Fixable with page refresh
+					// Doubles as indicator of "Still loading..."
+					scene.background.set(0xff6000);
+					scene.fog.color.set(0xff6000);
 				}
 				
 				requestAnimationFrame(animate);
