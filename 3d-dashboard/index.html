@@ -78,9 +78,9 @@
 				document.body.appendChild(container);
 
 				camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 1500);
-				camera.position.set(125, 100, 125);
+				camera.position.set(145, 100, 145);
 
-				cameraTarget = new THREE.Vector3(0, 20.0, 0);
+				cameraTarget = new THREE.Vector3(0, 30.0, 0);
 
 				scene = new THREE.Scene();
 				scene.background = new THREE.Color(0x940000);
@@ -165,6 +165,7 @@
 
 				// Orbital controls for rotating and panning camera
 				controls = new THREE.OrbitControls(camera, renderer.domElement);
+				controls.target = cameraTarget;
 
 				window.addEventListener('resize', onWindowResize, false);
 				window.addEventListener("keydown", onKeyPressed, false);
