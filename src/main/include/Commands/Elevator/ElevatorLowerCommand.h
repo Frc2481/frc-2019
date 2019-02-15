@@ -30,8 +30,8 @@ class ElevatorLowerCommand : public frc::Command {
   }
    bool IsFinished() override {
     // if not in (back & in) OR (front & out), return true
-    if(!(((CommandBase::m_pElevator->GetElevatorSlidePosition() == CommandBase::m_pElevator->BACK) && !CommandBase::m_pCargoIntake->IsExtended()) || 
-        ((CommandBase::m_pElevator->GetElevatorSlidePosition() == CommandBase::m_pElevator->FRONT) && CommandBase::m_pCargoIntake->IsExtended()))) {
+    if(!(((CommandBase::m_pElevator->GetElevatorSlidePosition() == CommandBase::m_pElevator->BACK) && !CommandBase::m_pCargoIntake->IsIntakeOut()) || 
+        ((CommandBase::m_pElevator->GetElevatorSlidePosition() == CommandBase::m_pElevator->FRONT) && CommandBase::m_pCargoIntake->IsIntakeOut()))) {
       return false;
     }    
     //if (back & in) OR (front & out) & (current and setpoint above max) OR (current and setpoint below min), move freely

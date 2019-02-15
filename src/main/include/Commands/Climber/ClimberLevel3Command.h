@@ -5,21 +5,19 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_TOOLCHANGERRETRACTCOMMAND
-#define SRC_TOOLCHANGERRETRACTCOMMAND
-
+#ifndef SRC_CLIMBERLEVEL3COMMAND
+#define SRC_CLIMBERLEVEL3COMMAND
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/ToolChanger.h"
-#include "CommandBase.h"
+#include "Subsystems/Climber.h"
 
-class ToolChangerRetractCommand : public frc::InstantCommand {
+class ClimberLevel3Command : public frc::InstantCommand {
  public:
-  ToolChangerRetractCommand() : InstantCommand("ToolChangerRetractCommand") {
-    Requires(CommandBase::m_pToolChanger.get());
+  ClimberLevel3Command() : InstantCommand("ClimberLevel3Command") {
+
   }
   void Initialize() override {
-    CommandBase::m_pToolChanger->RetractHatch();
+    CommandBase::m_pClimber->ClimberLevel3();
   }
 };
 
-#endif //SRC_TOOLCHANGERRETRACTCOMMAND
+#endif //SRC_CLIMBERLEVEL3COMMAND

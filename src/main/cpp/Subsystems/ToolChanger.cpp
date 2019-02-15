@@ -8,13 +8,14 @@
 #include "Subsystems/ToolChanger.h"
 
 ToolChanger::ToolChanger() : Subsystem("ToolChanger") {
-  m_hatchTool = new frc::Solenoid(HATCH_TOOL);
-  m_cargoTool = new frc::Solenoid(CARGO_TOOL);
+  m_hatchTool = new frc::DoubleSolenoid(HATCH_TOOL_1, HATCH_TOOL_2);
+  m_cargoTool = new frc::DoubleSolenoid(CARGO_TOOL_1, CARGO_TOOL_2);
+  m_hatchExtender = new frc::DoubleSolenoid(HATCH_EXTENDER_1, HATCH_EXTENDER_2);
 
   m_limitSwitch = new frc::DigitalInput(TOOL_CHANGER_LIMIT_SWITCH);
 
-  m_isHatchToolOpen = false;
-  m_isCargoToolOpen = false; 
+  m_isHatchToolHeld = false;
+  m_isCargoToolHeld = false; 
   m_hasCargo = false;
   m_hasHatch = false;
 }
@@ -23,27 +24,38 @@ void ToolChanger::InitDefaultCommand() {
   
 }
 
-void ToolChanger::OpenHatch(){
-  m_hatchTool->Set(true);
-  m_isHatchToolOpen = true;
+void ToolChanger::HoldHatch(){
+  m_hatchTool->Set(frc::DoubleSolenoid::kReverse);
+  m_isHatchToolHeld = true;
 }
-void ToolChanger::CloseHatch(){
-  m_hatchTool->Set(false);
-  m_isHatchToolOpen = false;
+void ToolChanger::FreeHatch(){
+  m_hatchTool->Set(frc::DoubleSolenoid::kForward);
+  m_isHatchToolHeld = false;
 }
-void ToolChanger::OpenCargo(){
-  m_cargoTool->Set(true);
-  m_isCargoToolOpen = true;
+void ToolChanger::HoldCargo(){
+  m_cargoTool->Set(frc::DoubleSolenoid::kForward);
+  m_isCargoToolHeld = true;
 }
-void ToolChanger::CloseCargo(){
-  m_cargoTool->Set(false);
-  m_isCargoToolOpen = false;
+void ToolChanger::FreeCargo(){
+  m_cargoTool->Set(frc::DoubleSolenoid::kReverse);
+  m_isCargoToolHeld = false;
 }
-bool ToolChanger::IsHatchToolOpen(){
-  return m_isHatchToolOpen;
+void ToolChanger::ExtendHatch() {
+  m_hatchExtender->Set(frc::DoubleSolenoid::kForward);
+  m_isHatchExtended = true;
 }
-bool ToolChanger::IsCargoToolOpen(){
-  return m_isCargoToolOpen;
+void ToolChanger::RetractHatch() {
+  m_hatchExtender->Set(frc::DoubleSolenoid::kReverse);
+  m_isHatchExtended = false;
+}
+bool ToolChanger::IsHatchToolHeld(){
+  return m_isHatchToolHeld;
+}
+bool ToolChanger::IsCargoToolHeld(){
+  return m_isCargoToolHeld;
+}
+bool ToolChanger::IsHatchExtended(){
+  return m_isHatchExtended;
 }
 bool ToolChanger::HasCargo(){
   return m_hasCargo;

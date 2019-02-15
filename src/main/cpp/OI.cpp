@@ -17,6 +17,9 @@
 #include "Commands/Elevator/ElevatorLowerCommand.h"
 #include "Commands/Auto/AutoPlaceCommandGroup.h"
 #include "Commands/HatchSlide/HatchSlideToggleCommand.h"
+#include "Commands/Climber/ClimberLevel2Command.h"
+#include "Commands/Climber/ClimberLevel3Command.h"
+#include "Commands/Climber/ClimberRetractCommand.h"
 
 OI::OI() {
 	m_pDriverStick = new Joystick2481(DRIVER_XBOX_CONTROLLER_ID);
@@ -33,6 +36,15 @@ OI::OI() {
 
     m_elevatorStow = new JoystickButton(m_pDriverStick, XBOX_Y_BUTTON);
 	m_elevatorStow->WhenPressed(new ElevatorStowCommand("ElevatorStowCommand"));
+
+	m_climbLevel2 = new JoystickButton(m_pDriverStick, XBOX_A_BUTTON);
+	m_climbLevel2->WhenPressed(new ClimberLevel2Command());
+
+	m_climbLevel3 = new JoystickButton(m_pDriverStick, XBOX_B_BUTTON);
+	m_climbLevel3->WhenPressed(new ClimberLevel3Command());
+
+	m_climbRetract = new JoystickButton(m_pDriverStick, XBOX_X_BUTTON);
+	m_climbRetract->WhenPressed(new ClimberRetractCommand());
 
 	m_pSetFieldFrameButton = new JoystickButton(m_pDriverStick, XBOX_LEFT_BUMPER);
 	m_pSetFieldFrameButton->WhenPressed(new SwerveDrivetrainJoystickSetFieldFrame(true));

@@ -5,21 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_TOOLCHANGERRETRACTCOMMAND
-#define SRC_TOOLCHANGERRETRACTCOMMAND
+#ifndef SRC_TOOLCHANGERHOLDCARGOCOMMAND
+#define SRC_TOOLCHANGERHOLDCARGOCOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/ToolChanger.h"
 #include "CommandBase.h"
+#include "Subsystems/ToolChanger.h"
 
-class ToolChangerRetractCommand : public frc::InstantCommand {
+class ToolChangerHoldCargoCommand : public frc::InstantCommand {
  public:
-  ToolChangerRetractCommand() : InstantCommand("ToolChangerRetractCommand") {
+  ToolChangerHoldCargoCommand() : InstantCommand("ToolChangerHoldCargoCommand"){
     Requires(CommandBase::m_pToolChanger.get());
   }
   void Initialize() override {
-    CommandBase::m_pToolChanger->RetractHatch();
+    CommandBase::m_pToolChanger->HoldCargo();
   }
 };
 
-#endif //SRC_TOOLCHANGERRETRACTCOMMAND
+#endif //SRC_TOOLCHANGERHOLDCARGOCOMMAND

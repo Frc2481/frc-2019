@@ -10,44 +10,54 @@
 Elevator::Elevator() : Subsystem("Elevator") {
   m_masterElevator = new TalonSRX(MASTER_ELEVATOR);
   m_slaveElevator = new TalonSRX(SLAVE_ELEVATOR);
-  m_elevatorSlideA = new frc::Solenoid(ELEVATOR_SLIDE_SOLENOID_A);
-  m_elevatorSlideB = new frc::Solenoid(ELEVATOR_SLIDE_SOLENOID_B);
+  m_elevatorSlideA = new frc::DoubleSolenoid(ELEVATOR_SLIDE_SOLENOID_A1, ELEVATOR_SLIDE_SOLENOID_A2);
+  m_elevatorSlideB = new frc::DoubleSolenoid(ELEVATOR_SLIDE_SOLENOID_B1, ELEVATOR_SLIDE_SOLENOID_B2);
 
   m_elevatorEncoder = new CTREMagEncoder(m_masterElevator, "ELEVATOR_ENCODER");
 
+  ctre::phoenix::motorcontrol::can::TalonSRXConfiguration talonConfig;
+
 // up gains
-  m_masterElevator->Config_kF(0, 0, 0); //TODO
-  m_masterElevator->Config_kP(0, 0, 0);
-  m_masterElevator->Config_kP(0, 0, 0);
-  m_masterElevator->Config_kP(0, 0, 0);
+  talonConfig.slot0.kF = 0; //TODO
+  talonConfig.slot0.kP = 0;
+  talonConfig.slot0.kI = 0;
+  talonConfig.slot0.kD = 0;
 
 // down gains
-  m_masterElevator->Config_kF(1, 0, 0);
-  m_masterElevator->Config_kP(1, 0, 0);
-  m_masterElevator->Config_kP(1, 0, 0);
-  m_masterElevator->Config_kP(1, 0, 0);
+  talonConfig.slot1.kF = 0; //TODO
+  talonConfig.slot1.kP = 0;
+  talonConfig.slot1.kI = 0;
+  talonConfig.slot1.kD = 0;
 
   m_slaveElevator->Set(ControlMode::Follower, MASTER_ELEVATOR);
   m_masterElevator->Set(ControlMode::MotionMagic, 0);
   
-  m_masterElevator->ConfigForwardLimitSwitchSource(LimitSwitchSource_FeedbackConnector, LimitSwitchNormal_NormallyOpen, 0); //change if needed
-  m_masterElevator->ConfigReverseLimitSwitchSource(LimitSwitchSource_FeedbackConnector, LimitSwitchNormal_NormallyOpen, 0);
+  talonConfig.forwardLimitSwitchSource = LimitSwitchSource_FeedbackConnector;
+  talonConfig.reverseLimitSwitchSource = LimitSwitchSource_FeedbackConnector;
 
-  m_masterElevator->ConfigMotionCruiseVelocity(0, 0); //TODO: change
-  m_masterElevator->ConfigMotionAcceleration(0, 0); //TODO: change
+  talonConfig.forwardLimitSwitchDeviceID = 0;
+  talonConfig.reverseLimitSwitchDeviceID = 0;
+  talonConfig.forwardLimitSwitchNormal = LimitSwitchNormal_NormallyOpen;
+  talonConfig.reverseLimitSwitchNormal = LimitSwitchNormal_NormallyOpen;
+
+  talonConfig.motionCruiseVelocity = 0; //TODO: change
+  talonConfig.motionAcceleration = 0; //TODO: change
 
   m_masterElevator->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
 
-  m_masterElevator->ConfigPeakCurrentDuration(0, 0); //TODO:
-  m_masterElevator->ConfigContinuousCurrentLimit(30, 0); //TODO:
+  talonConfig.peakCurrentDuration = 0; //TODO:
+  talonConfig.continuousCurrentLimit = 30; //TODO:
   m_masterElevator->EnableCurrentLimit(false);
-  m_masterElevator->ConfigPeakCurrentLimit(0, 0); //TODO
-  m_masterElevator->ConfigSelectedFeedbackSensor(CTRE_MagEncoder_Relative, 0, 0);
+  talonConfig.peakCurrentLimit = 0; //TODO
+  talonConfig.primaryPID.selectedFeedbackSensor = CTRE_MagEncoder_Relative;
 
-  m_masterElevator->ConfigForwardSoftLimitThreshold(0, 0); //TODO: change soft limit
-  m_masterElevator->ConfigForwardSoftLimitEnable(true);
-  m_masterElevator->ConfigReverseSoftLimitThreshold(0, 0);
-  m_masterElevator->ConfigReverseSoftLimitEnable(true);
+  talonConfig.forwardSoftLimitThreshold = 0; //TODO: change soft limit
+  talonConfig.forwardSoftLimitEnable = true;
+  talonConfig.reverseSoftLimitThreshold = 0;
+  talonConfig.reverseSoftLimitEnable = true;
+
+  m_masterElevator->GetAllConfigs(talonConfig);
+  m_slaveElevator->GetAllConfigs(talonConfig);
 
   m_isElevatorZeroed = false;
   m_isSlideForward = false;
@@ -63,7 +73,7 @@ void Elevator::Periodic() {
 }
 
 void Elevator::SetElevatorPosition(double setPos) {
-  m_masterElevator->Set(ControlMode::PercentOutput, ConvertInchesToTicks(setPos));
+  m_masterElevator->Set(ControlMode::MotionMagic, ConvertInchesToTicks(setPos));
   m_desiredElevatorPosition = setPos;
 }
 void Elevator::ZeroElevatorEncoder() {
@@ -103,16 +113,16 @@ void Elevator::SetOpenLoopSpeed(double speed) {
 
 void Elevator::SetElevatorSlidePosition(elevator_slide_position pos){
   if(pos == FRONT){
-    m_elevatorSlideA->Set(true);
-    m_elevatorSlideB->Set(true);
+    m_elevatorSlideA->Set(frc::DoubleSolenoid::kForward);
+    m_elevatorSlideB->Set(frc::DoubleSolenoid::kForward);
   }
   else if(pos == MID){
-    m_elevatorSlideA->Set(true);
-    m_elevatorSlideB->Set(false);
+    m_elevatorSlideA->Set(frc::DoubleSolenoid::kForward);
+    m_elevatorSlideB->Set(frc::DoubleSolenoid::kReverse);
   }
   else{
-    m_elevatorSlideA->Set(false);
-    m_elevatorSlideB->Set(false);
+    m_elevatorSlideA->Set(frc::DoubleSolenoid::kReverse);
+    m_elevatorSlideB->Set(frc::DoubleSolenoid::kReverse);
   }
 }
 

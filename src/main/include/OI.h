@@ -26,6 +26,9 @@ public:
     frc::Button* m_acquireHatch;
     frc::Button* m_zeroGyro;
     frc::Button* m_elevatorStow;
+    frc::Button* m_climbRetract;
+    frc::Button* m_climbLevel2;
+    frc::Button* m_climbLevel3;
     frc::JoystickButton *m_pSetFieldFrameButton;
 
 //operator

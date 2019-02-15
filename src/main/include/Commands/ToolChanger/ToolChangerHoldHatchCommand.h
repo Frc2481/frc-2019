@@ -5,21 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_TOOLCHANGERHATCHOPENCOMMAND
-#define SRC_TOOLCHANGERHATCHOPENCOMMAND
+#ifndef SRC_TOOLCHANGERHOLDHATCHCOMMAND
+#define SRC_TOOLCHANGERHOLDHATCHCOMMAND
 
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 #include "Subsystems/ToolChanger.h"
 
-class ToolChangerHatchOpenCommand : public frc::InstantCommand {
+class ToolChangerHoldHatchCommand : public frc::InstantCommand {
  public:
-  ToolChangerHatchOpenCommand() : InstantCommand("ToolChangerHatchOpenCommand"){
+  ToolChangerHoldHatchCommand() : InstantCommand("ToolChangerHoldHatchCommand"){
     Requires(CommandBase::m_pToolChanger.get());
   }
   void Initialize() override{
-    CommandBase::m_pToolChanger->OpenHatch();
+    CommandBase::m_pToolChanger->HoldHatch();
   }
 };
 
-#endif //SRC_TOOLCHANGERHATCHOPENCOMMAND
+#endif //SRC_TOOLCHANGERHOLDHATCHCOMMAND

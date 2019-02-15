@@ -11,13 +11,15 @@
 #include <frc/commands/Subsystem.h>
 #include <frc/WPILib.h>
 #include "ctre/Phoenix.h"
-#include <frc/Solenoid.h>
+#include "Components/CTREMagEncoder.h"
 
 class CargoIntake : public frc::Subsystem {
 private:
-  bool m_isExtended;
+  double m_position;
   TalonSRX* m_intakeMotor;
-  frc::Solenoid* m_extendSolenoid;
+  TalonSRX* m_extendMotor;
+  CTREMagEncoder* m_extendEncoder;
+
 public:
   CargoIntake();
   void InitDefaultCommand() override;
@@ -26,10 +28,12 @@ public:
   void SetSpeedOut(double speed);
   void StopIntake();
   bool HasBall();
-  void Extend();
-  void Retract();
-  bool IsExtended();
+  void SetPosition(double pos);
+  double GetPosition();
+  double GetCargoIntakeError();
+  double ConvertTicksToInches(int ticks);
+  int ConvertInchesToTicks(double inches);
+  bool IsIntakeOut();
 };
-
 
 #endif // SRC_CARGO_INTAKE_H

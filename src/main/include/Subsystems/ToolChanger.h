@@ -15,23 +15,28 @@
 
 class ToolChanger : public frc::Subsystem {
  private:
-  frc::Solenoid* m_hatchTool;
-  frc::Solenoid* m_cargoTool;
+  frc::DoubleSolenoid* m_hatchTool;
+  frc::DoubleSolenoid* m_cargoTool;
+  frc::DoubleSolenoid* m_hatchExtender;
   frc::DigitalInput* m_limitSwitch;
-  bool m_isHatchToolOpen;
-  bool m_isCargoToolOpen;
+  bool m_isHatchToolHeld;
+  bool m_isCargoToolHeld;
   bool m_hasCargo;
   bool m_hasHatch;
+  bool m_isHatchExtended;
 
  public:
   ToolChanger();
   void InitDefaultCommand() override;
-  void OpenHatch();
-  void CloseHatch();
-  void OpenCargo();
-  void CloseCargo();
-  bool IsHatchToolOpen();
-  bool IsCargoToolOpen();
+  void HoldHatch();
+  void FreeHatch();
+  void HoldCargo();
+  void FreeCargo();
+  void ExtendHatch();
+  void RetractHatch();
+  bool IsHatchToolHeld();
+  bool IsCargoToolHeld();
+  bool IsHatchExtended();
   bool HasCargo();
   bool HasHatch();
   void SetHasCargo(bool hasCargo);

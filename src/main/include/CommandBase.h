@@ -8,6 +8,7 @@
 #include "Subsystems/Elevator.h"
 #include "Subsystems/CargoIntake.h"
 #include "Subsystems/ToolChanger.h"
+#include "Subsystems/Climber.h"
 
 class CommandBase: public Command
 {
@@ -24,6 +25,7 @@ public:
     static std::unique_ptr<Elevator> m_pElevator;
     static std::unique_ptr<CargoIntake> m_pCargoIntake;
     static std::unique_ptr<ToolChanger> m_pToolChanger;
+    static std::unique_ptr<Climber> m_pClimber;
 };
 
 #endif // COMMAND_BASE_H

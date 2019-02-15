@@ -12,11 +12,13 @@
 #include "CommandBase.h"
 #include "Subsystems/Elevator.h"
 
-class ElevatorSlideToPositionCommand(Elevator::elevator_slide_position position) : public frc::InstantCommand {
+class ElevatorSlideToPositionCommand : public frc::InstantCommand {
  private:
  Elevator::elevator_slide_position m_position;
  public:
-  ElevatorSlideToPositionCommand(m_position) : InstantCommand("ElevatorSlideToPositionCommand") {}
+  ElevatorSlideToPositionCommand(Elevator::elevator_slide_position position) : InstantCommand("ElevatorSlideToPositionCommand") {
+    m_position = position;
+  }
   void Initialize() override {
     CommandBase::m_pElevator->SetElevatorSlidePosition(m_position);
   }
