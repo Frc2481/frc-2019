@@ -5,21 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_TOOLCHANGERCARGOOPENCOMMAND
-#define SRC_TOOLCHANGERCARGOOPENCOMMAND
+#ifndef SRC_TOOLCHANGERFREECARGOCOMMAND
+#define SRC_TOOLCHANGERFREECARGOCOMMAND
 
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 #include "Subsystems/ToolChanger.h"
 
-class ToolChangerCargoOpenCommand : public frc::InstantCommand {
+class ToolChangerFreeCargoCommand : public frc::InstantCommand {
  public:
-  ToolChangerCargoOpenCommand() : InstantCommand("ToolChangerCargoOpenCommand"){
+  ToolChangerFreeCargoCommand() : InstantCommand("ToolChangerFreeCargoCommand"){
     Requires(CommandBase::m_pToolChanger.get());
   }
-  void Initialize() override {
-    CommandBase::m_pToolChanger->OpenCargo();
+  void Initialize() override{
+    CommandBase::m_pToolChanger->FreeCargo();
   }
 };
 
-#endif //SRC_TOOLCHANGERCARGOOPENCOMMAND
+#endif //SRC_TOOLCHANGERFREECARGOCOMMAND

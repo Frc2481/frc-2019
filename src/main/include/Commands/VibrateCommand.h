@@ -18,8 +18,8 @@ class VibrateCommand : public frc::Command {
     SetTimeout(1);
   }
   void Initialize(){
-    CommandBase::m_pOI->m_pDriverStick->SetRumble(GenericHID::RumbleType::kLeftRumble, 1);
-		CommandBase::m_pOI->m_pDriverStick->SetRumble(GenericHID::RumbleType::kRightRumble, 1);
+    CommandBase::m_pOI->m_pDriverStick->SetRumble(GenericHID::RumbleType::kLeftRumble, 0.75);
+		CommandBase::m_pOI->m_pDriverStick->SetRumble(GenericHID::RumbleType::kRightRumble, 0.75);
   }
   void Execute(){}
   bool IsFinished(){

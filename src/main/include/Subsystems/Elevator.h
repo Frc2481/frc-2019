@@ -27,7 +27,7 @@ class Elevator : public frc::Subsystem {
   void InitDefaultCommand() override;
   virtual void Periodic();
 
-  void SetElevatorPosition(double setPos);
+  void SetElevatorPosition(double pos);
   void ZeroElevatorEncoder();
 
   double GetElevatorPosition();
@@ -38,9 +38,6 @@ class Elevator : public frc::Subsystem {
   bool IsForwardLimitSwitchClosed();
   bool IsReverseLimitSwitchClosed();
 
-  double ConvertTicksToInches(int ticks);
-  int ConvertInchesToTicks(double inches);
-
   void SetOpenLoopSpeed(double speed);
 
   void SetElevatorSlidePosition(elevator_slide_position pos);
@@ -48,11 +45,14 @@ class Elevator : public frc::Subsystem {
 
   bool IsElevatorEncoderConnected();
 
+  double ConvertTicksToInches(int ticks);
+  int ConvertInchesToTicks(double inches);
+
  private:
   TalonSRX* m_masterElevator;
   TalonSRX* m_slaveElevator;
-  frc::Solenoid* m_elevatorSlideA;
-  frc::Solenoid* m_elevatorSlideB;
+  frc::DoubleSolenoid* m_elevatorSlideA;
+  frc::DoubleSolenoid* m_elevatorSlideB;
   CTREMagEncoder* m_elevatorEncoder;
 
   bool m_isElevatorZeroed;

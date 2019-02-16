@@ -5,21 +5,19 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_TOOLCHANGERHATCHCLOSECOMMAND
-#define SRC_TOOLCHANGERHATCHCLOSECOMMAND
-
+#ifndef SRC_CLIMBERRETRACTCOMMAND
+#define SRC_CLIMBERRETRACTCOMMAND
 #include <frc/commands/InstantCommand.h>
-#include "CommandBase.h"
-#include "Subsystems/ToolChanger.h"
+#include "Subsystems/Climber.h"
 
-class ToolChangerHatchCloseCommand : public frc::InstantCommand {
+class ClimberRetractCommand : public frc::InstantCommand {
  public:
-  ToolChangerHatchCloseCommand() : InstantCommand("ToolChangerHatchCloseCommand"){
-    Requires(CommandBase::m_pToolChanger.get());
+  ClimberRetractCommand() : InstantCommand("ClimberRetractCommand") {
+
   }
-  void Initialize() override{
-    CommandBase::m_pToolChanger->CloseHatch();
+  void Initialize() override {
+    CommandBase::m_pClimber->ClimberRetract();
   }
 };
 
-#endif //SRC_TOOLCHANGERHATCHCLOSECOMMAND
+#endif //SRC_CLIMBERRETRACTCOMMAND

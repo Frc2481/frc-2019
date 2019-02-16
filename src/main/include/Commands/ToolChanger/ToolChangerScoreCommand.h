@@ -17,10 +17,15 @@ class ToolChangerScoreCommand : public frc::InstantCommand {
   ToolChangerScoreCommand() : InstantCommand("ToolChangerScoreCommand") {}
   void Initialize() override {
     if(CommandBase::m_pToolChanger->HasHatch()) {
-      //whatever's needed to score hatch
+      CommandBase::m_pToolChanger->ExtendHatch();
+      Wait(0.3);
+      CommandBase::m_pToolChanger->FreeHatch();
+      CommandBase::m_pToolChanger->RetractHatch();
     }
     else {
-      //whatever's needed to score cargo
+      CommandBase::m_pToolChanger->FreeCargo();
+      CommandBase::m_pToolChanger->ExtendHatch();
+      CommandBase::m_pToolChanger->RetractHatch();
     }
   }
 };

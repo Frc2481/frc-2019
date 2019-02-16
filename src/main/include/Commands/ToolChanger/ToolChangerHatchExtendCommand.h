@@ -5,21 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_TOOLCHANGERCARGOCLOSECOMMAND
-#define SRC_TOOLCHANGERCARGOCLOSECOMMAND
+#ifndef SRC_TOOLCHANGERHATCHEXTENDCOMMAND
+#define SRC_TOOLCHANGERHATCHEXTENDCOMMAND
 
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 #include "Subsystems/ToolChanger.h"
 
-class ToolChangerCargoCloseCommand : public frc::InstantCommand {
+class ToolChangerHatchExtendCommand : public frc::InstantCommand {
  public:
-  ToolChangerCargoCloseCommand() : InstantCommand("ToolChangerCargoCloseCommand"){
+  ToolChangerHatchExtendCommand() : InstantCommand("ToolChangerHatchExtendCommand"){
     Requires(CommandBase::m_pToolChanger.get());
   }
   void Initialize() override{
-    CommandBase::m_pToolChanger->CloseCargo();
+    CommandBase::m_pToolChanger->ExtendHatch();
   }
 };
 
-#endif //SRC_TOOLCHANGERCARGOCLOSECOMMAND
+#endif //SRC_TOOLCHANGERHATCHEXTENDCOMMAND
