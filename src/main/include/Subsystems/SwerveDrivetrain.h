@@ -19,7 +19,7 @@
 class SwerveDrivetrain : public frc::Subsystem {
 public:
 	SwerveDrivetrain();
-    // ~SwerveDrivetrain();
+    ~SwerveDrivetrain();
     virtual void InitDefaultCommand();
     virtual void Periodic();
 
@@ -51,33 +51,20 @@ public:
 		double robotYawAccel);
     
     void stop();
-
-    void setShiftState(bool isHighGear);
-    bool getShiftState();
-
-    Pose2D getPose();
-    PoseDot2D getPoseDot();
-    void updatePose();
-    void resetPose(const Pose2D &pose, const PoseDot2D &poseDot);
-    void zeroDriveEncoders();
     void zeroSteerEncoders();
     void zeroGyroYaw();
     void setIsOpenLoopFieldFrame(bool isOpenLoopFieldFrame);
     bool areAllSteerEncodersConnected();
 
 private:
-    TalonSRX* m_pFRDriveMotor;
-    TalonSRX* m_pBRDriveMotor;
-    TalonSRX* m_pBLDriveMotor;
-    TalonSRX* m_pFLDriveMotor;
+    VictorSPX* m_pFRDriveMotor;
+    VictorSPX* m_pBRDriveMotor;
+    VictorSPX* m_pBLDriveMotor;
+    VictorSPX* m_pFLDriveMotor;
     MotorVelocityController* m_pFRDriveMotorController;
     MotorVelocityController* m_pBRDriveMotorController;
     MotorVelocityController* m_pBLDriveMotorController;
     MotorVelocityController* m_pFLDriveMotorController;
-    GrayhillEncoder* m_pFRDriveEncoder;
-    GrayhillEncoder* m_pBRDriveEncoder;
-    GrayhillEncoder* m_pBLDriveEncoder;
-    GrayhillEncoder* m_pFLDriveEncoder;
     TalonSRX* m_pFRSteerMotor;
 	TalonSRX* m_pBRSteerMotor;
 	TalonSRX* m_pBLSteerMotor;
@@ -90,14 +77,8 @@ private:
 	CTREMagEncoder* m_pBRSteerEncoder;
 	CTREMagEncoder* m_pBLSteerEncoder;
 	CTREMagEncoder* m_pFLSteerEncoder;
-    Solenoid* m_pShifter;
     AHRS* m_pChassisIMU;
     SwerveDriveKinematics m_kinematics;
-    SwerveDrivePose m_swerveDrivePose;
-    double m_frWheelDist;
-    double m_brWheelDist;
-    double m_blWheelDist;
-    double m_flWheelDist;
     double m_gyroYaw;
     bool m_isOpenLoopFieldFrame;
     bool m_areAllSteerEncodersConnected;

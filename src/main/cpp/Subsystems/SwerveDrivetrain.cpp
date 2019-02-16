@@ -12,20 +12,11 @@ SwerveDrivetrain::SwerveDrivetrain()
 		Translation2D(RobotParameters::k_wheelTrack / 2.0, -RobotParameters::k_wheelBase / 2.0),
 		Translation2D(-RobotParameters::k_wheelTrack / 2.0, -RobotParameters::k_wheelBase / 2.0),
 		Translation2D(-RobotParameters::k_wheelTrack / 2.0, RobotParameters::k_wheelBase / 2.0)),
-    m_swerveDrivePose(
-    		Pose2D(Translation2D(0, 0), Rotation2D::fromDegrees(0)),
-			RobotParameters::k_wheelTrack,
-			RobotParameters::k_wheelBase,
-			RobotParameters::k_cornerStiffCoeff),
-	m_frWheelDist(0),
-    m_brWheelDist(0),
-    m_blWheelDist(0),
-    m_flWheelDist(0),
     m_gyroYaw(0),
 	m_isOpenLoopFieldFrame(false), 
 	m_areAllSteerEncodersConnected(false) {
-    
-	m_pFRDriveMotor = new TalonSRX(FR_DRIVE_MOTOR_ID);
+
+m_pFRDriveMotor = new VictorSPX(FR_DRIVE_MOTOR_ID);
 	m_pFRDriveMotorController = new MotorVelocityController(
 		m_pFRDriveMotor,
 		false,
@@ -38,10 +29,9 @@ SwerveDrivetrain::SwerveDrivetrain()
 		RobotParameters::k_driveMotorControllerKsf,
         0,
 		0,
-        RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioLow);
-	m_pFRDriveEncoder = new GrayhillEncoder(m_pFRDriveMotor, "FR_DRIVE_MOTOR_ENCODER");
+        0);
 
-	m_pBRDriveMotor = new TalonSRX(BR_DRIVE_MOTOR_ID);
+	m_pBRDriveMotor = new VictorSPX(BR_DRIVE_MOTOR_ID);
 	m_pBRDriveMotorController = new MotorVelocityController(
 		m_pBRDriveMotor,
 		false,
@@ -54,10 +44,9 @@ SwerveDrivetrain::SwerveDrivetrain()
 		RobotParameters::k_driveMotorControllerKsf,
 		0,
 		0,
-		RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioLow);
-	m_pBRDriveEncoder = new GrayhillEncoder(m_pBRDriveMotor, "BR_DRIVE_MOTOR_ENCODER");
+		0);
 
-	m_pBLDriveMotor = new TalonSRX(BL_DRIVE_MOTOR_ID);
+	m_pBLDriveMotor = new VictorSPX(BL_DRIVE_MOTOR_ID);
 	m_pBLDriveMotorController = new MotorVelocityController(
 		m_pBLDriveMotor,
 		false,
@@ -70,10 +59,9 @@ SwerveDrivetrain::SwerveDrivetrain()
 		RobotParameters::k_driveMotorControllerKsf,
 		0,
 		0,
-		RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioLow);
-	m_pBLDriveEncoder = new GrayhillEncoder(m_pBLDriveMotor, "BL_DRIVE_MOTOR_ENCODER");
+		0);
 
-	m_pFLDriveMotor = new TalonSRX(FL_DRIVE_MOTOR_ID);
+	m_pFLDriveMotor = new VictorSPX(FL_DRIVE_MOTOR_ID);
 	m_pFLDriveMotorController = new MotorVelocityController(
 		m_pFLDriveMotor,
 		false,
@@ -86,8 +74,7 @@ SwerveDrivetrain::SwerveDrivetrain()
 		RobotParameters::k_driveMotorControllerKsf,
 		0,
 		0,
-		RobotParameters::k_grayhillEncoderTicksPerRev * RobotParameters::k_driveMotorToEncoderGearRatioLow);
-	m_pFLDriveEncoder = new GrayhillEncoder(m_pFLDriveMotor, "FL_DRIVE_MOTOR_ENCODER");
+		0);
 
 	m_pFRSteerMotor = new TalonSRX(FR_STEER_MOTOR_ID);
 	m_pFRSteerEncoder = new CTREMagEncoder(m_pFRSteerMotor, "FR_STEER_MOTOR_ENCODER");
@@ -158,89 +145,72 @@ SwerveDrivetrain::SwerveDrivetrain()
 		RobotParameters::k_ctreMagEncoderTicksPerRev);
 
     m_pChassisIMU = new AHRS(SPI::kMXP);
-
-    resetPose(Pose2D(Translation2D(0, 0), Rotation2D::fromDegrees(0)), PoseDot2D(0, 0, 0));
 }
 
-// SwerveDrivetrain::~SwerveDrivetrain() {
-// 	delete m_pFRDriveMotor;
-// 	m_pFRDriveMotor = nullptr;
+SwerveDrivetrain::~SwerveDrivetrain() {
+	delete m_pFRDriveMotor;
+	m_pFRDriveMotor = nullptr;
 
-// 	delete m_pBRDriveMotor;
-// 	m_pBRDriveMotor = nullptr;
+	delete m_pBRDriveMotor;
+	m_pBRDriveMotor = nullptr;
 
-// 	delete m_pBLDriveMotor;
-// 	m_pBLDriveMotor = nullptr;
+	delete m_pBLDriveMotor;
+	m_pBLDriveMotor = nullptr;
 
-// 	delete m_pFLDriveMotor;
-// 	m_pFLDriveMotor = nullptr;
+	delete m_pFLDriveMotor;
+	m_pFLDriveMotor = nullptr;
 
-// 	delete m_pFRDriveMotorController;
-// 	m_pFRDriveMotorController = nullptr;
+	delete m_pFRSteerMotor;
+	m_pFRSteerMotor = nullptr;
 
-// 	delete m_pBRDriveMotorController;
-// 	m_pBRDriveMotorController = nullptr;
+	delete m_pBRSteerMotor;
+	m_pBRSteerMotor = nullptr;
 
-// 	delete m_pBLDriveMotorController;
-// 	m_pBLDriveMotorController = nullptr;
+	delete m_pBLSteerMotor;
+	m_pBLSteerMotor = nullptr;
 
-// 	delete m_pFLDriveMotorController;
-// 	m_pFLDriveMotorController = nullptr;
+	delete m_pFLSteerMotor;
+	m_pFLSteerMotor = nullptr;
 
-// 	delete m_pFRDriveEncoder;
-// 	m_pFRDriveEncoder = nullptr;
+	delete m_pFRDriveMotorController;
+	m_pFRDriveMotorController = nullptr;
 
-// 	delete m_pBRDriveEncoder;
-// 	m_pBRDriveEncoder = nullptr;
+	delete m_pBRDriveMotorController;
+	m_pBRDriveMotorController = nullptr;
 
-// 	delete m_pBLDriveEncoder;
-// 	m_pBLDriveEncoder = nullptr;
+	delete m_pBLDriveMotorController;
+	m_pBLDriveMotorController = nullptr;
 
-// 	delete m_pFLDriveEncoder;
-// 	m_pFLDriveEncoder = nullptr;
+	delete m_pFLDriveMotorController;
+	m_pFLDriveMotorController = nullptr;
 
-// 	delete m_pFRSteerMotor;
-// 	m_pFRSteerMotor = nullptr;
+	delete m_pFRSteerMotorController;
+	m_pFRSteerMotorController = nullptr;
 
-// 	delete m_pBRSteerMotor;
-// 	m_pBRSteerMotor = nullptr;
+	delete m_pBRSteerMotorController;
+	m_pBRSteerMotorController = nullptr;
 
-// 	delete m_pBLSteerMotor;
-// 	m_pBLSteerMotor = nullptr;
+	delete m_pBLSteerMotorController;
+	m_pBLSteerMotorController = nullptr;
 
-// 	delete m_pFLSteerMotor;
-// 	m_pFLSteerMotor = nullptr;
+	delete m_pFLSteerMotorController;
+	m_pFLSteerMotorController = nullptr;
 
-// 	delete m_pFRSteerMotorController;
-// 	m_pFRSteerMotorController = nullptr;
+	delete m_pFRSteerEncoder;
+	m_pFRSteerEncoder = nullptr;
 
-// 	delete m_pBRSteerMotorController;
-// 	m_pBRSteerMotorController = nullptr;
+	delete m_pBRSteerEncoder;
+	m_pBRSteerEncoder = nullptr;
 
-// 	delete m_pBLSteerMotorController;
-// 	m_pBLSteerMotorController = nullptr;
+	delete m_pBLSteerEncoder;
+	m_pBLSteerEncoder = nullptr;
 
-// 	delete m_pFLSteerMotorController;
-// 	m_pFLSteerMotorController = nullptr;
+	delete m_pFLSteerEncoder;
+	m_pFLSteerEncoder = nullptr;
 
-// 	delete m_pFRSteerEncoder;
-// 	m_pFRSteerEncoder = nullptr;
-
-// 	delete m_pBRSteerEncoder;
-// 	m_pBRSteerEncoder = nullptr;
-
-// 	delete m_pBLSteerEncoder;
-// 	m_pBLSteerEncoder = nullptr;
-
-// 	delete m_pFLSteerEncoder;
-// 	m_pFLSteerEncoder = nullptr;
-
-//     delete m_pShifter;
-//     m_pShifter = nullptr;
-
-//     delete m_pChassisIMU;
-//     m_pChassisIMU = nullptr;
-// }
+	delete m_pChassisIMU;
+	m_pChassisIMU = nullptr;
+}
 
 void SwerveDrivetrain::InitDefaultCommand() {
 	SetDefaultCommand(new SwerveDrivetrainJoystickDrive());
@@ -248,17 +218,10 @@ void SwerveDrivetrain::InitDefaultCommand() {
 
 void SwerveDrivetrain::Periodic() {
 	// update encoders
-	m_pFRDriveEncoder->update();
-	m_pBRDriveEncoder->update();
-	m_pBLDriveEncoder->update();
-	m_pFLDriveEncoder->update();
 	m_pFRSteerEncoder->update();
 	m_pBRSteerEncoder->update();
 	m_pBLSteerEncoder->update();
 	m_pFLSteerEncoder->update();
-
-	// update pose
-    updatePose();
 
 	if(frc::DriverStation::GetInstance().IsDisabled()) {
 		SmartDashboard::PutBoolean("FL steer encoder connected", m_pFLSteerEncoder->isConnected());
@@ -428,112 +391,10 @@ void SwerveDrivetrain::driveClosedLoopControl(
     double brWheelAngAccel = brWheelAccel.rotateBy(brWheelYaw.inverse()).getY() / RobotParameters::k_wheelRad * 180.0 / MATH_CONSTANTS_PI;
     double blWheelAngAccel = blWheelAccel.rotateBy(blWheelYaw.inverse()).getY() / RobotParameters::k_wheelRad * 180.0 / MATH_CONSTANTS_PI;
     double flWheelAngAccel = flWheelAccel.rotateBy(flWheelYaw.inverse()).getY() / RobotParameters::k_wheelRad * 180.0 / MATH_CONSTANTS_PI;
-
-    // update drive motor
-    m_pFRDriveMotorController->updateClosedLoopControl(frWheelAngVel, frWheelAngAccel);
-    m_pBRDriveMotorController->updateClosedLoopControl(brWheelAngVel, brWheelAngAccel);
-    m_pBLDriveMotorController->updateClosedLoopControl(blWheelAngVel, blWheelAngAccel);
-    m_pFLDriveMotorController->updateClosedLoopControl(flWheelAngVel, flWheelAngAccel);
 }
 
 void SwerveDrivetrain::stop() {
 	driveOpenLoopControl(0, 0, 0);
-}
-
-Pose2D SwerveDrivetrain::getPose() {
-    return m_swerveDrivePose.getPose();
-}
-
-PoseDot2D SwerveDrivetrain::getPoseDot() {
-    return m_swerveDrivePose.getPoseDot();
-}
-
-void SwerveDrivetrain::updatePose() {
-    // read front right wheel encoder
-    double oldFRWheelDist = m_frWheelDist;
-    m_frWheelDist = m_pFRDriveEncoder->getWheelDistance(RobotParameters::k_wheelRad, RobotParameters::k_driveEncoderToWheelGearRatio);
-    double deltaDistFRWheel = m_frWheelDist - oldFRWheelDist;
-    double frWheelVel = m_pFRDriveEncoder->getWheelVelocity(RobotParameters::k_wheelRad, RobotParameters::k_driveEncoderToWheelGearRatio);
-
-//    // check for wheel slip
-//    if(fabs(frWheelVel) > fabs(m_frWheelVelCmd * RobotParameters::k_wheelSlipNoiseRatio)) {
-//            // account for sample time and measurement noise
-//        deltaDistFRWheel = m_frWheelVelCmd * 1.0 / (double)RobotParameters::k_updateRate;
-//        frWheelVel = m_frWheelVelCmd;
-//    }
-
-    // read back right wheel encoder
-    double oldBRWheelDist = m_brWheelDist;
-    m_brWheelDist = m_pBRDriveEncoder->getWheelDistance(RobotParameters::k_wheelRad, RobotParameters::k_driveEncoderToWheelGearRatio);
-    double deltaDistBRWheel = m_brWheelDist - oldBRWheelDist;
-    double brWheelVel = m_pBRDriveEncoder->getWheelVelocity(RobotParameters::k_wheelRad, RobotParameters::k_driveEncoderToWheelGearRatio);
-
-//    // check for wheel slip
-//    if(fabs(brWheelVel) > fabs(m_brWheelVelCmd * RobotParameters::k_wheelSlipNoiseRatio)) {
-//            // account for sample time and measurement noise
-//        deltaDistBRWheel = m_brWheelVelCmd * 1.0 / (double)RobotParameters::k_updateRate;
-//        brWheelVel = m_brWheelVelCmd;
-//    }
-
-    // read back left wheel encoder
-    double oldBLWheelDist = m_blWheelDist;
-    m_blWheelDist = m_pBLDriveEncoder->getWheelDistance(RobotParameters::k_wheelRad, RobotParameters::k_driveEncoderToWheelGearRatio);
-    double deltaDistBLWheel = m_blWheelDist - oldBLWheelDist;
-    double blWheelVel = m_pBLDriveEncoder->getWheelVelocity(RobotParameters::k_wheelRad, RobotParameters::k_driveEncoderToWheelGearRatio);
-
-//    // check for wheel slip
-//    if(fabs(blWheelVel) > fabs(m_blWheelVelCmd * RobotParameters::k_wheelSlipNoiseRatio)) {
-//            // account for sample time and measurement noise
-//        deltaDistBLWheel = m_blWheelVelCmd * 1.0 / (double)RobotParameters::k_updateRate;
-//        blWheelVel = m_blWheelVelCmd;
-//    }
-
-    // read front right wheel encoder
-    double oldFLWheelDist = m_flWheelDist;
-    m_flWheelDist = m_pFLDriveEncoder->getWheelDistance(RobotParameters::k_wheelRad, RobotParameters::k_driveEncoderToWheelGearRatio);
-    double deltaDistFLWheel = m_flWheelDist - oldFLWheelDist;
-    double flWheelVel = m_pFLDriveEncoder->getWheelVelocity(RobotParameters::k_wheelRad, RobotParameters::k_driveEncoderToWheelGearRatio);
-
-//    // check for wheel slip
-//    if(fabs(flWheelVel) > fabs(m_flWheelVelCmd * RobotParameters::k_wheelSlipNoiseRatio)) {
-//            // account for sample time and measurement noise
-//        deltaDistFLWheel = m_flWheelVelCmd * 1.0 / (double)RobotParameters::k_updateRate;
-//        flWheelVel = m_flWheelVelCmd;
-//    }
-
-    // read IMU
-    double oldGyroYaw = m_gyroYaw;
-    m_gyroYaw = -m_pChassisIMU->GetYaw();
-    double deltaGyroYaw = m_gyroYaw - oldGyroYaw;
-    double gyroYawRate = -m_pChassisIMU->GetRate() * 180.0 / MATH_CONSTANTS_PI;
-
-    // update pose
-    m_swerveDrivePose.update(
-    	deltaDistFRWheel,
-		deltaDistBRWheel,
-		deltaDistBLWheel,
-		deltaDistFLWheel,
-		Rotation2D::fromDegrees(m_pFRSteerEncoder->getAngle()),
-		Rotation2D::fromDegrees(m_pBRSteerEncoder->getAngle()),
-		Rotation2D::fromDegrees(m_pBLSteerEncoder->getAngle()),
-		Rotation2D::fromDegrees(m_pFLSteerEncoder->getAngle()),
-		deltaGyroYaw,
-		frWheelVel,
-		brWheelVel,
-		blWheelVel,
-		flWheelVel,
-		gyroYawRate);
-}
-
-void SwerveDrivetrain::resetPose(const Pose2D &pose, const PoseDot2D &poseDot) {
-	m_swerveDrivePose.reset(pose, poseDot);
-}
-
-void SwerveDrivetrain::zeroDriveEncoders() {
-	m_pFRDriveEncoder->zero();
-	m_pBRDriveEncoder->zero();
-	m_pBLDriveEncoder->zero();
-	m_pFLDriveEncoder->zero();
 }
 
 void SwerveDrivetrain::zeroSteerEncoders() {

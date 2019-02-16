@@ -10,15 +10,16 @@
 #include "RobotParameters.h"
 
 CargoIntake::CargoIntake() : Subsystem("CargoIntake") {
-  m_intakeMotor = new TalonSRX(CARGO_INTAKE_MOTOR);
+  m_intakeMotor = new VictorSPX(CARGO_INTAKE_MOTOR);
   m_extendMotor = new TalonSRX(CARGO_INTAKE_EXTEND_MOTOR);
   m_extendEncoder = new CTREMagEncoder(m_extendMotor, "CARGO_INTAKE_ENCODER");
 
 	ctre::phoenix::motorcontrol::can::TalonSRXConfiguration talonConfig;
 
-  m_position = 0;
-
   m_extendMotor->Set(ControlMode::MotionMagic, 0);
+  m_extendMotor->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
+  m_extendMotor->EnableCurrentLimit(false);
+  m_extendMotor->ConfigAllSettings(talonConfig);
 
   talonConfig.slot0.kF = 0;
   talonConfig.slot0.kP = 0;
@@ -28,11 +29,9 @@ CargoIntake::CargoIntake() : Subsystem("CargoIntake") {
   talonConfig.motionCruiseVelocity = 0; //TODO: change
   talonConfig.motionAcceleration = 0; //TODO: change
 
-  m_extendMotor->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
-
   talonConfig.peakCurrentDuration = 0; //TODO:
   talonConfig.continuousCurrentLimit = 30; //TODO:
-  m_extendMotor->EnableCurrentLimit(false);
+
   talonConfig.peakCurrentLimit = 0; //TODO
   talonConfig.primaryPID.selectedFeedbackSensor = CTRE_MagEncoder_Relative;
 
@@ -41,7 +40,7 @@ CargoIntake::CargoIntake() : Subsystem("CargoIntake") {
   talonConfig.reverseSoftLimitThreshold = 0;
   talonConfig.reverseSoftLimitEnable = true;
 
-  m_extendMotor->GetAllConfigs(talonConfig);
+  m_position = 0;
 }
 
 void CargoIntake::InitDefaultCommand() {}
