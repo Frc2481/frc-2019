@@ -16,7 +16,7 @@
 class CargoIntake : public frc::Subsystem {
 private:
   double m_position;
-  TalonSRX* m_intakeMotor;
+  VictorSPX* m_intakeMotor;
   TalonSRX* m_extendMotor;
   CTREMagEncoder* m_extendEncoder;
 

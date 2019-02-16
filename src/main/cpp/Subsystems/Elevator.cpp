@@ -9,13 +9,19 @@
 
 Elevator::Elevator() : Subsystem("Elevator") {
   m_masterElevator = new TalonSRX(MASTER_ELEVATOR);
-  m_slaveElevator = new TalonSRX(SLAVE_ELEVATOR);
+  m_slaveElevator = new VictorSPX(SLAVE_ELEVATOR);
   m_elevatorSlideA = new frc::DoubleSolenoid(ELEVATOR_SLIDE_SOLENOID_A1, ELEVATOR_SLIDE_SOLENOID_A2);
   m_elevatorSlideB = new frc::DoubleSolenoid(ELEVATOR_SLIDE_SOLENOID_B1, ELEVATOR_SLIDE_SOLENOID_B2);
 
   m_elevatorEncoder = new CTREMagEncoder(m_masterElevator, "ELEVATOR_ENCODER");
 
   ctre::phoenix::motorcontrol::can::TalonSRXConfiguration talonConfig;
+
+  m_slaveElevator->Set(ControlMode::Follower, MASTER_ELEVATOR);
+  m_masterElevator->Set(ControlMode::MotionMagic, 0);
+  m_masterElevator->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
+  m_masterElevator->EnableCurrentLimit(false);
+  m_masterElevator->ConfigAllSettings(talonConfig);
 
 // up gains
   talonConfig.slot0.kF = 0; //TODO
@@ -28,9 +34,6 @@ Elevator::Elevator() : Subsystem("Elevator") {
   talonConfig.slot1.kP = 0;
   talonConfig.slot1.kI = 0;
   talonConfig.slot1.kD = 0;
-
-  m_slaveElevator->Set(ControlMode::Follower, MASTER_ELEVATOR);
-  m_masterElevator->Set(ControlMode::MotionMagic, 0);
   
   talonConfig.forwardLimitSwitchSource = LimitSwitchSource_FeedbackConnector;
   talonConfig.reverseLimitSwitchSource = LimitSwitchSource_FeedbackConnector;
@@ -43,11 +46,8 @@ Elevator::Elevator() : Subsystem("Elevator") {
   talonConfig.motionCruiseVelocity = 0; //TODO: change
   talonConfig.motionAcceleration = 0; //TODO: change
 
-  m_masterElevator->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
-
   talonConfig.peakCurrentDuration = 0; //TODO:
   talonConfig.continuousCurrentLimit = 30; //TODO:
-  m_masterElevator->EnableCurrentLimit(false);
   talonConfig.peakCurrentLimit = 0; //TODO
   talonConfig.primaryPID.selectedFeedbackSensor = CTRE_MagEncoder_Relative;
 
@@ -55,9 +55,6 @@ Elevator::Elevator() : Subsystem("Elevator") {
   talonConfig.forwardSoftLimitEnable = true;
   talonConfig.reverseSoftLimitThreshold = 0;
   talonConfig.reverseSoftLimitEnable = true;
-
-  m_masterElevator->GetAllConfigs(talonConfig);
-  m_slaveElevator->GetAllConfigs(talonConfig);
 
   m_isElevatorZeroed = false;
   m_isSlideForward = false;

@@ -50,7 +50,7 @@ class Elevator : public frc::Subsystem {
 
  private:
   TalonSRX* m_masterElevator;
-  TalonSRX* m_slaveElevator;
+  VictorSPX* m_slaveElevator;
   frc::DoubleSolenoid* m_elevatorSlideA;
   frc::DoubleSolenoid* m_elevatorSlideB;
   CTREMagEncoder* m_elevatorEncoder;

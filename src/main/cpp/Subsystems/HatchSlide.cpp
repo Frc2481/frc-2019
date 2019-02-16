@@ -17,27 +17,21 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
   m_motor->SetSensorPhase(true);
   m_motor->SetInverted(false);
   m_motor->SelectProfileSlot(0, 0);
+  m_motor->SetNeutralMode(Brake);
+  m_motor->SetStatusFramePeriod(Status_2_Feedback0_, 10, 0);
+  m_motor->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
+  m_motor->EnableCurrentLimit(false);
+  m_motor->ConfigAllSettings(talonConfig);
 
   talonConfig.slot0.kF = 0.1528;
   talonConfig.slot0.kP = 0.07;
-
-  m_motor->SetNeutralMode(Brake);
-
+  talonConfig.slot0.allowableClosedloopError = 0;
   talonConfig.motionCruiseVelocity = 6500; //convert to talonConfig speed: encoder count/100 ms / 2.0
   talonConfig.motionAcceleration = 13000; //9200
-
-  m_motor->SetStatusFramePeriod(Status_2_Feedback0_, 10, 0);
-  m_motor->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
-
-  talonConfig.slot0.allowableClosedloopError = 0;
-
-  // m_motor->ConfigPeakCurrentDuration(0, 0); //TODO
-  // m_motor->ConfigContinuousCurrentLimit(30, 0); //TODO
-  m_motor->EnableCurrentLimit(false);
-  // m_motor->ConfigPeakCurrentLimit(0, 0); //TODO
+  talonConfig.peakCurrentDuration = 0; //TODO
+  talonConfig.continuousCurrentLimit = 30; //TODO
+  talonConfig.peakCurrentLimit = 0; //TODO
   talonConfig.primaryPID.selectedFeedbackSensor = CTRE_MagEncoder_Relative;
-
-  m_motor->ConfigAllSettings(talonConfig);
 
   nt::NetworkTableInstance::GetDefault().SetUpdateRate(.01);
 

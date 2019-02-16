@@ -13,7 +13,7 @@ MotorVelocityController::MotorVelocityController()
 }
 
 MotorVelocityController::MotorVelocityController(
-    TalonSRX* pTalon,
+    BaseMotorController* pController,
     bool inverted,
     double kp,
     double ki,
@@ -26,7 +26,7 @@ MotorVelocityController::MotorVelocityController(
     double iErrorLim,
     unsigned ticksPerRev)
     
-    : m_pDriveMotor(pTalon),
+    : m_pDriveMotor(pController),
     m_kv(kv),
     m_kap(kap),
 	m_kan(kan),
