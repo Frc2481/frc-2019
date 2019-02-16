@@ -10,6 +10,9 @@ while True:
     sd.putNumber("ElevatorSlidePosition", 3*(math.sin(i*0.125)+1))
     sd.putNumber("ElevatorPosition", 20*(math.sin(i*0.125)+1))
     sd.putNumber("HatchSlidePosition", 10*(math.sin(i*0.125)+1))
+    sd.putNumber("IntakePosition", 7*(math.sin(i*0.125)+1))
+    sd.putNumber("LineStrip1Position", 10*math.sin(i*0.125))
+    sd.putNumber("LineStrip2Position", 10*math.sin(i*0.125+math.pi))
 
     cargoOrHatch = (i%300)/100 #Use integer division to our advantage.  0 - nothing, 1 - cargo, 2 - hatch
     sd.putBoolean("HasCargo", cargoOrHatch == 1)

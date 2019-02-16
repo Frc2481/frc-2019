@@ -47,12 +47,12 @@
 			var intersectPlane, selection, raycaster, offset;
 
 			//Specify object locations and rotations globally here.  This allows us to change locations by offsets from NetworkTables in animation
-			var numMeshes = 8; //6 robot components, 1 cargo, 1 hatch panel
+			var numMeshes = 10; //6 robot components, 1 cargo, 1 hatch panel, 2 line strips
 			var robotFrame, cargoIntakeAssembly, elevatorBase, elevatorMid, elevatorTop, hatchSlide;
-			var cargo, hatchPanel;
+			var cargo, hatchPanel, lineStrip1, lineStrip2;
 
 			var framePos = new THREE.Vector3(0, 0, 0);
-			var intakePos = new THREE.Vector3(-2.508141780271359, 10.230085621335952, -0.10246555939861768);
+			var intakePos = new THREE.Vector3(2.3801880380123013, 10.184616067963722, 28.801895027513734);
 			var elevatorBasePos = new THREE.Vector3(0.03925090690609334, 5.475468811153478, 27.381542591082276);
 			//Offsets for components that are attached to other moving components
 			var elevatorMidOffset = new THREE.Vector3(0.0, 0.0, 0.0);
@@ -60,7 +60,7 @@
 			var hatchSlideOffset = new THREE.Vector3(5.908163308124815, 0.0, 0.0);
 
 			var frameRot = new THREE.Euler(-Math.PI/2, 0, 0);
-			var intakeRot = new THREE.Euler(-Math.PI/2, 0, 0);
+			var intakeRot = new THREE.Euler(-Math.PI/2, 0, Math.PI);
 			var elevatorBaseRot = new THREE.Euler(-Math.PI/2, 0, Math.PI);
 			var elevatorMidRot = new THREE.Euler(-Math.PI/2, 0, Math.PI);
 			var elevatorTopRot = new THREE.Euler(-Math.PI/2, 0, Math.PI);
@@ -68,6 +68,7 @@
 
 			var cargoOffset = new THREE.Vector3(5.404175389054878, 20.4146, 8.37987);
 			var hatchOffset = new THREE.Vector3(5.404175389054878, 20.4146, 8.37987);
+			var lineStripPos = new THREE.Vector3(0.0, -5.0, 15.0);
 
 			init();
 			animate();
@@ -136,6 +137,10 @@
 				hatchPanel.material.color.set(0xffff00);
 				hatchPanel.material.visible = false;
 
+				var lineStripGeometry = new THREE.PlaneBufferGeometry(2.0, 70.0);
+				lineStrip1 = addMesh(lineStripGeometry, lineStripPos, new THREE.Euler(-Math.PI/2, 0.0, 0.0));
+				lineStrip2 = addMesh(lineStripGeometry, lineStripPos, new THREE.Euler(-Math.PI/2, 0.0, 0.0));
+
 				// Lights
 				scene.add(new THREE.HemisphereLight(0xffffff, 0x000000));
 				var dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
@@ -168,7 +173,7 @@
 				controls.target = cameraTarget;
 
 				window.addEventListener('resize', onWindowResize, false);
-				window.addEventListener("keydown", onKeyPressed, false);
+				window.addEventListener('keydown', onKeyPressed, false);
 				window.addEventListener('mousedown', onDocumentMouseDown, false);
         		window.addEventListener('mousemove', onDocumentMouseMove, false);
 				window.addEventListener('mouseup', onDocumentMouseUp, false);
@@ -292,10 +297,33 @@
 					EDIT_MODE = !EDIT_MODE;
 
 					if(EDIT_MODE)
+					{
+						elevatorMid.originalPosition.addVectors(elevatorBase.originalPosition, elevatorMidOffset);
+						elevatorTop.originalPosition.addVectors(elevatorMid.originalPosition, elevatorTopOffset);
+						hatchSlide.originalPosition.addVectors(elevatorTop.originalPosition, hatchSlideOffset);
 						resetMeshPositions();
+						cargo.material.visible = false;
+						hatchPanel.material.visible = false;
+					}
 					else
+					{
 						setMeshOriginalPositions();
+					}
 				}
+
+				/*if(event.code == "KeyW")
+				{
+					var camDir = new THREE.Vector3();
+					camera.getWorldDirection(camDir);
+					camera.position.add(camDir.multiplyScalar(2.0));
+				}
+
+				if(event.code == "KeyS")
+				{
+					var camDir = new THREE.Vector3();
+					camera.getWorldDirection(camDir);
+					camera.position.sub(camDir.multiplyScalar(2.0));
+				}*/
 			}
 
 			function setMeshOriginalPositions()
@@ -316,7 +344,8 @@
 
 			function animate()
 			{
-				var ntElevatorSlidePos, ntElevatorPos, ntHatchSlidePos, hasCargo, hasHatch;
+				var ntIntakePos, ntElevatorSlidePos, ntElevatorPos, ntHatchSlidePos;
+				var hasCargo, hasHatch, ntLineStrip1Pos, ntLineStrip2Pos;
 				try
 				{
 					// Set sky color depending on whether Network Tables is connected
@@ -334,8 +363,11 @@
 					ntElevatorSlidePos = NetworkTables.getValue("/SmartDashboard/ElevatorSlidePosition", 0.0);
 					ntElevatorPos = NetworkTables.getValue("/SmartDashboard/ElevatorPosition", 0.0);
 					ntHatchSlidePos = NetworkTables.getValue("/SmartDashboard/HatchSlidePosition", 0.0);
+					ntIntakePos = NetworkTables.getValue("/SmartDashboard/IntakePosition", 0.0);
 					hasCargo = NetworkTables.getValue("/SmartDashboard/HasCargo", false);
 					hasHatch = NetworkTables.getValue("/SmartDashboard/HasHatch", false);
+					ntLineStrip1Pos = NetworkTables.getValue("/SmartDashboard/LineStrip1Position", 0.0);
+					ntLineStrip2Pos = NetworkTables.getValue("/SmartDashboard/LineStrip2Position", 0.0);
 				}
 				catch(e)
 				{
@@ -351,6 +383,8 @@
 					try
 					{
 						elevatorBase.position.setZ(elevatorBasePos.z - ntElevatorSlidePos);
+
+						cargoIntakeAssembly.position.setZ(intakePos.z + ntIntakePos);
 
 						var newElevatorMidPos = new THREE.Vector3();
 						newElevatorMidPos.addVectors(elevatorBase.position, elevatorMidOffset);
@@ -373,11 +407,14 @@
 						hatchPanel.position.addVectors(newHatchSlidePos, hatchOffset);
 						hatchPanel.material.visible = hasHatch;
 
+						lineStrip1.position.setX(lineStripPos.x - ntLineStrip1Pos);
+						lineStrip2.position.setX(lineStripPos.x - ntLineStrip2Pos);
+
 						// This was a test of dynamically changing the color of a material based off data from Network Tables
-						/*if(pos > 3.0)
-							elevatorAssembly.material.color.set(0x0000ff);
+						/*if(ntElevatorSlidePos > 3.0)
+							elevatorBase.material.color.set(0x0000ff);
 						else
-							elevatorAssembly.material.color.set(0x00ff00);*/
+							elevatorBase.material.color.set(0x00ff00);*/
 					}
 					catch(e)
 					{
