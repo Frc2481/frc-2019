@@ -12,6 +12,7 @@
 #include "Robot.h"
 #include "Subsystems/HatchSlide.h"
 #include "CommandBase.h"
+#include "OI.h"
 
 class HatchSlideGoToPosition : public frc::InstantCommand {
   int m_setPoint;
@@ -20,7 +21,14 @@ class HatchSlideGoToPosition : public frc::InstantCommand {
       Requires(CommandBase::m_pHatchSlide.get());
     }
     void Initialize() {
-      m_setPoint = CommandBase::m_pHatchSlide->ConvertInchesToTicks(-CommandBase::m_pHatchSlide->GetPulseDist());
+      m_setPoint = CommandBase::m_pHatchSlide->ConvertInchesToTicks(-CommandBase::m_pHatchSlide->GetBrightPulseDist());
+
+      if(CommandBase::m_pOI->GetOperatorStick()->GetRawButton(XBOX_A_BUTTON)) {
+        if(CommandBase::m_pHatchSlide->GetBrightPulseDist() > CommandBase::m_pHatchSlide->GetDimPulseDist()) {
+          m_setPoint = CommandBase::m_pHatchSlide->ConvertInchesToTicks(-CommandBase::m_pHatchSlide->GetDimPulseDist());
+        }
+      }
+
       if(CommandBase::m_pHatchSlide->IsLineVisible() && CommandBase::m_pHatchSlide->IsHatchSlideEnabled()) {
         CommandBase::m_pHatchSlide->setSetPoint(m_setPoint);
       }

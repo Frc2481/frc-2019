@@ -256,8 +256,10 @@ void loop()
   //Serial.print(activeLights.size());
 
   //Analyze our list of active lights and calculate our offset
-  float val = findOffset();
-  analogWrite(2, (int)(val * 8));
+  float val1 = findBrightestOffset();
+  float val2 = findBrightestOffset();
+  analogWrite(2, (int)(val1 * 8));
+  analogWrite(3, (int)(val2 * 8));
   
   delay(25);
 }
