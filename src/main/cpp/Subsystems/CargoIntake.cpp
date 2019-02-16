@@ -10,8 +10,8 @@
 #include "RobotParameters.h"
 
 CargoIntake::CargoIntake() : Subsystem("CargoIntake") {
-  m_intakeMotor = new VictorSPX(CARGO_INTAKE_MOTOR);
-  m_extendMotor = new TalonSRX(CARGO_INTAKE_EXTEND_MOTOR);
+  m_intakeMotor = new VictorSPX(CARGO_INTAKE_MOTOR_ID);
+  m_extendMotor = new TalonSRX(CARGO_INTAKE_EXTEND_MOTOR_ID);
   m_extendEncoder = new CTREMagEncoder(m_extendMotor, "CARGO_INTAKE_ENCODER");
 
 	ctre::phoenix::motorcontrol::can::TalonSRXConfiguration talonConfig;
@@ -19,7 +19,6 @@ CargoIntake::CargoIntake() : Subsystem("CargoIntake") {
   m_extendMotor->Set(ControlMode::MotionMagic, 0);
   m_extendMotor->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
   m_extendMotor->EnableCurrentLimit(false);
-  m_extendMotor->ConfigAllSettings(talonConfig);
 
   talonConfig.slot0.kF = 0;
   talonConfig.slot0.kP = 0;
@@ -40,12 +39,14 @@ CargoIntake::CargoIntake() : Subsystem("CargoIntake") {
   talonConfig.reverseSoftLimitThreshold = 0;
   talonConfig.reverseSoftLimitEnable = true;
 
-  m_position = 0;
+  m_extendMotor->ConfigAllSettings(talonConfig);
+  m_extendMotor->SelectProfileSlot(0, 0);
 }
 
 void CargoIntake::InitDefaultCommand() {}
 
 void CargoIntake::Periodic() {
+  frc::SmartDashboard::PutBoolean("intakeEncConnnected", m_extendEncoder->isConnected());
 }
 
 void CargoIntake::SetSpeedIn(double speed) {
@@ -57,15 +58,14 @@ void CargoIntake::SetSpeedOut(double speed) {
 void CargoIntake::StopIntake() {
     m_intakeMotor->Set(ControlMode::PercentOutput, 0);
 }
-bool CargoIntake::HasBall() {
+bool CargoIntake::HasBall() { //TODO
   return false;
 }
 void CargoIntake::SetPosition(double pos) {
   m_extendMotor->Set(ControlMode::MotionMagic, ConvertInchesToTicks(pos));
-  m_position = pos;
 }
 double CargoIntake::GetPosition() {
-  return m_extendMotor->GetActiveTrajectoryPosition();
+  return m_extendMotor->GetSelectedSensorPosition(0);
 }
 double CargoIntake::ConvertTicksToInches(int ticks) {
   return ticks / RobotParameters::k_cargoIntakeTicksPerInch;

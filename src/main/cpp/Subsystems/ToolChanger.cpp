@@ -8,11 +8,11 @@
 #include "Subsystems/ToolChanger.h"
 
 ToolChanger::ToolChanger() : Subsystem("ToolChanger") {
-  m_hatchTool = new frc::DoubleSolenoid(HATCH_TOOL_1, HATCH_TOOL_2);
-  m_cargoTool = new frc::DoubleSolenoid(CARGO_TOOL_1, CARGO_TOOL_2);
-  m_hatchExtender = new frc::DoubleSolenoid(HATCH_EXTENDER_1, HATCH_EXTENDER_2);
+  m_hatchTool = new frc::DoubleSolenoid(HATCH_TOOL_SOLENOID);
+  m_cargoTool = new frc::DoubleSolenoid(CARGO_TOOL_SOLENOID);
+  m_hatchExtender = new frc::DoubleSolenoid(HATCH_EXTENDER_SOLENOID);
 
-  m_limitSwitch = new frc::DigitalInput(TOOL_CHANGER_LIMIT_SWITCH);
+  // m_limitSwitch = new frc::DigitalInput(TOOL_CHANGER_LIMIT_SWITCH);
 
   m_isHatchToolHeld = false;
   m_isCargoToolHeld = false; 
@@ -72,6 +72,6 @@ void ToolChanger::SetHasHatch(bool hasHatch){
   m_hasCargo = false;
 }
 
-bool ToolChanger::GetIsLimitSwitchTriggered() {
-  return m_limitSwitch->Get();
-}
+// bool ToolChanger::GetIsLimitSwitchTriggered() {
+//   return m_limitSwitch->Get();
+// }

@@ -8,7 +8,7 @@
 #include "Subsystems/Climber.h"
 
 Climber::Climber() : Subsystem("Climber"),  m_pidController(m_climber->GetPIDController()) {
-  m_climber = new rev::CANSparkMax{CLIMBER, rev::CANSparkMax::MotorType::kBrushless};
+  m_climber = new rev::CANSparkMax{CLIMBER_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless};
 
   m_pidController.SetFF(0); //TODO
   m_pidController.SetP(0);

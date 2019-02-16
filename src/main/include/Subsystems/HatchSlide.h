@@ -18,14 +18,17 @@ class HatchSlide : public frc::Subsystem {
  private:
   TalonSRX* m_motor;
   CTREMagEncoder* m_slideEncoder;
-  frc::Counter *m_irSensor;
+  frc::Counter *m_irSensorBright;
+  frc::Counter *m_irSensorDim;
   double m_desiredSetpoint;
   double m_hatchPosition;
   bool m_isHatchZeroed;
-  double m_pulse;
+  double m_pulseBright;
+  double m_pulseDim;
   bool m_isVibratable;
   bool m_encoderConnected;
   bool m_hatchSlideEnabled;
+  bool m_oldTargetValid;
 
  public:
   HatchSlide();
@@ -36,8 +39,9 @@ class HatchSlide : public frc::Subsystem {
   double GetHatchPosition();
   int ConvertInchesToTicks(double inches);
   double ConvertTicksToInches(int ticks);
-  double GetDesiredPos();
-  double GetPulseDist();
+  double GetSuggestedPos();
+  double GetBrightPulseDist();
+  double GetDimPulseDist();
   bool IsLineVisible();
   bool IsSlideOnTarget();
   bool IsVibratable();

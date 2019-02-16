@@ -8,20 +8,19 @@
 #include "subsystems/Elevator.h"
 
 Elevator::Elevator() : Subsystem("Elevator") {
-  m_masterElevator = new TalonSRX(MASTER_ELEVATOR);
-  m_slaveElevator = new VictorSPX(SLAVE_ELEVATOR);
-  m_elevatorSlideA = new frc::DoubleSolenoid(ELEVATOR_SLIDE_SOLENOID_A1, ELEVATOR_SLIDE_SOLENOID_A2);
-  m_elevatorSlideB = new frc::DoubleSolenoid(ELEVATOR_SLIDE_SOLENOID_B1, ELEVATOR_SLIDE_SOLENOID_B2);
+  m_masterElevator = new TalonSRX(MASTER_ELEVATOR_MOTOR_ID);
+  m_slaveElevator = new VictorSPX(SLAVE_ELEVATOR_MOTOR_ID);
+  m_elevatorSlideA = new frc::DoubleSolenoid(ELEVATOR_SLIDE_SOLENOID_A);
+  m_elevatorSlideB = new frc::DoubleSolenoid(ELEVATOR_SLIDE_SOLENOID_B);
 
   m_elevatorEncoder = new CTREMagEncoder(m_masterElevator, "ELEVATOR_ENCODER");
 
   ctre::phoenix::motorcontrol::can::TalonSRXConfiguration talonConfig;
 
-  m_slaveElevator->Set(ControlMode::Follower, MASTER_ELEVATOR);
+  m_slaveElevator->Set(ControlMode::Follower, MASTER_ELEVATOR_MOTOR_ID);
   m_masterElevator->Set(ControlMode::MotionMagic, 0);
   m_masterElevator->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
   m_masterElevator->EnableCurrentLimit(false);
-  m_masterElevator->ConfigAllSettings(talonConfig);
 
 // up gains
   talonConfig.slot0.kF = 0; //TODO
@@ -58,6 +57,9 @@ Elevator::Elevator() : Subsystem("Elevator") {
 
   m_isElevatorZeroed = false;
   m_isSlideForward = false;
+
+  m_masterElevator->ConfigAllSettings(talonConfig);
+  m_masterElevator->SelectProfileSlot(0, 0);
 }
 
 void Elevator::InitDefaultCommand() {}
@@ -83,7 +85,7 @@ double Elevator::GetElevatorPosition() {
 }
 
 double Elevator::GetElevatorError() {
-  return m_masterElevator->GetLastError();
+  return m_masterElevator->GetClosedLoopError();
 }
 
 bool Elevator::IsElevatorEncoderZeroed() {

@@ -15,7 +15,8 @@ class ToolChangerWaitForReleaseCommand : public frc::Command {
  public:
   ToolChangerWaitForReleaseCommand() : Command("ToolChangerWaitForReleaseCommand") {}
   bool IsFinished() override {
-    return CommandBase::m_pToolChanger->GetIsLimitSwitchTriggered();
+    // return CommandBase::m_pToolChanger->GetIsLimitSwitchTriggered();
+    return false;
   }
 };
 
