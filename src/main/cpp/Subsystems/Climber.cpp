@@ -6,26 +6,36 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Subsystems/Climber.h"
+#include "Commands/Climber/ClimberDriveWithJoystickCommand.h"
 
-Climber::Climber() : Subsystem("Climber"),  m_pidController(m_climber->GetPIDController()) {
-  m_climber = new rev::CANSparkMax{CLIMBER_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless};
+Climber::Climber() : Subsystem("Climber"),  
+  m_climberMotor(new rev::CANSparkMax(CLIMBER_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless)),
+  m_pidController(m_climberMotor->GetPIDController()) {
+  
+  // m_climberMotor->Re RestoreFactoryDefaults();
 
-  m_pidController.SetFF(0); //TODO
-  m_pidController.SetP(0);
-  m_pidController.SetI(0);
-  m_pidController.SetD(0);
+  m_climberSolenoid = new frc::DoubleSolenoid(CLIMBER_SOLENOID);
 
-  m_climber->SetParameter(rev::CANSparkMax::ConfigParameter::kSoftLimitFwdEn, 0);
-  m_climber->SetParameter(rev::CANSparkMax::ConfigParameter::kSoftLimitRevEn, 0);
+  // m_pidController.SetFF(0); //TODO
+  // m_pidController.SetP(0);
+  // m_pidController.SetI(0);
+  // m_pidController.SetD(0);
 
-  m_pidController.SetOutputRange(0, 0); //TODO
-  m_pidController.SetReference(0, rev::ControlType::kVelocity);
+  // m_climberMotor->SetParameter(rev::CANSparkMax::ConfigParameter::kSoftLimitFwdEn, 0);
+  // m_climberMotor->SetParameter(rev::CANSparkMax::ConfigParameter::kSoftLimitRevEn, 0);
 
-  m_climber->SetSmartCurrentLimit(0);
+  // m_pidController.SetOutputRange(0, 0); //TODO
+  // m_pidController.SetReference(0, rev::ControlType::kVelocity);
+
+  m_climberMotor->SetSmartCurrentLimit(200);
+
+  m_feetActivated = false;
+
+  m_climberSolenoid->Set(frc::DoubleSolenoid::kReverse);
 }
 
 void Climber::InitDefaultCommand() {
-
+  SetDefaultCommand(new ClimberDriveWithJoystickCommand());
 }
 
 void Climber::ClimberRetract() {
@@ -39,4 +49,22 @@ void Climber::ClimberLevel3() {
 }
 double Climber::ConvertInchesToTicks(int inches) {
   return inches * RobotParameters::k_climberTicksPerInch;
+}
+void Climber::ActivateFeet() {
+  m_climberSolenoid->Set(frc::DoubleSolenoid::kReverse);
+}
+void Climber::DeactivateFeet() {
+  m_climberSolenoid->Set(frc::DoubleSolenoid::kForward);
+}
+bool Climber::IsFootToggleActivated() {
+  return m_feetActivated;
+}
+void Climber::ActivateFootToggle() {
+  m_feetActivated = true;
+}
+void Climber::DeactivateFootToggle() {
+  m_feetActivated = false;
+}
+void Climber::SetOpenLoopSpeed(double speed) {
+  m_climberMotor->Set(speed);
 }

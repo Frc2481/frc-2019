@@ -20,27 +20,27 @@ class ElevatorRaiseCommand : public frc::Command {
       Requires(CommandBase::m_pElevator.get());
   }
   void Initialize() override {
-      CommandBase::m_pElevator->SetOpenLoopSpeed(0.75);
   }
-  void End() override {
-      CommandBase::m_pElevator->SetOpenLoopSpeed(0);
+  void Execute() override {
+		double percentVelY = -CommandBase::m_pOI->GetOperatorStick()->GetRawAxis(XBOX_RIGHT_Y_AXIS);
+
+		// update climb
+		CommandBase::m_pElevator->SetOpenLoopSpeed(percentVelY); 
+  }
+  void End() {
+    CommandBase::m_pElevator->SetOpenLoopSpeed(0);
   }
   void Interrupted() override {
     End();
   }
   bool IsFinished() override {
-    // if not in (back & in) OR (front & out), return true
-    if(!(((CommandBase::m_pElevator->GetElevatorSlidePosition() == CommandBase::m_pElevator->BACK) && !CommandBase::m_pCargoIntake->IsIntakeOut()) || 
-        ((CommandBase::m_pElevator->GetElevatorSlidePosition() == CommandBase::m_pElevator->FRONT) && CommandBase::m_pCargoIntake->IsIntakeOut()))) {
-      return false;
-    }    
-    //if (back & in) OR (front & out) & (current and setpoint above max) OR (current and setpoint below min), move freely
-    else if((CommandBase::m_pElevator->GetElevatorPosition() > RobotParameters::k_elevatorCollisionMax) || 
-          (CommandBase::m_pElevator->GetElevatorPosition() < (RobotParameters::k_elevatorCollisionMin))) {
-        return false;
+    //if traveling through protected zone while cargoIntake out, don't allow movement
+    if(CommandBase::m_pCargoIntake->IsIntakeOut() &&
+        CommandBase::m_pElevator->IsPositionInProtectedZone(CommandBase::m_pElevator->GetElevatorPosition())) {
+      return true;
     }
     else {
-      return true;
+      return false;
     }
   }
 };

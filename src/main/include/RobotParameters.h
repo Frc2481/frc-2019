@@ -6,40 +6,33 @@ namespace RobotParameters {
 	static constexpr unsigned k_updateRate = 50; // Hz
 
     // drivetrain
-	static constexpr bool   k_leftDriveMotorInverted = false;
-    static constexpr double k_drivetrainTrimKv = 0.01; // range of -0.5 to 0.5
-    static constexpr double k_wheelRad = 2.9; // in
-    static constexpr double k_wheelTrack = 20; // in
-    static constexpr double k_wheelBase = 20; // in
-    static constexpr double k_maxSpeed = 110; // in/s
-    static constexpr double k_maxAccel = 100; // in/s^2
-    static constexpr double k_maxDeccel = -50; // in/s^2
-    static constexpr double k_maxCentripAccel = 50; // in/s^2
-    static constexpr double k_cornerStiffCoeff = 0;
-    static constexpr double k_driveMotorToEncoderGearRatioLow = 11; // gear ratio from drive motor to encoder in low gear
-    static constexpr double k_driveMotorToEncoderGearRatioHigh = 25; // gear ratio from drive motor to encoder in high gear
-    static constexpr double k_driveEncoderToWheelGearRatio = 12.0 / 20.0 * 1.0 / 3.0; // gear ratio from drive encoder to wheel
-    static constexpr double k_wheelSlipNoiseRatio = 1.2; // wheel encoder noise ratio used to detect wheel slip
+    static constexpr double k_wheelTrack = 26.3; // in
+    static constexpr double k_wheelBase = 23.2; // in
+    static constexpr double k_wheelRad = 1.5; // in
+    static constexpr double k_maxSpeed = 1; // in/s
+    static constexpr double k_maxAccel = 1; // in/s^2
+    static constexpr double k_maxDeccel = -1; // in/s^2
+    static constexpr double k_steerEncoderToWheelGearRatio = 1; // gear ratio from steer encoder to wheel
 
     // drive motors
-    static constexpr double k_driveMotorControllerKp = 0.2;
+    static constexpr double k_driveMotorControllerKp = 0;
     static constexpr double k_driveMotorControllerKi = 0;
     static constexpr double k_driveMotorControllerKd = 0;
-    static constexpr double k_driveMotorControllerKsf = 0.09;
-    static constexpr double k_driveMotorControllerKv = 0.00055;
-    static constexpr double k_driveMotorControllerKap = 0.00015;
-    static constexpr double k_driveMotorControllerKan = 0.00005;
+    static constexpr double k_driveMotorControllerKsf = 0;
+    static constexpr double k_driveMotorControllerKv = 0;
+    static constexpr double k_driveMotorControllerKap = 0;
+    static constexpr double k_driveMotorControllerKan = 0;
 
     // // steer motors
-    static constexpr double k_steerMotorControllerKp = 0;
+    static constexpr double k_steerMotorControllerKp = 3;
     static constexpr double k_steerMotorControllerKi = 0;
-    static constexpr double k_steerMotorControllerKd = 0;
+    static constexpr double k_steerMotorControllerKd = 40;
     static constexpr double k_steerMotorControllerKsf = 0;
     static constexpr double k_steerMotorControllerKv = 0;
     static constexpr double k_steerMotorControllerKap = 0;
     static constexpr double k_steerMotorControllerKan = 0;
 
-    static constexpr double k_openLoopSteerLimitPercent = 0;
+    static constexpr double k_openLoopSteerLimitPercent = 0.5;
 
     // path follower
     static constexpr double k_pathFollowerTimeoutAllowance = 0.5; // timeout path if takes longer than total path time plus this allowance (s)
@@ -68,20 +61,23 @@ namespace RobotParameters {
     static constexpr double k_numVelocities = 10;
 
     // HatchSlide
-    static constexpr double k_beltCircumference = 5.105; //1.625in * pi
+    static constexpr double k_beltCircumference = 1.128 * 3.14; //1.625in * pi
     static constexpr double k_feedForwardHatch = 0.148;
 
     // Elevator
     static constexpr double k_elevatorVelocity = 0;
     static constexpr double k_elevatorAccel = 0;
-    static constexpr double k_elevatorTicksPerInch = 1;
+    static constexpr double k_elevatorTicksPerRev = 4096;
+    static constexpr double k_elevatorBeltCircumference = 1.504 * 3.14;
     static constexpr double k_elevatorCollisionMin = 0;
-    static constexpr double k_elevatorCollisionMax = 0;
-    static constexpr double k_intakeCollisionHeight = 0; //may or may not be the same as one of the above
+    static constexpr double k_elevatorCollisionMax = 5000;
 
     // CargoIntake
-    static constexpr double k_cargoIntakeThreshold = 0;
-    static constexpr double k_cargoIntakeTicksPerInch = 1;
+    static constexpr double k_cargoIntakeThreshold = 0; // point where it's no longer safe to move elevator down onto it
+    static constexpr double k_cargoIntakeBeltCircumference = 1.128 * 3.14;
+    static constexpr double k_cargoIntakeTicksPerRev = 4096;
+    static constexpr double k_intakeSpeedFull = 1;
+    static constexpr double k_intakeSpeedPartial = 0.4;
 
     // Climber
     static constexpr double k_climberTicksPerInch = 1;

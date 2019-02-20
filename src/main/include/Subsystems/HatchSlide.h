@@ -50,6 +50,7 @@ class HatchSlide : public frc::Subsystem {
   void EnableHatchSlide();
   void DisableHatchSlide();
   bool IsHatchSlideEnabled();
+  void SetOpenLoopSpeed(double speed);
 };
 
 #endif //SRC_HATCH_SLIDE_H

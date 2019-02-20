@@ -6,7 +6,8 @@ MotorPositionController::MotorPositionController()
 	m_kv(0),
 	m_kap(0),
 	m_kan(0),
-	m_ticksPerRev(0) {
+	m_ticksPerRev(0),
+    m_enableMotionMagic(false) {
 }
 
 MotorPositionController::MotorPositionController(
@@ -30,8 +31,10 @@ MotorPositionController::MotorPositionController(
 	m_kap(kap),
 	m_kan(kan),
     m_ksf(ksf),
-    m_ticksPerRev(ticksPerRev) {
+    m_ticksPerRev(ticksPerRev),
+    m_enableMotionMagic(false) {
     
+    m_pDriveMotor->ConfigFactoryDefault();
     m_pDriveMotor->SelectProfileSlot(0, 0);
 	m_pDriveMotor->Set(ControlMode::Position, 0);
 	m_pDriveMotor->Config_kP(0, kp, 0);
@@ -47,7 +50,7 @@ MotorPositionController::MotorPositionController(
 	m_pDriveMotor->ConfigNominalOutputReverse(0.0, 0.0);
 	m_pDriveMotor->ConfigPeakOutputForward(1.0, 0.0);
 	m_pDriveMotor->ConfigPeakOutputReverse(-1.0, 0.0);
-	m_pDriveMotor->SetSensorPhase(true);
+	m_pDriveMotor->SetSensorPhase(false);
 	m_pDriveMotor->SetInverted(inverted);
 }
 

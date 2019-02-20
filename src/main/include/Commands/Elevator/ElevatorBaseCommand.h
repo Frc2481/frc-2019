@@ -23,33 +23,46 @@ class ElevatorBaseCommand : public frc::Command {
   }
   void Initialize() override {
     if(CommandBase::m_pToolChanger->HasCargo() && IsPositionSetPointAllowed(CARGO_HEIGHT)) {
-      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT);
+      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT, true);
     }
     else if(CommandBase::m_pToolChanger->HasHatch() && IsPositionSetPointAllowed(HATCH_HEIGHT)){
-      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT);
+      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT, true);
+    } else {
+      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT, true);
     }
   }
   
   bool IsFinished() override {
-    return fabs(CommandBase::m_pElevator->GetElevatorError()) < 1;
+    printf("checking is finished\n");
+    return CommandBase::m_pElevator->IsOnTarget();
   }
 
   bool IsPositionSetPointAllowed(int pos) {
-    // if not in (back & in) OR (front & out), return true
-    if(!(((CommandBase::m_pElevator->GetElevatorSlidePosition() == CommandBase::m_pElevator->BACK) && CommandBase::m_pCargoIntake->GetPosition() < RobotParameters::k_cargoIntakeThreshold) || 
-        ((CommandBase::m_pElevator->GetElevatorSlidePosition() == CommandBase::m_pElevator->FRONT) && CommandBase::m_pCargoIntake->GetPosition() > RobotParameters::k_cargoIntakeThreshold))) {
-      return true;
-    }
-    //if (back & in) OR (front & out) & (current and setpoint above max) OR (current and setpoint below min), move freely
-    else if((CommandBase::m_pElevator->GetElevatorPosition() > RobotParameters::k_elevatorCollisionMax 
-          && pos > RobotParameters::k_elevatorCollisionMax) || 
-          (CommandBase::m_pElevator->GetElevatorPosition() < RobotParameters::k_elevatorCollisionMin 
-          && pos < RobotParameters::k_elevatorCollisionMin)) {
-        return true;
-    }
-    else {
+    //if traveling through protected zone while cargoIntake out, don't allow movement
+    return true;
+    if(CommandBase::m_pCargoIntake->IsIntakeOut() &&
+          (CommandBase::m_pElevator->IsPositionInProtectedZone(CommandBase::m_pElevator->GetElevatorPosition()) ||
+          CommandBase::m_pElevator->IsPositionInProtectedZone(pos))) {
       return false;
     }
+    else {
+      return true;
+    }
+  }
+
+  void End() {
+if(CommandBase::m_pToolChanger->HasCargo() && IsPositionSetPointAllowed(CARGO_HEIGHT)) {
+      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT, false);
+    }
+    else if(CommandBase::m_pToolChanger->HasHatch() && IsPositionSetPointAllowed(HATCH_HEIGHT)){
+      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT, false);
+    } else {
+      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT, false);
+    }
+  }
+
+  void Interrupted() {
+    End();
   }
 };
 
@@ -57,14 +70,15 @@ template <int CARGO_HEIGHT, int HATCH_HEIGHT>
 class ElevatorBaseCommandGroup : public CommandGroup {
   public:
   ElevatorBaseCommandGroup(std::string name) : CommandGroup(name) {
-    AddSequential(new ElevatorBaseCommand<CARGO_HEIGHT, HATCH_HEIGHT>(name));
+    AddSequential(new ElevatorBaseCommand<CARGO_HEIGHT, HATCH_HEIGHT>(name), 3.0);
   }
 }; 
 
-typedef ElevatorBaseCommandGroup<0, 0> ElevatorHighCommand; //TODO
-typedef ElevatorBaseCommandGroup<0, 0> ElevatorMidCommand;
-typedef ElevatorBaseCommandGroup<0, 0> ElevatorLowCommand;
-typedef ElevatorBaseCommandGroup<0, 0> ElevatorCargoShipCommand;
+typedef ElevatorBaseCommandGroup<27393, 25412> ElevatorHighCommand; //TODO
+typedef ElevatorBaseCommandGroup<16075, 13180> ElevatorMidCommand;
+typedef ElevatorBaseCommandGroup<3918, 1273> ElevatorLowCommand;
+typedef ElevatorBaseCommandGroup<3918, 3918> ElevatorCargoLowCommand;
+typedef ElevatorBaseCommandGroup<12000, 1273> ElevatorCargoShipCommand;
 typedef ElevatorBaseCommandGroup<0, 0> ElevatorStowCommand; //keep both values here as zero
 
 #endif //SRC_ELEVATORBASECOMMAND

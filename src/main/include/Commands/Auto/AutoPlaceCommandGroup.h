@@ -13,7 +13,6 @@
 #include "Commands/ToolChanger/ToolChangerWaitForReleaseCommand.h"
 #include "Commands/ToolChanger/ToolChangerScoreCommand.h"
 #include "Commands/ToolChanger/ToolChangerRetractCommand.h"
-#include "Commands/Elevator/ElevatorSlideToPositionCommand.h"
 
 class AutoPlaceCommandGroup : public frc::CommandGroup {
  public:
@@ -22,12 +21,17 @@ class AutoPlaceCommandGroup : public frc::CommandGroup {
     Requires(CommandBase::m_pToolChanger.get());
 
     AddSequential(elevatorBaseCommand);
-    AddSequential(new ElevatorSlideToPositionCommand(Elevator::elevator_slide_position::FRONT));
     AddSequential(new HatchSlideWaitForOnTargetCommand());
     AddSequential(new ToolChangerScoreCommand());
     AddSequential(new ToolChangerWaitForReleaseCommand());
-    AddSequential(new ToolChangerRetractCommand());
     AddSequential(new ElevatorStowCommand("ElevatorStowCommand"));
+  
+    // state at end:
+    // Elevator: stow
+    // Cargo Intake: 
+    // Cargo: Free
+    // Hatch: Held
+    // HatchExt: Retracted  
   }
 };
 

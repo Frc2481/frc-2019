@@ -33,6 +33,7 @@ MotorVelocityController::MotorVelocityController(
 	m_ksf(ksf),
     m_ticksPerRev(ticksPerRev) {
 
+	m_pDriveMotor->ConfigFactoryDefault();
     m_pDriveMotor->SelectProfileSlot(0, 0);
 	m_pDriveMotor->Set(ControlMode::PercentOutput, 0);
 	m_pDriveMotor->Config_kP(0, kp, 0);

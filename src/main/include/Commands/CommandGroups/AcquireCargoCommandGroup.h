@@ -12,28 +12,49 @@
 #include "CommandBase.h"
 #include "Commands/CargoIntake/CargoIntakeBallCommand.h"
 #include "Commands/CargoIntake/CargoIntakeStopCommand.h"
-#include "Commands/CargoIntake/CargoIntakeWaitForBallCommand.h"
 #include "Commands/CargoIntake/CargoIntakeBaseCommand.h"
 #include "Commands/ToolChanger/ToolChangerFreeCargoCommand.h"
 #include "Commands/ToolChanger/ToolChangerHoldCargoCommand.h"
+#include "Commands/ToolChanger/ToolChangerFreeHatchCommand.h"
 #include "Commands/ToolChanger/ToolChangerSetHasCargoCommand.h"
+#include "Commands/ToolChanger/ToolChangerRetractCommand.h"
+#include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
 #include "Commands/Elevator/ElevatorBaseCommand.h"
 #include "Commands/CargoIntake/CargoIntakeBaseCommand.h"
+#include "Commands/CargoIntake/CargoIntakeStopCommand.h"
+#include "Commands/CargoIntake/CargoIntakeWaitForBallCommand.h"
 
 class AcquireCargoCommandGroup : public frc::CommandGroup {
  public:
   AcquireCargoCommandGroup() : CommandGroup("AcquireCargoCommandGroup") {
-    AddParallel(new ToolChangerHoldCargoCommand());
-    AddSequential(new ElevatorMidCommand("ElevatorMidCommand"));
+    AddSequential(new ToolChangerSetHasCargoCommand(true));
+    AddSequential(new ToolChangerFreeHatchCommand());
+    AddSequential(new ToolChangerRetractCommand());
     AddSequential(new ToolChangerFreeCargoCommand());
-    AddParallel(new CargoIntakeBallCommand(0)); //TODO: change speed
-    AddSequential(new CargoIntakeFrontCommand("CargoIntakeFrontCommand"));
+    AddSequential(new ElevatorMidCommand("ElevatorMidCommand"));
+    AddSequential(new CargoIntakeOutCommand("CargoIntakeFrontCommand"));
+    AddSequential(new ElevatorStowCommand("ElevatorStowCommand"));
+    AddSequential(new CargoIntakeBallCommand(1));
     AddSequential(new CargoIntakeWaitForBallCommand());
-    AddParallel(new CargoIntakeBackCommand("CargoIntakeBackCommand"));
-    AddSequential(new ElevatorLowCommand("ElevatorLowCommand"));
-    AddParallel(new CargoIntakeStopCommand());
+    AddSequential(new WaitCommand(0.1)); //shrink as we become confident
+    AddSequential(new CargoIntakeBallCommand(0.3));
+    // AddSequential(new WaitCommand(0.1)); //shrink as we become confident
     AddSequential(new ToolChangerHoldCargoCommand());
-    AddParallel(new ToolChangerSetHasCargoCommand(true));
+    AddSequential(new WaitCommand(0.1)); //shrink as we become confident
+    AddSequential(new CargoIntakeBallCommand(0.1));
+    AddSequential(new ElevatorMidCommand("ElevatorMidCommand"));
+    AddSequential(new CargoIntakeStopCommand());
+    // AddSequential(new WaitCommand(1)); //shrink as we become confident
+    AddSequential(new CargoIntakeInCommand("CargoIntakeBackCommand"));
+    // AddSequential(new WaitCommand(1)); //shrink as we become confident
+    AddSequential(new ElevatorCargoLowCommand("ElevatorCargoLowCommand"));
+
+    // state at end:
+    // Elevator: Low
+    // Cargo Intake: In
+    // Cargo: Held
+    // Hatch: Held
+    // HatchExt: Retracted
   }
 };
 

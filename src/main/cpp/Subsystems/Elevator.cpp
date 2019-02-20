@@ -10,21 +10,24 @@
 Elevator::Elevator() : Subsystem("Elevator") {
   m_masterElevator = new TalonSRX(MASTER_ELEVATOR_MOTOR_ID);
   m_slaveElevator = new VictorSPX(SLAVE_ELEVATOR_MOTOR_ID);
-  m_elevatorSlideA = new frc::DoubleSolenoid(ELEVATOR_SLIDE_SOLENOID_A);
-  m_elevatorSlideB = new frc::DoubleSolenoid(ELEVATOR_SLIDE_SOLENOID_B);
 
   m_elevatorEncoder = new CTREMagEncoder(m_masterElevator, "ELEVATOR_ENCODER");
 
   ctre::phoenix::motorcontrol::can::TalonSRXConfiguration talonConfig;
 
-  m_slaveElevator->Set(ControlMode::Follower, MASTER_ELEVATOR_MOTOR_ID);
+  m_slaveElevator->Follow(*m_masterElevator);
+
   m_masterElevator->Set(ControlMode::MotionMagic, 0);
   m_masterElevator->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
   m_masterElevator->EnableCurrentLimit(false);
+  m_masterElevator->SetInverted(true);
+  m_masterElevator->SetSensorPhase(true);
+  m_slaveElevator->SetInverted(false);
+  talonConfig.motionCurveStrength = 5;
 
 // up gains
-  talonConfig.slot0.kF = 0; //TODO
-  talonConfig.slot0.kP = 0;
+  talonConfig.slot0.kF = 0.42; //TODO
+  talonConfig.slot0.kP = 0.5;
   talonConfig.slot0.kI = 0;
   talonConfig.slot0.kD = 0;
 
@@ -42,27 +45,29 @@ Elevator::Elevator() : Subsystem("Elevator") {
   talonConfig.forwardLimitSwitchNormal = LimitSwitchNormal_NormallyOpen;
   talonConfig.reverseLimitSwitchNormal = LimitSwitchNormal_NormallyOpen;
 
-  talonConfig.motionCruiseVelocity = 0; //TODO: change
-  talonConfig.motionAcceleration = 0; //TODO: change
+  talonConfig.motionCruiseVelocity = 2400; //TODO: change
+  talonConfig.motionAcceleration = 4800; //TODO: change
 
   talonConfig.peakCurrentDuration = 0; //TODO:
   talonConfig.continuousCurrentLimit = 30; //TODO:
   talonConfig.peakCurrentLimit = 0; //TODO
   talonConfig.primaryPID.selectedFeedbackSensor = CTRE_MagEncoder_Relative;
 
-  talonConfig.forwardSoftLimitThreshold = 0; //TODO: change soft limit
+  talonConfig.forwardSoftLimitThreshold = 27450; //TODO: change soft limit
   talonConfig.forwardSoftLimitEnable = true;
-  talonConfig.reverseSoftLimitThreshold = 0;
+  talonConfig.reverseSoftLimitThreshold = 5200;
   talonConfig.reverseSoftLimitEnable = true;
 
   m_isElevatorZeroed = false;
-  m_isSlideForward = false;
 
   m_masterElevator->ConfigAllSettings(talonConfig);
   m_masterElevator->SelectProfileSlot(0, 0);
+
+  double m_desiredElevatorPosition = 0;
 }
 
-void Elevator::InitDefaultCommand() {}
+void Elevator::InitDefaultCommand() {
+}
 
 void Elevator::Periodic() {
   frc::SmartDashboard::PutBoolean("IsElevatorZeroed", m_isElevatorZeroed);
@@ -71,9 +76,20 @@ void Elevator::Periodic() {
   frc::SmartDashboard::PutBoolean("IsElevatorEncoderConnected", m_encoderConnected);
 }
 
-void Elevator::SetElevatorPosition(double setPos) {
-  m_masterElevator->Set(ControlMode::MotionMagic, ConvertInchesToTicks(setPos));
+void Elevator::SetElevatorPosition(double setPos, bool isMoving) {
+  if(setPos > 0) {
+    // m_masterElevator->Set(ControlMode::MotionMagic, ConvertInchesToTicks(setPos), DemandType::DemandType_ArbitraryFeedForward, 0.1);
+    m_masterElevator->Set(ControlMode::MotionMagic, setPos, DemandType::DemandType_ArbitraryFeedForward, 0.1);
+  }
+  else {
+  m_masterElevator->Set(ControlMode::MotionMagic, setPos);
+  // m_masterElevator->Set(ControlMode::MotionMagic, ConvertInchesToTicks(setPos));
+  }
   m_desiredElevatorPosition = setPos;
+}
+
+bool Elevator::IsOnTarget() {
+  return fabs(m_desiredElevatorPosition - m_masterElevator->GetSelectedSensorPosition()) < ConvertInchesToTicks(1);
 }
 void Elevator::ZeroElevatorEncoder() {
   m_masterElevator->SetSelectedSensorPosition(0, 0, 10);
@@ -85,7 +101,7 @@ double Elevator::GetElevatorPosition() {
 }
 
 double Elevator::GetElevatorError() {
-  return m_masterElevator->GetClosedLoopError();
+  return ConvertTicksToInches(m_masterElevator->GetClosedLoopError());
 }
 
 bool Elevator::IsElevatorEncoderZeroed() {
@@ -100,35 +116,18 @@ bool Elevator::IsReverseLimitSwitchClosed() {
 }
 
 double Elevator::ConvertTicksToInches(int ticks) {
-  return ticks / RobotParameters::k_elevatorTicksPerInch;
+  return (ticks * RobotParameters::k_elevatorBeltCircumference / RobotParameters::k_elevatorTicksPerRev) * 2;
 }
 int Elevator::ConvertInchesToTicks(double inches) {
-  return inches * RobotParameters::k_elevatorTicksPerInch;
+  return (inches * RobotParameters::k_elevatorTicksPerRev / RobotParameters::k_elevatorBeltCircumference) / 2;
 }
 
 void Elevator::SetOpenLoopSpeed(double speed) {
   m_masterElevator->Set(ControlMode::PercentOutput, speed);
 }
-
-void Elevator::SetElevatorSlidePosition(elevator_slide_position pos){
-  if(pos == FRONT){
-    m_elevatorSlideA->Set(frc::DoubleSolenoid::kForward);
-    m_elevatorSlideB->Set(frc::DoubleSolenoid::kForward);
-  }
-  else if(pos == MID){
-    m_elevatorSlideA->Set(frc::DoubleSolenoid::kForward);
-    m_elevatorSlideB->Set(frc::DoubleSolenoid::kReverse);
-  }
-  else{
-    m_elevatorSlideA->Set(frc::DoubleSolenoid::kReverse);
-    m_elevatorSlideB->Set(frc::DoubleSolenoid::kReverse);
-  }
-}
-
-Elevator::elevator_slide_position Elevator::GetElevatorSlidePosition(){
-  return m_slidePos;
-}
-
 bool Elevator::IsElevatorEncoderConnected() {
   return m_encoderConnected;
+}
+bool Elevator::IsPositionInProtectedZone(double pos) {
+  return pos < RobotParameters::k_elevatorCollisionMax && pos > RobotParameters::k_elevatorCollisionMin;
 }
