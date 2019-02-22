@@ -13,6 +13,7 @@
 #include "Commands/ToolChanger/ToolChangerSetHasHatchCommand.h"
 #include "Commands/Elevator/ElevatorBaseCommand.h"
 #include "Commands/ToolChanger/ToolChangerHoldHatchCommand.h"
+#include "Commands/ToolChanger/ToolChangerFreeHatchCommand.h"
 #include "Commands/ToolChanger/ToolChangerRetractCommand.h"
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
 
@@ -20,10 +21,22 @@ class AcquireHatchCommandGroup : public frc::CommandGroup {
  public:
   AcquireHatchCommandGroup() : CommandGroup("AcquireHatchCommandGroup") {
     AddParallel(new ToolChangerSetHasHatchCommand(true));
+    AddParallel(new ToolChangerFreeHatchCommand());
     AddSequential(new ElevatorLowCommand("ElevatorLowCommand"));
     AddSequential(new ToolChangerHatchExtendCommand());
+    AddSequential(new WaitCommand(0.1)); //shrink as we become confident
     AddSequential(new ToolChangerHoldHatchCommand());
+    AddSequential(new WaitCommand(0.1)); //shrink as we become confident
     AddSequential(new ToolChangerRetractCommand());
+    AddSequential(new WaitCommand(0.1)); //shrink as we become confident
+    AddSequential(new ToolChangerFreeCargoCommand());
+
+    // state at end:
+    // Elevator: Low
+    // Cargo Intake: In
+    // Cargo: Free
+    // Hatch: Held
+    // HatchExt: Retracted
   }
 };
 

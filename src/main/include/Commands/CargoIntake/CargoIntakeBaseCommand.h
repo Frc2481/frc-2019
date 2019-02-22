@@ -22,24 +22,30 @@ class CargoIntakeBaseCommand : public frc::Command {
     Requires(CommandBase::m_pCargoIntake.get());
   }
   void Initialize() override {
-    if(IsPositionSetPointAllowed(INTAKE_POS)) {
+    // if(IsPositionSetPointAllowed(INTAKE_POS)) {
       CommandBase::m_pCargoIntake->SetPosition(INTAKE_POS);
-    }
+    // }
   }
   
   bool IsFinished() override {
-    return fabs(CommandBase::m_pCargoIntake->GetCargoIntakeError()) < 1;
+    return fabs(CommandBase::m_pCargoIntake->IsOnTarget());
   }
 
   bool IsPositionSetPointAllowed(int pos) {
     //if elevator in protected zone, don't move
-    if((CommandBase::m_pElevator->GetElevatorPosition() < RobotParameters::k_elevatorCollisionMax) && 
-          (CommandBase::m_pElevator->GetElevatorPosition() > RobotParameters::k_elevatorCollisionMin)) {
-        return false;
-    }
-    else {
+    if(CommandBase::m_pElevator->IsPositionInProtectedZone(CommandBase::m_pElevator->GetElevatorPosition())) {
       return false;
     }
+    else {
+      return true;
+    }
+  }
+
+  void End() override {
+    CommandBase::m_pCargoIntake->SetOpenLoopSpeed(0); //slide
+  }
+  void Interrupted() override {
+    End();
   }
 };
 
@@ -51,7 +57,7 @@ class CargoIntakeBaseCommandGroup : public CommandGroup {
   }
 }; 
 
-typedef CargoIntakeBaseCommandGroup<0> CargoIntakeFrontCommand; //TODO
-typedef CargoIntakeBaseCommandGroup<0> CargoIntakeBackCommand;
+typedef CargoIntakeBaseCommandGroup<17700> CargoIntakeOutCommand; //TODO
+typedef CargoIntakeBaseCommandGroup<0> CargoIntakeInCommand;
 
 #endif //SRC_CARGOINTAKEBASECOMMAND

@@ -15,35 +15,43 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
   m_slideEncoder = new CTREMagEncoder(m_motor, "SLIDE_MOTOR_ENCODER");
   ctre::phoenix::motorcontrol::can::TalonSRXConfiguration talonConfig;
 
-  m_motor->SetSensorPhase(true);
   m_motor->SetInverted(false);
+  m_motor->SetSensorPhase(true);
   m_motor->SetNeutralMode(Brake);
   m_motor->SetStatusFramePeriod(Status_2_Feedback0_, 10, 0);
   m_motor->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
   m_motor->EnableCurrentLimit(false);
 
-  talonConfig.slot0.kF = 0.1528;
-  talonConfig.slot0.kP = 0.07;
+  talonConfig.motionCurveStrength = 5;
+
+
+  talonConfig.slot0.kF = 0.1; // 1024/max speed //old = 0.1528;
+  talonConfig.slot0.kP = 1;
   talonConfig.slot0.allowableClosedloopError = 0;
-  talonConfig.motionCruiseVelocity = 6500; //convert to talonConfig speed: encoder count/100 ms / 2.0
-  talonConfig.motionAcceleration = 13000; //9200
+  talonConfig.motionCruiseVelocity = 6000; //convert to talonConfig speed: encoder count/100 ms / 2.0
+  talonConfig.motionAcceleration = 2400; //9200
   talonConfig.peakCurrentDuration = 0; //TODO
   talonConfig.continuousCurrentLimit = 30; //TODO
   talonConfig.peakCurrentLimit = 0; //TODO
   talonConfig.primaryPID.selectedFeedbackSensor = CTRE_MagEncoder_Relative;
 
+  talonConfig.forwardSoftLimitEnable = true;
+  talonConfig.reverseSoftLimitEnable = true;
+  talonConfig.forwardSoftLimitThreshold = 8984;
+  talonConfig.reverseSoftLimitThreshold = -8678;
+
   m_motor->ConfigAllSettings(talonConfig);
   m_motor->SelectProfileSlot(0, 0);
 
-  nt::NetworkTableInstance::GetDefault().SetUpdateRate(.01);
+  // nt::NetworkTableInstance::GetDefault().SetUpdateRate(.01);P
 
   m_irSensorBright = new frc::Counter();
   m_irSensorBright->SetSemiPeriodMode(true);
-  m_irSensorBright->SetUpSource(0);
+  m_irSensorBright->SetUpSource(IR_SENSOR_BRIGHT);
 
   m_irSensorDim = new frc::Counter();
   m_irSensorDim->SetSemiPeriodMode(true);
-  m_irSensorDim->SetUpSource(0);
+  m_irSensorDim->SetUpSource(IR_SENSOR_DIM);
 
   m_isHatchZeroed = false;
   m_pulseBright = 0.0;
@@ -55,7 +63,7 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
 }
 
 void HatchSlide::InitDefaultCommand() {
-  SetDefaultCommand(new HatchSlideGoToPosition());
+  // SetDefaultCommand(new HatchSlideGoToPosition());
 }
 
 void HatchSlide::Periodic() {
@@ -91,6 +99,13 @@ void HatchSlide::Periodic() {
 void HatchSlide::setSetPoint(int value) {
   // m_motor->Config_kF(0, CommandBase::m_pLineFinder->getXVel() * RobotParameters::k_lineFinderKp, 0);
   m_motor->Set(ControlMode::MotionMagic, value);
+  if(m_motor->GetSelectedSensorPosition() < value) {
+    m_motor->Set(ControlMode::MotionMagic, value, DemandType::DemandType_ArbitraryFeedForward, 0.1);
+  }
+  else {
+    m_motor->Set(ControlMode::MotionMagic, value, DemandType::DemandType_ArbitraryFeedForward, -0.1);
+  }
+
   // m_motor->Set(ControlMode::MotionMagic, value, DemandType_ArbitraryFeedForward, .03 * CommandBase::m_pLineFinder->getXVel());
   SmartDashboard::PutNumber("setSetpoint value", value);
 }
@@ -154,4 +169,8 @@ void HatchSlide::DisableHatchSlide() {
 
 bool HatchSlide::IsHatchSlideEnabled() {
   return m_hatchSlideEnabled;
+}
+
+void HatchSlide::SetOpenLoopSpeed(double speed) {
+  m_motor->Set(ControlMode::PercentOutput, speed);
 }

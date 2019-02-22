@@ -11,16 +11,22 @@
 #include <frc/commands/InstantCommand.h>
 #include "Subsystems/CargoIntake.h"
 #include "CommandBase.h"
+#include "RobotParameters.h"
 
 class CargoIntakeBallCommand : public frc::InstantCommand {
- private:
+  private:
   double m_speed;
  public:
   CargoIntakeBallCommand(double speed) : InstantCommand("CargoIntakeBallCommand") {
     m_speed = speed;
   }
   void Initialize() override {
-    CommandBase::m_pCargoIntake->SetSpeedIn(m_speed);
+    // if(!CommandBase::m_pCargoIntake->IsBallIntaken()) {
+      CommandBase::m_pCargoIntake->SetSpeedIn(m_speed);
+    // }
+    // else {
+    //   CommandBase::m_pCargoIntake->SetSpeedIn(RobotParameters::k_intakeSpeedPartial);
+    // }
   }
 };
 

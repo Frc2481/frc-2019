@@ -19,7 +19,7 @@ SwerveDrivetrain::SwerveDrivetrain()
 m_pFRDriveMotor = new VictorSPX(FR_DRIVE_MOTOR_ID);
 	m_pFRDriveMotorController = new MotorVelocityController(
 		m_pFRDriveMotor,
-		false,
+		true,
         RobotParameters::k_driveMotorControllerKp,
         RobotParameters::k_driveMotorControllerKi,
         RobotParameters::k_driveMotorControllerKd,
@@ -34,7 +34,7 @@ m_pFRDriveMotor = new VictorSPX(FR_DRIVE_MOTOR_ID);
 	m_pBRDriveMotor = new VictorSPX(BR_DRIVE_MOTOR_ID);
 	m_pBRDriveMotorController = new MotorVelocityController(
 		m_pBRDriveMotor,
-		false,
+		true,
 		RobotParameters::k_driveMotorControllerKp,
 		RobotParameters::k_driveMotorControllerKi,
 		RobotParameters::k_driveMotorControllerKd,
@@ -49,7 +49,7 @@ m_pFRDriveMotor = new VictorSPX(FR_DRIVE_MOTOR_ID);
 	m_pBLDriveMotor = new VictorSPX(BL_DRIVE_MOTOR_ID);
 	m_pBLDriveMotorController = new MotorVelocityController(
 		m_pBLDriveMotor,
-		false,
+		true,
 		RobotParameters::k_driveMotorControllerKp,
 		RobotParameters::k_driveMotorControllerKi,
 		RobotParameters::k_driveMotorControllerKd,
@@ -64,7 +64,7 @@ m_pFRDriveMotor = new VictorSPX(FR_DRIVE_MOTOR_ID);
 	m_pFLDriveMotor = new VictorSPX(FL_DRIVE_MOTOR_ID);
 	m_pFLDriveMotorController = new MotorVelocityController(
 		m_pFLDriveMotor,
-		false,
+		true,
 		RobotParameters::k_driveMotorControllerKp,
 		RobotParameters::k_driveMotorControllerKi,
 		RobotParameters::k_driveMotorControllerKd,
@@ -91,7 +91,7 @@ m_pFRDriveMotor = new VictorSPX(FR_DRIVE_MOTOR_ID);
 		RobotParameters::k_steerMotorControllerKsf,
 		0,
 		0,
-		RobotParameters::k_ctreMagEncoderTicksPerRev);
+		RobotParameters::k_ctreMagEncoderTicksPerRev * RobotParameters::k_steerEncoderToWheelGearRatio);
 
 	m_pBRSteerMotor = new TalonSRX(BR_STEER_MOTOR_ID);
 	m_pBRSteerEncoder = new CTREMagEncoder(m_pBRSteerMotor, "BR_STEER_MOTOR_ENCODER");
@@ -108,7 +108,7 @@ m_pFRDriveMotor = new VictorSPX(FR_DRIVE_MOTOR_ID);
 		RobotParameters::k_steerMotorControllerKsf,
 		0,
 		0,
-		RobotParameters::k_ctreMagEncoderTicksPerRev);
+		RobotParameters::k_ctreMagEncoderTicksPerRev * RobotParameters::k_steerEncoderToWheelGearRatio);
 
 	m_pBLSteerMotor = new TalonSRX(BL_STEER_MOTOR_ID);
 	m_pBLSteerEncoder = new CTREMagEncoder(m_pBLSteerMotor, "BL_STEER_MOTOR_ENCODER");
@@ -125,7 +125,7 @@ m_pFRDriveMotor = new VictorSPX(FR_DRIVE_MOTOR_ID);
 		RobotParameters::k_steerMotorControllerKsf,
 		0,
 		0,
-		RobotParameters::k_ctreMagEncoderTicksPerRev);
+		RobotParameters::k_ctreMagEncoderTicksPerRev * RobotParameters::k_steerEncoderToWheelGearRatio);
 
 	m_pFLSteerMotor = new TalonSRX(FL_STEER_MOTOR_ID);
 	m_pFLSteerEncoder = new CTREMagEncoder(m_pFLSteerMotor, "FL_STEER_MOTOR_ENCODER");
@@ -142,7 +142,7 @@ m_pFRDriveMotor = new VictorSPX(FR_DRIVE_MOTOR_ID);
 		RobotParameters::k_steerMotorControllerKsf,
 		0,
 		0,
-		RobotParameters::k_ctreMagEncoderTicksPerRev);
+		RobotParameters::k_ctreMagEncoderTicksPerRev * RobotParameters::k_steerEncoderToWheelGearRatio);
 
     m_pChassisIMU = new AHRS(SPI::kMXP);
 }

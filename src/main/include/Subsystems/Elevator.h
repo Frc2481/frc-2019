@@ -17,17 +17,11 @@
 
 class Elevator : public frc::Subsystem {
  public:
-  enum elevator_slide_position {
-    FRONT,
-    MID,
-    BACK
-  };
-
   Elevator();
   void InitDefaultCommand() override;
   virtual void Periodic();
 
-  void SetElevatorPosition(double pos);
+  void SetElevatorPosition(double pos, bool isMoving);
   void ZeroElevatorEncoder();
 
   double GetElevatorPosition();
@@ -40,29 +34,24 @@ class Elevator : public frc::Subsystem {
 
   void SetOpenLoopSpeed(double speed);
 
-  void SetElevatorSlidePosition(elevator_slide_position pos);
-  elevator_slide_position GetElevatorSlidePosition();
-
   bool IsElevatorEncoderConnected();
+  bool IsPositionInProtectedZone(double pos);
 
   double ConvertTicksToInches(int ticks);
   int ConvertInchesToTicks(double inches);
 
+  bool IsOnTarget();
+
  private:
   TalonSRX* m_masterElevator;
   VictorSPX* m_slaveElevator;
-  frc::DoubleSolenoid* m_elevatorSlideA;
-  frc::DoubleSolenoid* m_elevatorSlideB;
   CTREMagEncoder* m_elevatorEncoder;
 
   bool m_isElevatorZeroed;
-  bool m_isSlideForward;
   
   double m_elevatorPosition;
   double m_desiredElevatorPosition;
   bool m_encoderConnected;
-
-  elevator_slide_position m_slidePos;
 };
 
 #endif //SRC_ELEVATOR_H

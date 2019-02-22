@@ -15,10 +15,11 @@
 
 class CargoIntake : public frc::Subsystem {
 private:
-  double m_position;
   VictorSPX* m_intakeMotor;
   TalonSRX* m_extendMotor;
   CTREMagEncoder* m_extendEncoder;
+  frc::DigitalInput* m_beamBreak;
+  double m_desiredPosition;
 
 public:
   CargoIntake();
@@ -34,6 +35,9 @@ public:
   double ConvertTicksToInches(int ticks);
   int ConvertInchesToTicks(double inches);
   bool IsIntakeOut();
+  bool IsBallIntaken();
+  void SetOpenLoopSpeed(double speed);
+  bool IsOnTarget();
 };
 
 #endif // SRC_CARGO_INTAKE_H

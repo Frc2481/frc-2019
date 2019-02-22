@@ -5,20 +5,19 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CARGOINTAKEWAITFORBALLCOMMAND
-#define SRC_CARGOINTAKEWAITFORBALLCOMMAND
-#include <frc/commands/Command.h>
+#ifndef SRC_SWERVEDRIVETRAINZEROGYROCOMMAND
+#define SRC_SWERVEDRIVETRAINZEROGYROCOMMAND
+
+#include <frc/commands/InstantCommand.h>
+#include "Subsystems/SwerveDrivetrain.h"
 #include "CommandBase.h"
-#include "Subsystems/CargoIntake.h"
 
-class CargoIntakeWaitForBallCommand : public frc::Command {
- public:
-  CargoIntakeWaitForBallCommand() : Command("CargoIntakeWaitForBallCommand") {
-
-  }
-  bool IsFinished() override {
-    return CommandBase::m_pCargoIntake->IsBallIntaken();
-  }
+class SwerveDrivetrainZeroGyroCommand : public frc::InstantCommand {
+public:
+	SwerveDrivetrainZeroGyroCommand() : InstantCommand("SwerveDrivetrainZeroGyroCommand") {}
+	void Initialize() override {
+		CommandBase::m_pSwerveDrivetrain->zeroGyroYaw();
+	}
 };
 
-#endif //SRC_CARGOINTAKEWAITFORBALLCOMMAND
+#endif //SRC_SWERVEDRIVETRAINZEROGYROCOMMAND

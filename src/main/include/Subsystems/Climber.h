@@ -17,8 +17,11 @@
 
 class Climber : public frc::Subsystem {
  private:
-  rev::CANSparkMax* m_climber;
+  rev::CANSparkMax* m_climberMotor;
+  frc::DoubleSolenoid* m_climberSolenoid;
+
   rev::CANPIDController m_pidController;
+  bool m_feetActivated;
 
  public:
   Climber();
@@ -27,6 +30,12 @@ class Climber : public frc::Subsystem {
   void ClimberLevel2();
   void ClimberLevel3();
   double ConvertInchesToTicks(int inches);
+  void ActivateFeet();
+  void DeactivateFeet();
+  bool IsFootToggleActivated();
+  void ActivateFootToggle();
+  void DeactivateFootToggle();
+  void SetOpenLoopSpeed(double speed);
 };
 
 #endif //SRC_CLIMBER_H

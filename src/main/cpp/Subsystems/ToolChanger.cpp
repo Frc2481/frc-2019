@@ -11,17 +11,20 @@ ToolChanger::ToolChanger() : Subsystem("ToolChanger") {
   m_hatchTool = new frc::DoubleSolenoid(HATCH_TOOL_SOLENOID);
   m_cargoTool = new frc::DoubleSolenoid(CARGO_TOOL_SOLENOID);
   m_hatchExtender = new frc::DoubleSolenoid(HATCH_EXTENDER_SOLENOID);
-
+ 
   // m_limitSwitch = new frc::DigitalInput(TOOL_CHANGER_LIMIT_SWITCH);
+
+  m_hatchTool->Set(frc::DoubleSolenoid::kReverse);
+  m_cargoTool->Set(frc::DoubleSolenoid::kReverse);
+  m_hatchExtender->Set(frc::DoubleSolenoid::kForward);
 
   m_isHatchToolHeld = false;
   m_isCargoToolHeld = false; 
   m_hasCargo = false;
-  m_hasHatch = false;
+  m_hasHatch = true;
 }
 
 void ToolChanger::InitDefaultCommand() {
-  
 }
 
 void ToolChanger::HoldHatch(){
@@ -33,19 +36,19 @@ void ToolChanger::FreeHatch(){
   m_isHatchToolHeld = false;
 }
 void ToolChanger::HoldCargo(){
-  m_cargoTool->Set(frc::DoubleSolenoid::kForward);
+  m_cargoTool->Set(frc::DoubleSolenoid::kReverse);
   m_isCargoToolHeld = true;
 }
 void ToolChanger::FreeCargo(){
-  m_cargoTool->Set(frc::DoubleSolenoid::kReverse);
+  m_cargoTool->Set(frc::DoubleSolenoid::kForward);
   m_isCargoToolHeld = false;
 }
 void ToolChanger::ExtendHatch() {
-  m_hatchExtender->Set(frc::DoubleSolenoid::kForward);
+  m_hatchExtender->Set(frc::DoubleSolenoid::kReverse);
   m_isHatchExtended = true;
 }
 void ToolChanger::RetractHatch() {
-  m_hatchExtender->Set(frc::DoubleSolenoid::kReverse);
+  m_hatchExtender->Set(frc::DoubleSolenoid::kForward);
   m_isHatchExtended = false;
 }
 bool ToolChanger::IsHatchToolHeld(){

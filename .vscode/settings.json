@@ -62,5 +62,6 @@
     "*.inc": "cpp"
   },
   "C_Cpp.configurationWarnings": "Disabled",
-  "C_Cpp.dimInactiveRegions": false
+  "C_Cpp.dimInactiveRegions": false,
+  "C_Cpp.default.configurationProvider": "vscode-wpilib"
 }

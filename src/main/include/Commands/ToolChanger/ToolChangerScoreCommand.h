@@ -20,12 +20,29 @@ class ToolChangerScoreCommand : public frc::InstantCommand {
       CommandBase::m_pToolChanger->ExtendHatch();
       Wait(0.3);
       CommandBase::m_pToolChanger->FreeHatch();
+      Wait(0.3);
       CommandBase::m_pToolChanger->RetractHatch();
+      CommandBase::m_pToolChanger->HoldCargo();
+
+    // state at end:
+    // Elevator: elevatorBaseCommand
+    // Cargo Intake: in
+    // Cargo: held
+    // Hatch: Free
+    // HatchExt: Retracted 
     }
     else {
-      CommandBase::m_pToolChanger->FreeCargo();
       CommandBase::m_pToolChanger->ExtendHatch();
+      Wait(0.3);
+      CommandBase::m_pToolChanger->HoldCargo();
       CommandBase::m_pToolChanger->RetractHatch();
+
+    // state at end:
+    // Elevator: elevatorBaseCommand
+    // Cargo Intake: in
+    // Cargo: Held
+    // Hatch: held
+    // HatchExt: Retracted
     }
   }
 };

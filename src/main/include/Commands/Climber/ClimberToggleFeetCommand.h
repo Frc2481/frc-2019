@@ -5,23 +5,26 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_ELEVATORSLIDETOPOSITIONCOMMAND
-#define SRC_ELEVATORSLIDETOPOSITIONCOMMAND
+#ifndef SRC_CLIMBERTOGGLEFEETCOMMAND
+#define SRC_CLIMBERTOGGLEFEETCOMMAND
 
 #include <frc/commands/InstantCommand.h>
+#include "Subsystems/Climber.h"
 #include "CommandBase.h"
-#include "Subsystems/Elevator.h"
 
-class ElevatorSlideToPositionCommand : public frc::InstantCommand {
- private:
- Elevator::elevator_slide_position m_position;
+class ClimberToggleFeetCommand : public frc::InstantCommand {
  public:
-  ElevatorSlideToPositionCommand(Elevator::elevator_slide_position position) : InstantCommand("ElevatorSlideToPositionCommand") {
-    m_position = position;
-  }
+  ClimberToggleFeetCommand() : InstantCommand("ClimberToggleFeetCommand") {}
   void Initialize() override {
-    CommandBase::m_pElevator->SetElevatorSlidePosition(m_position);
+    if(CommandBase::m_pClimber->IsFootToggleActivated()) {
+      CommandBase::m_pClimber->DeactivateFeet();
+      CommandBase::m_pClimber->DeactivateFootToggle();
+    }
+    else {
+      CommandBase::m_pClimber->ActivateFeet();
+      CommandBase::m_pClimber->ActivateFootToggle();
+    }
   }
 };
 
-#endif // SRC_ELEVATORSLIDETOPOSITIONCOMMAND
+#endif //SRC_CLIMBERTOGGLEFEETCOMMAND
