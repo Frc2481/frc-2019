@@ -48,8 +48,8 @@ void SwerveDriveKinematics::inverseKinematics(
 	Translation2D &flWheelVel) {
 
 	robotYawRate *= MATH_CONSTANTS_PI / 180.0; // convert to rad/s
-	frWheelVel = Translation2D(robotYawRate * m_frLeverArm.getY(), robotYawRate * m_frLeverArm.getX()) + robotVel;
-	brWheelVel = Translation2D(robotYawRate * m_brLeverArm.getY(), robotYawRate * m_brLeverArm.getX()) + robotVel;
-	blWheelVel = Translation2D(robotYawRate * m_blLeverArm.getY(), robotYawRate * m_blLeverArm.getX()) + robotVel;
-	flWheelVel = Translation2D(robotYawRate * m_flLeverArm.getY(), robotYawRate * m_flLeverArm.getX()) + robotVel;
+	frWheelVel = Translation2D(-robotYawRate * m_frLeverArm.getY(), robotYawRate * m_frLeverArm.getX()) + robotVel;
+	brWheelVel = Translation2D(-robotYawRate * m_brLeverArm.getY(), robotYawRate * m_brLeverArm.getX()) + robotVel;
+	blWheelVel = Translation2D(-robotYawRate * m_blLeverArm.getY(), robotYawRate * m_blLeverArm.getX()) + robotVel;
+	flWheelVel = Translation2D(-robotYawRate * m_flLeverArm.getY(), robotYawRate * m_flLeverArm.getX()) + robotVel;
 }

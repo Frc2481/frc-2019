@@ -13,6 +13,7 @@ MotorPositionController::MotorPositionController()
 MotorPositionController::MotorPositionController(
 	TalonSRX* pTalon,
     CTREMagEncoder* pEncoder,
+    bool phase,
     bool inverted,
     double kp,
     double ki,
@@ -50,7 +51,7 @@ MotorPositionController::MotorPositionController(
 	m_pDriveMotor->ConfigNominalOutputReverse(0.0, 0.0);
 	m_pDriveMotor->ConfigPeakOutputForward(1.0, 0.0);
 	m_pDriveMotor->ConfigPeakOutputReverse(-1.0, 0.0);
-	m_pDriveMotor->SetSensorPhase(false);
+	m_pDriveMotor->SetSensorPhase(phase);
 	m_pDriveMotor->SetInverted(inverted);
 }
 
@@ -61,7 +62,8 @@ void MotorPositionController::setMotionMagicAngular(
     bool isEnabled,
     double maxVel,
     double maxAccel,
-    double kf) {
+    double kf,
+    uint16_t curveStrength) {
     
     m_enableMotionMagic = isEnabled;
     m_pDriveMotor->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
@@ -72,6 +74,8 @@ void MotorPositionController::setMotionMagicAngular(
 
     maxAccel = m_pEncoder->convertAngleToTicks(maxAccel) / 10.0; // convert to talon native units
 	m_pDriveMotor->ConfigMotionAcceleration(maxAccel, 0);
+
+    m_pDriveMotor->ConfigMotionSCurveStrength(curveStrength);
 }
 
 void MotorPositionController::setMotionMagicLinear(
@@ -79,6 +83,7 @@ void MotorPositionController::setMotionMagicLinear(
     double maxVel,
     double maxAccel,
     double kf,
+    uint16_t curveStrength,
     double wheelRadius) {
     
     m_enableMotionMagic = isEnabled;
@@ -90,6 +95,8 @@ void MotorPositionController::setMotionMagicLinear(
 
     maxAccel = m_pEncoder->convertWheelDistanceToTicks(wheelRadius, maxAccel) / 10.0; // convert to talon native units
 	m_pDriveMotor->ConfigMotionAcceleration(maxAccel, 0);
+
+    m_pDriveMotor->ConfigMotionSCurveStrength(curveStrength);
 }
 
 void MotorPositionController::updateAngular(double refP, double refV, double refA) {

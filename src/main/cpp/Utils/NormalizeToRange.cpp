@@ -25,6 +25,10 @@ namespace normalizeToRange {
     }
 
     double rangedDifference(double difference, double rangeMin, double rangeMax) {
+        if(rangeMin > rangeMax) {
+            std::swap(rangeMin, rangeMax);
+        }
+        
         if(std::fabs(difference) > (rangeMax - rangeMin) / 2.0) {
             if(difference > 0) {
                 difference -= rangeMax - rangeMin;

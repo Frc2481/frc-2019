@@ -10,6 +10,7 @@ public:
     MotorPositionController(
 		TalonSRX* pTalon,
         CTREMagEncoder* pEncoder,
+        bool phase,
         bool inverted,
         double kp,
 		double ki,
@@ -23,8 +24,8 @@ public:
         unsigned ticksPerRev);
     ~MotorPositionController();
 
-    void setMotionMagicAngular(bool isEnabled, double maxVel, double maxAccel, double kf);
-    void setMotionMagicLinear(bool isEnabled, double maxVel, double maxAccel, double kf, double wheelRadius);
+    void setMotionMagicAngular(bool isEnabled, double maxVel, double maxAccel, double kf, uint16_t curveStrength);
+    void setMotionMagicLinear(bool isEnabled, double maxVel, double maxAccel, double kf, uint16_t curveStrength, double wheelRadius);
 
     //////////////////////////////////////////////////////////////////////
     // @brief update reference points of motor controller
