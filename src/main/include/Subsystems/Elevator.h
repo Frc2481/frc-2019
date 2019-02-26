@@ -26,7 +26,8 @@ class Elevator : public frc::Subsystem {
 
   double GetElevatorPosition();
   double GetElevatorError();
-
+  double GetDesiredPos();
+  
   bool IsElevatorEncoderZeroed();
 
   bool IsForwardLimitSwitchClosed();
@@ -47,7 +48,7 @@ class Elevator : public frc::Subsystem {
   VictorSPX* m_slaveElevator;
   CTREMagEncoder* m_elevatorEncoder;
 
-  bool m_isElevatorZeroed;
+  bool m_isMasterZeroed;
   
   double m_elevatorPosition;
   double m_desiredElevatorPosition;

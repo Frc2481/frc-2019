@@ -20,6 +20,7 @@ private:
   CTREMagEncoder* m_extendEncoder;
   frc::DigitalInput* m_beamBreak;
   double m_desiredPosition;
+  bool m_isZeroed;
 
 public:
   CargoIntake();
@@ -31,6 +32,7 @@ public:
   bool HasBall();
   void SetPosition(double pos);
   double GetPosition();
+  double GetDesiredPosition();
   double GetCargoIntakeError();
   double ConvertTicksToInches(int ticks);
   int ConvertInchesToTicks(double inches);
@@ -38,6 +40,7 @@ public:
   bool IsBallIntaken();
   void SetOpenLoopSpeed(double speed);
   bool IsOnTarget();
+  void ZeroCargoIntake();
 };
 
 #endif // SRC_CARGO_INTAKE_H

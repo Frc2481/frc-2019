@@ -29,17 +29,18 @@
 #include "Commands/ToolChanger/ToolChangerHoldHatchCommand.h"
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
 #include "Commands/ToolChanger/ToolChangerRetractCommand.h"
+#include "Commands/ToolChanger/ToolChangerScoreCommand.h"
+#include "Commands/HatchSlide/HatchSlideSetOpenLoopCommand.h"
 
 OI::OI() {
 	m_pDriverStick = new Joystick2481(DRIVER_XBOX_CONTROLLER_ID);
 	m_pOperatorStick = new Joystick2481(OPERATOR_XBOX_CONTROLLER_ID);
-	m_pTestStick = new Joystick2481(TEST_XBOX_CONTROLLER_ID);
-	
+		
 //driver
-	m_acquireCargo = new JoystickButton(m_pDriverStick, XBOX_RIGHT_BUMPER);
+	m_acquireCargo = new AnalogJoystickButton(m_pDriverStick, XBOX_RIGHT_TRIGGER, 0.5);
 	m_acquireCargo->WhenPressed(new AcquireCargoCommandGroup());
 
-	m_acquireHatch = new JoystickButton(m_pDriverStick, XBOX_LEFT_BUMPER);
+	m_acquireHatch = new AnalogJoystickButton(m_pDriverStick, XBOX_LEFT_TRIGGER, 0.5);
 	m_acquireHatch->WhenPressed(new AcquireHatchCommandGroup());
 
 	m_zeroGyro = new JoystickButton(m_pDriverStick, XBOX_START_BUTTON);
@@ -49,25 +50,20 @@ OI::OI() {
 	m_elevatorStow->WhenPressed(new ElevatorStowCommand("ElevatorStowCommand"));
 
 	m_climbLevel3 = new JoystickButton(m_pDriverStick, XBOX_Y_BUTTON);
-	// m_climbLevel3->WhenPressed(new ClimberLevel3Command());
-	m_climbLevel3->WhenPressed(new ElevatorHighCommand("ElevatorHighCommand"));
-
+	m_climbLevel3->WhenPressed(new ClimberLevel3Command());
+	
 	m_climbLevel2 = new JoystickButton(m_pDriverStick, XBOX_B_BUTTON);
-	// m_climbLevel2->WhenPressed(new ClimberLevel2Command());
-		m_climbLevel3->WhenPressed(new ElevatorMidCommand("ElevatorHighCommand"));
-
-
+	m_climbLevel2->WhenPressed(new ClimberLevel2Command());
+	
 	m_climbRetract = new JoystickButton(m_pDriverStick, XBOX_A_BUTTON);
-	// m_climbRetract->WhenPressed(new ClimberRetractCommand());
-		m_climbLevel3->WhenPressed(new ElevatorLowCommand("ElevatorHighCommand"));
+	m_climbRetract->WhenPressed(new ClimberRetractCommand());
+	
+	m_climberFeet = new JoystickButton(m_pDriverStick, XBOX_RIGHT_BUMPER);
+	m_climberFeet->ToggleWhenPressed(new ClimberToggleFeetCommand());
 
-
-	// m_climberFeet = new JoystickButton(m_pDriverStick, XBOX_RIGHT_BUMPER);
-	// m_climberFeet->ToggleWhenPressed(new ClimberToggleFeetCommand());
-
-	// m_pSetFieldFrameButton = new JoystickButton(m_pDriverStick, XBOX_LEFT_BUMPER);
-	// m_pSetFieldFrameButton->WhenPressed(new SwerveDrivetrainJoystickSetFieldFrame(true));
-	// m_pSetFieldFrameButton->WhenReleased(new SwerveDrivetrainJoystickSetFieldFrame(false));
+	m_pSetFieldFrameButton = new JoystickButton(m_pDriverStick, XBOX_LEFT_BUMPER);
+	m_pSetFieldFrameButton->WhenPressed(new SwerveDrivetrainJoystickSetFieldFrame(true));
+	m_pSetFieldFrameButton->WhenReleased(new SwerveDrivetrainJoystickSetFieldFrame(false));
 
 //operator
 	m_scoreHigh = new JoystickButton(m_pOperatorStick, XBOX_Y_BUTTON);
@@ -88,35 +84,18 @@ OI::OI() {
 	m_elevatorLower = new AnalogJoystickButton(m_pOperatorStick, XBOX_RIGHT_Y_AXIS, 0.25); //right stick down
 	m_elevatorLower->WhileHeld(new ElevatorLowerCommand());
 
+	m_slideOpenLoop = new AnalogJoystickButton(m_pOperatorStick, XBOX_LEFT_Y_AXIS, 0.25);
+	m_slideOpenLoop->WhileHeld(new HatchSlideSetOpenLoopCommand());
+
 	m_toggleSlide = new JoystickButton(m_pOperatorStick, XBOX_RIGHT_BUMPER);
 	m_toggleSlide->WhenPressed(new HatchSlideToggleCommand());
 
-	//CLIMBER MANUAL OPERATOR XBOX_LEFT_AXIS
 
 	m_climberFeetOp = new JoystickButton(m_pOperatorStick, XBOX_LEFT_BUMPER);
 	m_climberFeetOp->ToggleWhenPressed(new ClimberToggleFeetCommand());
 
-	// TEST
-	m_freeHatch = new JoystickButton(m_pTestStick, XBOX_B_BUTTON);
-	m_freeHatch->WhenPressed(new ToolChangerFreeHatchCommand());
-
-    m_holdHatch = new JoystickButton(m_pTestStick, XBOX_A_BUTTON);
-	m_freeHatch->WhenPressed(new ToolChangerHoldHatchCommand());
-
-    m_freeCargo = new JoystickButton(m_pTestStick, XBOX_Y_BUTTON);
-	m_freeCargo->WhenPressed(new ToolChangerFreeCargoCommand());
-
-    m_holdCargo = new JoystickButton(m_pTestStick, XBOX_X_BUTTON);
-	m_holdCargo->WhenPressed(new ToolChangerHoldCargoCommand());
-
-    m_extendHatch = new JoystickButton(m_pTestStick, XBOX_LEFT_BUMPER);
-	m_extendHatch->WhenPressed(new ToolChangerHatchExtendCommand());
-
-    m_retractHatch = new JoystickButton(m_pTestStick, XBOX_RIGHT_BUMPER);
-	m_retractHatch->WhenPressed(new ToolChangerRetractCommand());
-
-	m_intakeCargo = new JoystickButton(m_pTestStick, XBOX_RIGHT_TRIGGER);
-	// m_intakeCargo->WhileHeld(new CargoIntakeBallCommand());
+	m_scoreGamePiece = new JoystickButton(m_pOperatorStick, XBOX_RIGHT_TRIGGER);
+	m_scoreGamePiece->WhenPressed(new ToolChangerScoreCommand());
 }
 
 OI::~OI() {
@@ -125,9 +104,6 @@ OI::~OI() {
 
 	delete m_pOperatorStick;
 	m_pOperatorStick = nullptr;
-
-	delete m_pTestStick;
-	m_pTestStick = nullptr;
 
 	delete m_pSetFieldFrameButton;
 	m_pSetFieldFrameButton = nullptr;

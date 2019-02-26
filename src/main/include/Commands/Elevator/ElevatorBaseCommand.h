@@ -74,11 +74,11 @@ class ElevatorBaseCommandGroup : public CommandGroup {
   }
 }; 
 
-typedef ElevatorBaseCommandGroup<27393, 25412> ElevatorHighCommand; //TODO
-typedef ElevatorBaseCommandGroup<16075, 13180> ElevatorMidCommand;
-typedef ElevatorBaseCommandGroup<3918, 1273> ElevatorLowCommand;
-typedef ElevatorBaseCommandGroup<3918, 3918> ElevatorCargoLowCommand;
-typedef ElevatorBaseCommandGroup<12000, 1273> ElevatorCargoShipCommand;
-typedef ElevatorBaseCommandGroup<0, 0> ElevatorStowCommand; //keep both values here as zero
+typedef ElevatorBaseCommandGroup<84, 59> ElevatorHighCommand; // 27393, 25412
+typedef ElevatorBaseCommandGroup<37, 31> ElevatorMidCommand; // 16075, 13180
+typedef ElevatorBaseCommandGroup<9, 3> ElevatorLowCommand; // 3918, 1273
+typedef ElevatorBaseCommandGroup<9, 9> ElevatorCargoLowCommand; // 3918, 3918
+typedef ElevatorBaseCommandGroup<9, 3> ElevatorCargoShipCommand; // 3918, 1273
+typedef ElevatorBaseCommandGroup<0, 0> ElevatorStowCommand;
 
 #endif //SRC_ELEVATORBASECOMMAND

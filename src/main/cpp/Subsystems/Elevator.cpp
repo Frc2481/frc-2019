@@ -58,7 +58,7 @@ Elevator::Elevator() : Subsystem("Elevator") {
   talonConfig.reverseSoftLimitThreshold = 5200;
   talonConfig.reverseSoftLimitEnable = true;
 
-  m_isElevatorZeroed = false;
+  m_isMasterZeroed = false;
 
   m_masterElevator->ConfigAllSettings(talonConfig);
   m_masterElevator->SelectProfileSlot(0, 0);
@@ -70,30 +70,51 @@ void Elevator::InitDefaultCommand() {
 }
 
 void Elevator::Periodic() {
-  frc::SmartDashboard::PutBoolean("IsElevatorZeroed", m_isElevatorZeroed);
-  frc::SmartDashboard::PutNumber("Elevator Error", GetElevatorError());
+  frc::SmartDashboard::PutBoolean("IsElevatorZeroed", m_isMasterZeroed);
+  frc::SmartDashboard::PutNumber("ElevatorError", GetElevatorError());
   m_encoderConnected = m_elevatorEncoder->isConnected();
   frc::SmartDashboard::PutBoolean("IsElevatorEncoderConnected", m_encoderConnected);
+  frc::SmartDashboard::PutBoolean("IsElevatorOnTarget", IsOnTarget());
+  frc::SmartDashboard::PutNumber("ElevatorPos", GetElevatorPosition());
+  frc::SmartDashboard::PutNumber("ElevatorDesiredPos", GetDesiredPos());
+  frc::SmartDashboard::PutBoolean("IsElevatorMasterTalonReset", m_masterElevator->HasResetOccurred());
+  if(m_masterElevator->HasResetOccurred() && m_isMasterZeroed){
+    m_isMasterZeroed = false;
+    SetOpenLoopSpeed(0);
+  }
 }
 
 void Elevator::SetElevatorPosition(double setPos, bool isMoving) {
-  if(setPos > 0) {
-    // m_masterElevator->Set(ControlMode::MotionMagic, ConvertInchesToTicks(setPos), DemandType::DemandType_ArbitraryFeedForward, 0.1);
-    m_masterElevator->Set(ControlMode::MotionMagic, setPos, DemandType::DemandType_ArbitraryFeedForward, 0.1);
+  if(m_isMasterZeroed){
+    if(setPos > 0) {
+      m_masterElevator->Set(ControlMode::MotionMagic, ConvertInchesToTicks(setPos), DemandType::DemandType_ArbitraryFeedForward, 0.1);
+      // m_masterElevator->Set(ControlMode::MotionMagic, setPos, DemandType::DemandType_ArbitraryFeedForward, 0.1);
+    }
+    else {
+      m_masterElevator->Set(ControlMode::MotionMagic, setPos);
+      // m_masterElevator->Set(ControlMode::MotionMagic, ConvertInchesToTicks(setPos));
+    }
+    m_desiredElevatorPosition = setPos;
   }
-  else {
-  m_masterElevator->Set(ControlMode::MotionMagic, setPos);
-  // m_masterElevator->Set(ControlMode::MotionMagic, ConvertInchesToTicks(setPos));
-  }
-  m_desiredElevatorPosition = setPos;
+}
+
+double Elevator::GetDesiredPos(){
+  return m_desiredElevatorPosition;
 }
 
 bool Elevator::IsOnTarget() {
   return fabs(m_desiredElevatorPosition - m_masterElevator->GetSelectedSensorPosition()) < ConvertInchesToTicks(1);
 }
 void Elevator::ZeroElevatorEncoder() {
-  m_masterElevator->SetSelectedSensorPosition(0, 0, 10);
-  m_isElevatorZeroed = true;
+  for(int i = 0; i < 5; i++) {
+		ErrorCode error = m_masterElevator->SetSelectedSensorPosition(0, 0, 10);
+		if(error == OK) {
+			break;
+		}
+	}
+	m_isMasterZeroed = true;
+  m_masterElevator->ClearStickyFaults();
+  m_slaveElevator->ClearStickyFaults();
 }
 
 double Elevator::GetElevatorPosition() {
@@ -105,7 +126,7 @@ double Elevator::GetElevatorError() {
 }
 
 bool Elevator::IsElevatorEncoderZeroed() {
-  return m_isElevatorZeroed;
+  return m_isMasterZeroed;
 }
 
 bool Elevator::IsForwardLimitSwitchClosed() {

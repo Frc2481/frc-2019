@@ -23,6 +23,7 @@
 #include "Commands/CargoIntake/CargoIntakeBaseCommand.h"
 #include "Commands/CargoIntake/CargoIntakeStopCommand.h"
 #include "Commands/CargoIntake/CargoIntakeWaitForBallCommand.h"
+#include "Commands/CargoIntake/CargoIntakeWaitForNoBallCommand.h"
 
 class AcquireCargoCommandGroup : public frc::CommandGroup {
  public:
@@ -36,17 +37,15 @@ class AcquireCargoCommandGroup : public frc::CommandGroup {
     AddSequential(new ElevatorStowCommand("ElevatorStowCommand"));
     AddSequential(new CargoIntakeBallCommand(1));
     AddSequential(new CargoIntakeWaitForBallCommand());
-    AddSequential(new WaitCommand(0.1)); //shrink as we become confident
+    AddSequential(new WaitCommand(0.1));
     AddSequential(new CargoIntakeBallCommand(0.3));
-    // AddSequential(new WaitCommand(0.1)); //shrink as we become confident
     AddSequential(new ToolChangerHoldCargoCommand());
-    AddSequential(new WaitCommand(0.1)); //shrink as we become confident
+    AddSequential(new WaitCommand(0.1));
     AddSequential(new CargoIntakeBallCommand(0.1));
+    AddSequential(new CargoIntakeWaitForNoBallCommand());
     AddSequential(new ElevatorMidCommand("ElevatorMidCommand"));
     AddSequential(new CargoIntakeStopCommand());
-    // AddSequential(new WaitCommand(1)); //shrink as we become confident
     AddSequential(new CargoIntakeInCommand("CargoIntakeBackCommand"));
-    // AddSequential(new WaitCommand(1)); //shrink as we become confident
     AddSequential(new ElevatorCargoLowCommand("ElevatorCargoLowCommand"));
 
     // state at end:

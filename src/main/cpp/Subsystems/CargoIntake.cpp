@@ -48,13 +48,25 @@ CargoIntake::CargoIntake() : Subsystem("CargoIntake") {
   m_extendMotor->SelectProfileSlot(0, 0);
 
   m_desiredPosition = 0;
+  m_isZeroed = false;
 }
 
 void CargoIntake::InitDefaultCommand() {}
 
 void CargoIntake::Periodic() {
   frc::SmartDashboard::PutBoolean("intakeEncConnnected", m_extendEncoder->isConnected());
-  frc::SmartDashboard::PutBoolean("ball intook", IsBallIntaken());
+  frc::SmartDashboard::PutBoolean("ballIntaken", IsBallIntaken());
+  frc::SmartDashboard::PutBoolean("HasBall", HasBall()); //Only returns False
+  frc::SmartDashboard::PutNumber("CargoIntakeError", GetCargoIntakeError());
+  frc::SmartDashboard::PutNumber("CargoPos", GetPosition());
+  frc::SmartDashboard::PutNumber("GetDesiredPos", GetDesiredPosition());
+  frc::SmartDashboard::PutBoolean("IsCargoIntakeOnTarget", IsOnTarget());
+  frc::SmartDashboard::PutBoolean("IsCargoIntakeTalonReset", m_extendMotor->HasResetOccurred());
+  frc::SmartDashboard::PutBoolean("IsCargoIntakeZeroed", m_isZeroed);
+  if (m_extendMotor->HasResetOccurred() && m_isZeroed){
+    m_isZeroed = false;
+    SetOpenLoopSpeed(0);
+  }
 }
 
 void CargoIntake::SetSpeedIn(double speed) {
@@ -70,14 +82,19 @@ bool CargoIntake::HasBall() { //TODO
   return false;
 }
 void CargoIntake::SetPosition(double pos) {
-  // m_extendMotor->Set(ControlMode::MotionMagic, ConvertInchesToTicks(pos));
-  if(m_extendMotor->GetSelectedSensorPosition() < pos) {
-    m_extendMotor->Set(ControlMode::MotionMagic, pos, DemandType::DemandType_ArbitraryFeedForward, 0.22);
+  if(m_isZeroed){
+    // m_extendMotor->Set(ControlMode::MotionMagic, ConvertInchesToTicks(pos));
+    if(m_extendMotor->GetSelectedSensorPosition() < pos) {
+      m_extendMotor->Set(ControlMode::MotionMagic, pos, DemandType::DemandType_ArbitraryFeedForward, 0.22);
+    }
+    else {
+      m_extendMotor->Set(ControlMode::MotionMagic, pos, DemandType::DemandType_ArbitraryFeedForward, -0.22);
+    }
+    m_desiredPosition = pos;
   }
-  else {
-    m_extendMotor->Set(ControlMode::MotionMagic, pos, DemandType::DemandType_ArbitraryFeedForward, -0.22);
-  }
-  m_desiredPosition = pos;
+}
+double CargoIntake::GetDesiredPosition(){
+  return m_desiredPosition;
 }
 double CargoIntake::GetPosition() {
   return m_extendMotor->GetSelectedSensorPosition(0);
@@ -105,4 +122,15 @@ void CargoIntake::SetOpenLoopSpeed(double speed) {
 
 bool CargoIntake::IsOnTarget() {
   return fabs(m_desiredPosition - m_extendMotor->GetSelectedSensorPosition()) < ConvertInchesToTicks(0.25);
+}
+
+void CargoIntake::ZeroCargoIntake() {
+  for(int i = 0; i < 5; i++) {
+  ErrorCode error = m_extendMotor->SetSelectedSensorPosition(0, 0, 10);
+    if(error == OK) {
+      break;
+    }
+  }
+  m_isZeroed = true;
+  m_extendMotor->ClearStickyFaults(0);
 }

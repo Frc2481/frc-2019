@@ -222,6 +222,16 @@ void SwerveDrivetrain::Periodic() {
 	m_pBRSteerEncoder->update();
 	m_pBLSteerEncoder->update();
 	m_pFLSteerEncoder->update();
+	
+	SmartDashboard::PutBoolean("FLSteerTalonReset", m_pFLSteerMotor->HasResetOccurred());
+	SmartDashboard::PutBoolean("FRSteerTalonReset", m_pFRSteerMotor->HasResetOccurred());
+	SmartDashboard::PutBoolean("BLSteerTalonReset", m_pBLSteerMotor->HasResetOccurred());
+	SmartDashboard::PutBoolean("BRSteerTalonReset", m_pBRSteerMotor->HasResetOccurred());
+
+	SmartDashboard::PutBoolean("FLSteerEncCalibrated", m_pFLSteerEncoder->isCalibrated());
+	SmartDashboard::PutBoolean("FRSteerEncCalibrated", m_pFRSteerEncoder->isCalibrated());
+	SmartDashboard::PutBoolean("BLSteerEncCalibrated", m_pBLSteerEncoder->isCalibrated());
+	SmartDashboard::PutBoolean("BRSteerEncCalibrated", m_pBRSteerEncoder->isCalibrated());
 
 	if(frc::DriverStation::GetInstance().IsDisabled()) {
 		SmartDashboard::PutBoolean("FL steer encoder connected", m_pFLSteerEncoder->isConnected());

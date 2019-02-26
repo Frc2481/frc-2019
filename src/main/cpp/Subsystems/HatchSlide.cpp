@@ -67,15 +67,22 @@ void HatchSlide::InitDefaultCommand() {
 }
 
 void HatchSlide::Periodic() {
-  SmartDashboard::PutNumber("Hatch Slide error", m_motor->GetClosedLoopError());;
-  SmartDashboard::PutBoolean("Is Hatch Zeroed", m_isHatchZeroed);
+  SmartDashboard::PutNumber("HatchSlideError", m_motor->GetClosedLoopError());;
+  SmartDashboard::PutBoolean("IsHatchZeroed", m_isHatchZeroed);
+  SmartDashboard::PutBoolean("IsSlideOnTarget", IsSlideOnTarget());
+  SmartDashboard::PutNumber("HatchSlidePos", ConvertTicksToInches(GetHatchPosition()));
+  SmartDashboard::PutBoolean("IsSlideTalonReset", m_motor->HasResetOccurred());
+  if(m_motor->HasResetOccurred() && m_isHatchZeroed){
+    m_isHatchZeroed = false;
+    SetOpenLoopSpeed(0);
+  }
 
   m_pulseBright = m_irSensorBright->GetPeriod();
   m_pulseDim = m_irSensorDim->GetPeriod();
 
   SmartDashboard::PutNumber("Teensy dist bright", GetBrightPulseDist());
   SmartDashboard::PutNumber("Teensy dist dim", GetDimPulseDist());
-  SmartDashboard::PutNumber("hatch slide dist", ConvertTicksToInches(GetHatchPosition()));
+
   if(m_motor->GetControlMode() == ControlMode::MotionMagic) {
     SmartDashboard::PutNumber("active trajectory position slide", ConvertTicksToInches(m_motor->GetActiveTrajectoryPosition()));
     SmartDashboard::PutNumber("active trajectory velocity slide", ConvertTicksToInches(m_motor->GetActiveTrajectoryVelocity() * 10));
@@ -97,22 +104,30 @@ void HatchSlide::Periodic() {
 }
 
 void HatchSlide::setSetPoint(int value) {
-  // m_motor->Config_kF(0, CommandBase::m_pLineFinder->getXVel() * RobotParameters::k_lineFinderKp, 0);
-  m_motor->Set(ControlMode::MotionMagic, value);
-  if(m_motor->GetSelectedSensorPosition() < value) {
-    m_motor->Set(ControlMode::MotionMagic, value, DemandType::DemandType_ArbitraryFeedForward, 0.1);
-  }
-  else {
-    m_motor->Set(ControlMode::MotionMagic, value, DemandType::DemandType_ArbitraryFeedForward, -0.1);
-  }
+  if(m_isHatchZeroed){
+    // m_motor->Config_kF(0, CommandBase::m_pLineFinder->getXVel() * RobotParameters::k_lineFinderKp, 0);
+    m_motor->Set(ControlMode::MotionMagic, value);
+    if(m_motor->GetSelectedSensorPosition() < value) {
+      m_motor->Set(ControlMode::MotionMagic, value, DemandType::DemandType_ArbitraryFeedForward, 0.1);
+    }
+    else {
+      m_motor->Set(ControlMode::MotionMagic, value, DemandType::DemandType_ArbitraryFeedForward, -0.1);
+    }
 
-  // m_motor->Set(ControlMode::MotionMagic, value, DemandType_ArbitraryFeedForward, .03 * CommandBase::m_pLineFinder->getXVel());
-  SmartDashboard::PutNumber("setSetpoint value", value);
+    // m_motor->Set(ControlMode::MotionMagic, value, DemandType_ArbitraryFeedForward, .03 * CommandBase::m_pLineFinder->getXVel());
+    SmartDashboard::PutNumber("HatchDesiredPos", value);
+  }
 }
 
 void HatchSlide::ZeroHatchPosition() {
-  m_motor->SetSelectedSensorPosition(0, 0, 10);
   m_isHatchZeroed = true;
+  for(int i = 0; i < 5; i++) {
+    ErrorCode error = m_motor->SetSelectedSensorPosition(0, 0, 10);
+    if(error == OK) {
+      break;
+    }
+  }
+  m_motor->ClearStickyFaults();
 }
 
 double HatchSlide::GetHatchPosition() {
