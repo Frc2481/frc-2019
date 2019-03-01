@@ -60,9 +60,9 @@ int CTREMagEncoder::convertAngleToTicks(double angle) const {
 }
 
 int CTREMagEncoder::convertAngleToTickSetpoint(double angle) const {
-    // double error = normalizeToRange::rangedDifference(angle - getAngle(), -180, 180);
-    // return getTicks() + convertAngleToTicks(error) + m_encoderTicksZero;
-    return convertAngleToTicks(angle) + m_encoderTicksZero;
+    double error = normalizeToRange::rangedDifference(angle - getAngle(), -180, 180);
+    return getTicks() + convertAngleToTicks(error) + m_encoderTicksZero;
+    // return convertAngleToTicks(angle) + m_encoderTicksZero;
 }
 
 double CTREMagEncoder::convertWheelDistanceToRevs(double wheelRadius, double wheelDistance) const {

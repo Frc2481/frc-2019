@@ -20,6 +20,7 @@ m_pFRDriveMotor = new VictorSPX(FR_DRIVE_MOTOR_ID);
 	m_pFRDriveMotorController = new MotorVelocityController(
 		m_pFRDriveMotor,
 		true,
+		true,
         RobotParameters::k_driveMotorControllerKp,
         RobotParameters::k_driveMotorControllerKi,
         RobotParameters::k_driveMotorControllerKd,
@@ -34,6 +35,7 @@ m_pFRDriveMotor = new VictorSPX(FR_DRIVE_MOTOR_ID);
 	m_pBRDriveMotor = new VictorSPX(BR_DRIVE_MOTOR_ID);
 	m_pBRDriveMotorController = new MotorVelocityController(
 		m_pBRDriveMotor,
+		true,
 		true,
 		RobotParameters::k_driveMotorControllerKp,
 		RobotParameters::k_driveMotorControllerKi,
@@ -50,6 +52,7 @@ m_pFRDriveMotor = new VictorSPX(FR_DRIVE_MOTOR_ID);
 	m_pBLDriveMotorController = new MotorVelocityController(
 		m_pBLDriveMotor,
 		true,
+		true,
 		RobotParameters::k_driveMotorControllerKp,
 		RobotParameters::k_driveMotorControllerKi,
 		RobotParameters::k_driveMotorControllerKd,
@@ -64,6 +67,7 @@ m_pFRDriveMotor = new VictorSPX(FR_DRIVE_MOTOR_ID);
 	m_pFLDriveMotor = new VictorSPX(FL_DRIVE_MOTOR_ID);
 	m_pFLDriveMotorController = new MotorVelocityController(
 		m_pFLDriveMotor,
+		true,
 		true,
 		RobotParameters::k_driveMotorControllerKp,
 		RobotParameters::k_driveMotorControllerKi,
@@ -81,7 +85,8 @@ m_pFRDriveMotor = new VictorSPX(FR_DRIVE_MOTOR_ID);
 	m_pFRSteerMotorController = new MotorPositionController(
 		m_pFRSteerMotor,
 		m_pFRSteerEncoder,
-		true,
+		false,
+		false,
 		RobotParameters::k_steerMotorControllerKp,
 		RobotParameters::k_steerMotorControllerKi,
 		RobotParameters::k_steerMotorControllerKd,
@@ -98,7 +103,8 @@ m_pFRDriveMotor = new VictorSPX(FR_DRIVE_MOTOR_ID);
 	m_pBRSteerMotorController = new MotorPositionController(
 		m_pBRSteerMotor,
 		m_pBRSteerEncoder,
-		true,
+		false,
+		false,
 		RobotParameters::k_steerMotorControllerKp,
 		RobotParameters::k_steerMotorControllerKi,
 		RobotParameters::k_steerMotorControllerKd,
@@ -115,7 +121,8 @@ m_pFRDriveMotor = new VictorSPX(FR_DRIVE_MOTOR_ID);
 	m_pBLSteerMotorController = new MotorPositionController(
 		m_pBLSteerMotor,
 		m_pBLSteerEncoder,
-		true,
+		false,
+		false,
 		RobotParameters::k_steerMotorControllerKp,
 		RobotParameters::k_steerMotorControllerKi,
 		RobotParameters::k_steerMotorControllerKd,
@@ -132,7 +139,8 @@ m_pFRDriveMotor = new VictorSPX(FR_DRIVE_MOTOR_ID);
 	m_pFLSteerMotorController = new MotorPositionController(
 		m_pFLSteerMotor,
 		m_pFLSteerEncoder,
-		true,
+		false,
+		false,
 		RobotParameters::k_steerMotorControllerKp,
 		RobotParameters::k_steerMotorControllerKi,
 		RobotParameters::k_steerMotorControllerKd,

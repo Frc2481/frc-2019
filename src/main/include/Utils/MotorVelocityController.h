@@ -8,6 +8,7 @@ public:
     MotorVelocityController();
     MotorVelocityController(
 		BaseMotorController* pController,
+        bool phase,
         bool inverted,
         double kp,
 		double ki,
