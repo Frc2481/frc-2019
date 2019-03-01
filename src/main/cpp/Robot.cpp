@@ -22,6 +22,8 @@
 #include "Commands/ToolChanger/ToolChangerSetHasHatchCommand.h"
 #include "Commands/ToolChanger/ToolChangerSetHasCargoCommand.h"
 #include "Commands/CommandGroups/RevertElevatorTestingCommandGroup.h"
+#include "Commands/CargoIntake/CargoIntakeZeroCommand.h"
+#include "Commands/CommandGroups/ZeroAllCommandGroup.h"
 
 Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 	m_server = CameraServer::GetInstance();
@@ -54,11 +56,17 @@ void Robot::RobotInit() {
 	SmartDashboard::PutData("ElevatorMidCommand", new ElevatorMidCommand("ElevatorMidCommand"));
 	SmartDashboard::PutData("ElevatorLowCommand", new ElevatorLowCommand("ElevatorLowCommand"));
 
+	SmartDashboard::PutData("ElevatorCargoShipCommand", new ElevatorCargoShipCommand("ElevatorCargoShipCommand"));
+
 	SmartDashboard::PutData("SetHasHatchCommand", new ToolChangerSetHasHatchCommand(true));
 	SmartDashboard::PutData("SetHasCargoCommand", new ToolChangerSetHasCargoCommand(true));
 
 	SmartDashboard::PutData("RevertElevatorCommand", new RevertElevatorTestingCommandGroup());
 
+	SmartDashboard::PutData("CargoIntakeZeroCommand", new CargoIntakeZeroCommand());
+	
+	SmartDashboard::PutData("ZeroAllCommandGroup", new ZeroAllCommandGroup());
+	
 	SmartDashboard::PutData(frc::Scheduler::GetInstance());
 
 	m_pVibrate.reset(new VibrateCommand());

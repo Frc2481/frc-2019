@@ -17,8 +17,6 @@ class ToolChangerScoreCommand : public frc::InstantCommand {
   ToolChangerScoreCommand() : InstantCommand("ToolChangerScoreCommand") {}
   void Initialize() override {
     if(CommandBase::m_pToolChanger->HasHatch()) {
-      CommandBase::m_pToolChanger->ExtendHatch();
-      Wait(0.3);
       CommandBase::m_pToolChanger->FreeHatch();
       Wait(0.3);
       CommandBase::m_pToolChanger->RetractHatch();
@@ -34,14 +32,13 @@ class ToolChangerScoreCommand : public frc::InstantCommand {
     else {
       CommandBase::m_pToolChanger->ExtendHatch();
       Wait(0.3);
-      CommandBase::m_pToolChanger->HoldCargo();
       CommandBase::m_pToolChanger->RetractHatch();
 
     // state at end:
     // Elevator: elevatorBaseCommand
     // Cargo Intake: in
     // Cargo: Held
-    // Hatch: held
+    // Hatch: Free
     // HatchExt: Retracted
     }
   }

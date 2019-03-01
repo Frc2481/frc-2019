@@ -80,3 +80,7 @@ int CTREMagEncoder::convertWheelDistanceToTickSetpoint(double wheelRadius, doubl
 bool CTREMagEncoder::isConnected() const {
 	return m_pTalon->GetSensorCollection().GetPulseWidthRiseToRiseUs() > 0;
 }
+
+bool CTREMagEncoder::isCalibrated() const {
+	return fabs(m_encoderTicksZero) > 0;
+}

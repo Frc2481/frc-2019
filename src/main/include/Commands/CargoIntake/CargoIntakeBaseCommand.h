@@ -22,9 +22,9 @@ class CargoIntakeBaseCommand : public frc::Command {
     Requires(CommandBase::m_pCargoIntake.get());
   }
   void Initialize() override {
-    // if(IsPositionSetPointAllowed(INTAKE_POS)) {
+    if(IsPositionSetPointAllowed(INTAKE_POS)) {
       CommandBase::m_pCargoIntake->SetPosition(INTAKE_POS);
-    // }
+    }
   }
   
   bool IsFinished() override {

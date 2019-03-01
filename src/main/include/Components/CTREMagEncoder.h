@@ -24,6 +24,7 @@ public:
     int convertWheelDistanceToTicks(double wheelRadius, double wheelDistance) const;
     int convertWheelDistanceToTickSetpoint(double wheelRadius, double wheelDistance) const;
     bool isConnected() const;
+    bool isCalibrated() const;
 
 private:
     TalonSRX* m_pTalon;

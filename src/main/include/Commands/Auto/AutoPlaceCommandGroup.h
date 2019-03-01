@@ -20,7 +20,7 @@ class AutoPlaceCommandGroup : public frc::CommandGroup {
     Requires(CommandBase::m_pElevator.get());
     Requires(CommandBase::m_pToolChanger.get());
 
-    AddSequential(elevatorBaseCommand);
+    //AddSequential(elevatorBaseCommand);
     AddSequential(new HatchSlideWaitForOnTargetCommand());
     AddSequential(new ToolChangerScoreCommand());
     AddSequential(new ToolChangerWaitForReleaseCommand());
