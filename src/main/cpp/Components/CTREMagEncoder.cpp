@@ -15,8 +15,8 @@ CTREMagEncoder::CTREMagEncoder(TalonSRX* pTalon, const std::string &name)
 	m_calibrationKey = ss.str();
     m_encoderTicksZero = frc::Preferences::GetInstance()->GetDouble(m_calibrationKey);
 
-    m_pTalon->ConfigSelectedFeedbackSensor(CTRE_MagEncoder_Absolute, 0, 0);
-    m_pTalon->SetStatusFramePeriod(Status_2_Feedback0, 10, 0);
+    m_pTalon->ConfigSelectedFeedbackSensor(CTRE_MagEncoder_Absolute, 0, 10);
+    m_pTalon->SetStatusFramePeriod(Status_2_Feedback0, 10, 10);
 }
 
 CTREMagEncoder::~CTREMagEncoder() {
@@ -62,7 +62,6 @@ int CTREMagEncoder::convertAngleToTicks(double angle) const {
 int CTREMagEncoder::convertAngleToTickSetpoint(double angle) const {
     double error = normalizeToRange::rangedDifference(angle - getAngle(), -180, 180);
     return getTicks() + convertAngleToTicks(error) + m_encoderTicksZero;
-    // return convertAngleToTicks(angle) + m_encoderTicksZero;
 }
 
 double CTREMagEncoder::convertWheelDistanceToRevs(double wheelRadius, double wheelDistance) const {
@@ -83,4 +82,8 @@ bool CTREMagEncoder::isConnected() const {
 
 bool CTREMagEncoder::isCalibrated() const {
 	return fabs(m_encoderTicksZero) > 0;
+}
+
+int CTREMagEncoder::getZero() const {
+    return m_encoderTicksZero;
 }

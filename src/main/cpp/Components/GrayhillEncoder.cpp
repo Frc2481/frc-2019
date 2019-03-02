@@ -10,7 +10,7 @@ GrayhillEncoder::GrayhillEncoder(TalonSRX* pTalon, const std::string &name)
     m_encoderTicksZero(0),
 	m_encoderTickVel(0) {
 
-	m_pTalon->SetStatusFramePeriod(Status_2_Feedback0, 10, 0);
+	m_pTalon->SetStatusFramePeriod(Status_2_Feedback0, 10, 10);
 }
 
 GrayhillEncoder::~GrayhillEncoder() {
@@ -85,4 +85,8 @@ int GrayhillEncoder::convertWheelDistanceToTicks(double wheelRadius, double whee
 
 int GrayhillEncoder::convertWheelDistanceToTickSetpoint(double wheelRadius, double wheelDistance) const {
     return convertWheelDistanceToTicks(wheelRadius, wheelDistance) + m_encoderTicksZero;
+}
+
+int GrayhillEncoder::getZero() const {
+    return m_encoderTicksZero;
 }

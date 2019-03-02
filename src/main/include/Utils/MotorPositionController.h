@@ -43,6 +43,8 @@ public:
     //////////////////////////////////////////////////////////////////////
     void updateLinear(double refP, double refV, double refA, double wheelRadius);
 
+    double getEncoderZero() const;
+
 private:
     TalonSRX* m_pDriveMotor;
     CTREMagEncoder* m_pEncoder;
