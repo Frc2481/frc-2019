@@ -57,10 +57,14 @@ public:
     bool areAllSteerEncodersConnected();
 
 private:
-    VictorSPX* m_pFRDriveMotor;
-    VictorSPX* m_pBRDriveMotor;
-    VictorSPX* m_pBLDriveMotor;
-    VictorSPX* m_pFLDriveMotor;
+    // VictorSPX* m_pFRDriveMotor;
+    // VictorSPX* m_pBRDriveMotor;
+    // VictorSPX* m_pBLDriveMotor;
+    // VictorSPX* m_pFLDriveMotor;
+    TalonSRX* m_pFRDriveMotor;
+    TalonSRX* m_pBRDriveMotor;
+    TalonSRX* m_pBLDriveMotor;
+    TalonSRX* m_pFLDriveMotor;
     MotorVelocityController* m_pFRDriveMotorController;
     MotorVelocityController* m_pBRDriveMotorController;
     MotorVelocityController* m_pBLDriveMotorController;

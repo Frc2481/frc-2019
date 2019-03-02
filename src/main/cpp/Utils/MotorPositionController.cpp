@@ -35,14 +35,13 @@ MotorPositionController::MotorPositionController(
     m_ticksPerRev(ticksPerRev),
     m_enableMotionMagic(false) {
     
-    m_pDriveMotor->ConfigFactoryDefault();
     m_pDriveMotor->SelectProfileSlot(0, 0);
 	m_pDriveMotor->Set(ControlMode::Position, 0);
-	m_pDriveMotor->Config_kP(0, kp, 0);
-	m_pDriveMotor->Config_kI(0, ki, 0);
-	m_pDriveMotor->Config_kD(0, kd, 0);
-    m_pDriveMotor->Config_IntegralZone(0, iZone, 0);
-    m_pDriveMotor->ConfigMaxIntegralAccumulator (0, iErrorLim, 0);
+	m_pDriveMotor->Config_kP(0, kp, 10);
+	m_pDriveMotor->Config_kI(0, ki, 10);
+	m_pDriveMotor->Config_kD(0, kd, 10);
+    m_pDriveMotor->Config_IntegralZone(0, iZone, 10);
+    m_pDriveMotor->ConfigMaxIntegralAccumulator (0, iErrorLim, 10);
     m_pDriveMotor->SetNeutralMode(NeutralMode::Brake);
     m_pDriveMotor->EnableVoltageCompensation(true);
     m_pDriveMotor->ConfigVoltageCompSaturation(12.0, 0);
@@ -139,4 +138,8 @@ void MotorPositionController::updateLinear(double refP, double refV, double refA
     else {
         m_pDriveMotor->Set(ControlMode::MotionMagic, refP, DemandType::DemandType_ArbitraryFeedForward, feedforwardControl);
     }
+}
+
+double MotorPositionController::getEncoderZero() const {
+    return m_pEncoder->getZero();
 }
