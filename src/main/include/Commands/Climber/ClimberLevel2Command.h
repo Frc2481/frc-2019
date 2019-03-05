@@ -8,7 +8,7 @@
 #ifndef SRC_CLIMBERLEVEL2COMMAND
 #define SRC_CLIMBERLEVEL2COMMAND
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/Climber.h"
+#include "CommandBase.h"
 
 class ClimberLevel2Command : public frc::InstantCommand {
  public:

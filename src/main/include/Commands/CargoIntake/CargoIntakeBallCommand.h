@@ -9,7 +9,6 @@
 #define SRC_CARGOINTAKEBALLCOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/CargoIntake.h"
 #include "CommandBase.h"
 #include "RobotParameters.h"
 

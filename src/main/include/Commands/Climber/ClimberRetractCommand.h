@@ -8,7 +8,7 @@
 #ifndef SRC_CLIMBERRETRACTCOMMAND
 #define SRC_CLIMBERRETRACTCOMMAND
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/Climber.h"
+#include "CommandBase.h"
 
 class ClimberRetractCommand : public frc::InstantCommand {
  public:

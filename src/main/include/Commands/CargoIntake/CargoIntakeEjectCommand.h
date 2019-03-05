@@ -9,7 +9,6 @@
 #define SRC_CARGOINTAKEEJECTCOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/CargoIntake.h"
 #include "CommandBase.h"
 
 class CargoIntakeEjectCommand : public frc::InstantCommand {

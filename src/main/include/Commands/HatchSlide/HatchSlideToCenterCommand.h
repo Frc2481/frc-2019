@@ -9,8 +9,6 @@
 #define SRC_HATCHSLIDETOCENTERCOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Robot.h"
-#include "Subsystems/HatchSlide.h"
 #include "CommandBase.h"
 
 class HatchSlideToCenterCommand : public frc::InstantCommand {

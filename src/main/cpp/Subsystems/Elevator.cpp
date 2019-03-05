@@ -146,9 +146,20 @@ int Elevator::ConvertInchesToTicks(double inches) {
 void Elevator::SetOpenLoopSpeed(double speed) {
   m_masterElevator->Set(ControlMode::PercentOutput, speed);
 }
+void Elevator::SetMasterOpenLoopSpeed(double speed) {
+  // m_slaveElevator->set(); //unfollow
+  m_masterElevator->Set(ControlMode::PercentOutput, speed);
+}
+void Elevator::SetSlaveOpenLoopSpeed(double speed) {
+  // m_slaveElevator->set(); //unfollow
+  m_slaveElevator->Set(ControlMode::PercentOutput, speed);
+}
 bool Elevator::IsElevatorEncoderConnected() {
   return m_encoderConnected;
 }
 bool Elevator::IsPositionInProtectedZone(double pos) {
   return pos < RobotParameters::k_elevatorCollisionMax && pos > RobotParameters::k_elevatorCollisionMin;
+}
+void Elevator::SetFollower() {
+  m_slaveElevator->Follow(*m_masterElevator);
 }

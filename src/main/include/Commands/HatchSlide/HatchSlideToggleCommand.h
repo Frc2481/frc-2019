@@ -9,7 +9,6 @@
 #define SRC_HATCHSLIDETOGGLECOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/HatchSlide.h"
 #include "CommandBase.h"
 
 class HatchSlideToggleCommand : public frc::InstantCommand {

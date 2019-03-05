@@ -5,34 +5,37 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_HATCHSLIDESETOOPENLOOPCOMMAND
-#define SRC_HATCHSLIDESETOOPENLOOPCOMMAND
+#ifndef SRC_CLIMBERDIAGNOSTICSCOMMAND
+#define SRC_CLIMBERDIAGNOSTICSCOMMAND
 
 #include <frc/commands/Command.h>
 #include "CommandBase.h"
 
-class HatchSlideSetOpenLoopCommand : public frc::Command {
- public:
-  HatchSlideSetOpenLoopCommand() : Command("HatchSlideSetOpenLoopCommand"){
-    Requires(CommandBase::m_pHatchSlide.get());
+class ClimberDiagnosticsCommand : public frc::Command {
+  private:
+  bool isPullingCurrent;
+
+  public:
+  ClimberDiagnosticsCommand() : Command("ClimberDiagnosticsCommand"){
+    SetTimeout(1);
+    isPullingCurrent = false;
   }
   void Initialize() override {
-
+    CommandBase::m_pClimber->SetOpenLoopSpeed(0.5);
   }
   void Execute() override {
-		double percentVelY = -CommandBase::m_pOI->GetOperatorStick()->GetRawAxis(XBOX_LEFT_Y_AXIS);
-
-    CommandBase::m_pHatchSlide->SetOpenLoopSpeed(percentVelY);
+    isPullingCurrent = CommandBase::m_pPDP->GetCurrent(14) > 0.1;
   }
   bool IsFinished() override {
-    return false;
+    return IsTimedOut();
   }
   void End() override {
-    CommandBase::m_pHatchSlide->SetOpenLoopSpeed(0);   
+    SmartDashboard::PutBoolean("ClimberPullingCurrent", isPullingCurrent);
+    CommandBase::m_pClimber->SetOpenLoopSpeed(0.0);     
   }
   void Interrupted() override {
     End();
   }
 };
 
-#endif //SRC_HATCHSLIDESETOOPENLOOPCOMMAND
+#endif //SRC_CLIMBERDIAGNOSTICSCOMMAND

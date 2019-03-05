@@ -9,7 +9,6 @@
 #define SRC_ACQUIREHATCHCOMMANDGROUP
 
 #include <frc/commands/CommandGroup.h>
-#include "CommandBase.h"
 #include "Commands/ToolChanger/ToolChangerSetHasHatchCommand.h"
 #include "Commands/Elevator/ElevatorBaseCommand.h"
 #include "Commands/ToolChanger/ToolChangerHoldHatchCommand.h"

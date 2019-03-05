@@ -9,7 +9,6 @@
 #define SRC_ELEVATORZEROCOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/Elevator.h"
 #include "CommandBase.h"
 
 class ElevatorZeroCommand : public frc::InstantCommand {

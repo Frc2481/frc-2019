@@ -9,7 +9,6 @@
 #define SRC_CARGOINTAKESTOPCOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/CargoIntake.h"
 #include "CommandBase.h"
 
 class CargoIntakeStopCommand : public frc::InstantCommand {

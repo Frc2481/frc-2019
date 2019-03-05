@@ -11,6 +11,7 @@
 #include "Utils/SwerveDrivePose.h"
 #include "Utils/MotorPositionController.h"
 #include "Utils/MotorVelocityController.h"
+#include "rev/CANSparkMax.h"
 
 // +x = robot right
 // +y = robot forward
@@ -57,18 +58,10 @@ public:
     bool areAllSteerEncodersConnected();
 
 private:
-    // VictorSPX* m_pFRDriveMotor;
-    // VictorSPX* m_pBRDriveMotor;
-    // VictorSPX* m_pBLDriveMotor;
-    // VictorSPX* m_pFLDriveMotor;
-    TalonSRX* m_pFRDriveMotor;
-    TalonSRX* m_pBRDriveMotor;
-    TalonSRX* m_pBLDriveMotor;
-    TalonSRX* m_pFLDriveMotor;
-    MotorVelocityController* m_pFRDriveMotorController;
-    MotorVelocityController* m_pBRDriveMotorController;
-    MotorVelocityController* m_pBLDriveMotorController;
-    MotorVelocityController* m_pFLDriveMotorController;
+    rev::CANSparkMax* m_pFRDriveMotor;
+    rev::CANSparkMax* m_pBRDriveMotor;
+    rev::CANSparkMax* m_pBLDriveMotor;
+    rev::CANSparkMax* m_pFLDriveMotor;
     TalonSRX* m_pFRSteerMotor;
 	TalonSRX* m_pBRSteerMotor;
 	TalonSRX* m_pBLSteerMotor;

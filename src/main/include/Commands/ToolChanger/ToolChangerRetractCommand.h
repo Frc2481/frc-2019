@@ -9,7 +9,6 @@
 #define SRC_TOOLCHANGERRETRACTCOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/ToolChanger.h"
 #include "CommandBase.h"
 
 class ToolChangerRetractCommand : public frc::InstantCommand {

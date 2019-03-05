@@ -8,7 +8,6 @@
 #ifndef SRC_CARGOINTAKEWAITFORNOBALLCOMMAND
 #define SRC_CARGOINTAKEWAITFORNOBALLCOMMAND
 
-#include "Subsystems/CargoIntake.h"
 #include "CommandBase.h"
 #include <frc/commands/Command.h>
 

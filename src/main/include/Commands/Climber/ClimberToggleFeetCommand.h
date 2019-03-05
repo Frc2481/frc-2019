@@ -9,7 +9,6 @@
 #define SRC_CLIMBERTOGGLEFEETCOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/Climber.h"
 #include "CommandBase.h"
 
 class ClimberToggleFeetCommand : public frc::InstantCommand {

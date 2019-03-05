@@ -8,8 +8,8 @@
 #ifndef SRC_HATCHSLIDEZEROCOMMAND
 #define SRC_HATCHSLIDEZEROCOMMAND
 
+#include <frc/commands/Command.h>
 #include "CommandBase.h"
-#include "Subsystems/HatchSlide.h"
 
 class HatchSlideZeroCommand : public frc::Command {
  public:

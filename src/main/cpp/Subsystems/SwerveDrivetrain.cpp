@@ -14,75 +14,24 @@ SwerveDrivetrain::SwerveDrivetrain()
 		Translation2D(-RobotParameters::k_wheelTrack / 2.0, RobotParameters::k_wheelBase / 2.0)),
     m_gyroYaw(0),
 	m_isOpenLoopFieldFrame(false), 
-	m_areAllSteerEncodersConnected(false) {
+	m_areAllSteerEncodersConnected(false),
+	m_pFRDriveMotor(new rev::CANSparkMax(FR_DRIVE_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless)),
+	m_pFLDriveMotor(new rev::CANSparkMax(FL_DRIVE_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless)),
+	m_pBRDriveMotor(new rev::CANSparkMax(BR_DRIVE_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless)),
+	m_pBLDriveMotor(new rev::CANSparkMax(BL_DRIVE_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless))
+{
 
-	m_pFRDriveMotor = new TalonSRX(FR_DRIVE_MOTOR_ID); // VictorSPX(FR_DRIVE_MOTOR_ID);
-	m_pFRDriveMotor->ConfigFactoryDefault();
-	m_pFRDriveMotorController = new MotorVelocityController(
-		m_pFRDriveMotor,
-		true,
-		true,
-        RobotParameters::k_driveMotorControllerKp,
-        RobotParameters::k_driveMotorControllerKi,
-        RobotParameters::k_driveMotorControllerKd,
-        RobotParameters::k_driveMotorControllerKv,
-        RobotParameters::k_driveMotorControllerKap,
-		RobotParameters::k_driveMotorControllerKan,
-		RobotParameters::k_driveMotorControllerKsf,
-        0,
-		0,
-        0);
+	m_pFRDriveMotor->SetSmartCurrentLimit(200);
+	m_pFRDriveMotor->SetInverted(true);
 
-	m_pBRDriveMotor = new TalonSRX(BR_DRIVE_MOTOR_ID); // VictorSPX(BR_DRIVE_MOTOR_ID);
-	m_pBRDriveMotor->ConfigFactoryDefault();
-	m_pBRDriveMotorController = new MotorVelocityController(
-		m_pBRDriveMotor,
-		true,
-		true,
-		RobotParameters::k_driveMotorControllerKp,
-		RobotParameters::k_driveMotorControllerKi,
-		RobotParameters::k_driveMotorControllerKd,
-		RobotParameters::k_driveMotorControllerKv,
-		RobotParameters::k_driveMotorControllerKap,
-		RobotParameters::k_driveMotorControllerKan,
-		RobotParameters::k_driveMotorControllerKsf,
-		0,
-		0,
-		0);
+	m_pBRDriveMotor->SetSmartCurrentLimit(200);
+	m_pBRDriveMotor->SetInverted(true);
 
-	m_pBLDriveMotor = new TalonSRX(BL_DRIVE_MOTOR_ID); // VictorSPX(BL_DRIVE_MOTOR_ID);
-	m_pBLDriveMotor->ConfigFactoryDefault();
-	m_pBLDriveMotorController = new MotorVelocityController(
-		m_pBLDriveMotor,
-		true,
-		true,
-		RobotParameters::k_driveMotorControllerKp,
-		RobotParameters::k_driveMotorControllerKi,
-		RobotParameters::k_driveMotorControllerKd,
-		RobotParameters::k_driveMotorControllerKv,
-		RobotParameters::k_driveMotorControllerKap,
-		RobotParameters::k_driveMotorControllerKan,
-		RobotParameters::k_driveMotorControllerKsf,
-		0,
-		0,
-		0);
+	m_pBLDriveMotor->SetSmartCurrentLimit(200);
+	m_pBLDriveMotor->SetInverted(true);
 
-	m_pFLDriveMotor = new TalonSRX(FL_DRIVE_MOTOR_ID); // VictorSPX(FL_DRIVE_MOTOR_ID);
-	m_pFLDriveMotor->ConfigFactoryDefault();
-	m_pFLDriveMotorController = new MotorVelocityController(
-		m_pFLDriveMotor,
-		true,
-		true,
-		RobotParameters::k_driveMotorControllerKp,
-		RobotParameters::k_driveMotorControllerKi,
-		RobotParameters::k_driveMotorControllerKd,
-		RobotParameters::k_driveMotorControllerKv,
-		RobotParameters::k_driveMotorControllerKap,
-		RobotParameters::k_driveMotorControllerKan,
-		RobotParameters::k_driveMotorControllerKsf,
-		0,
-		0,
-		0);
+	m_pFLDriveMotor->SetSmartCurrentLimit(200);
+	m_pFLDriveMotor->SetInverted(false);
 
 	m_pFRSteerMotor = new TalonSRX(FR_STEER_MOTOR_ID);
 	m_pFRSteerMotor->ConfigFactoryDefault();
@@ -192,18 +141,6 @@ SwerveDrivetrain::~SwerveDrivetrain() {
 
 	delete m_pFLSteerMotor;
 	m_pFLSteerMotor = nullptr;
-
-	delete m_pFRDriveMotorController;
-	m_pFRDriveMotorController = nullptr;
-
-	delete m_pBRDriveMotorController;
-	m_pBRDriveMotorController = nullptr;
-
-	delete m_pBLDriveMotorController;
-	m_pBLDriveMotorController = nullptr;
-
-	delete m_pFLDriveMotorController;
-	m_pFLDriveMotorController = nullptr;
 
 	delete m_pFRSteerMotorController;
 	m_pFRSteerMotorController = nullptr;
@@ -346,10 +283,10 @@ void SwerveDrivetrain::driveOpenLoopControl(
 	}
 
 	// update drive motors
-	m_pFRDriveMotorController->updateOpenLoopControl(frInvertDrive * frWheelPercent.norm());
-	m_pBRDriveMotorController->updateOpenLoopControl(brInvertDrive * brWheelPercent.norm());
-	m_pBLDriveMotorController->updateOpenLoopControl(blInvertDrive * blWheelPercent.norm());
-	m_pFLDriveMotorController->updateOpenLoopControl(flInvertDrive * flWheelPercent.norm());
+	m_pFRDriveMotor->Set(frInvertDrive * frWheelPercent.norm());
+	m_pBRDriveMotor->Set(brInvertDrive * brWheelPercent.norm());
+	m_pBLDriveMotor->Set(blInvertDrive * blWheelPercent.norm());
+	m_pFLDriveMotor->Set(flInvertDrive * flWheelPercent.norm());
 }
 
 void SwerveDrivetrain::driveClosedLoopControl(

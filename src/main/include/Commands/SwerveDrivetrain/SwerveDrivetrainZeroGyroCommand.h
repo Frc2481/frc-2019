@@ -9,7 +9,6 @@
 #define SRC_SWERVEDRIVETRAINZEROGYROCOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/SwerveDrivetrain.h"
 #include "CommandBase.h"
 
 class SwerveDrivetrainZeroGyroCommand : public frc::InstantCommand {
