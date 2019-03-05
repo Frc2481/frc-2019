@@ -12,10 +12,24 @@
 #include "CommandBase.h"
 
 class ElevatorWaitForPositionCommand : public frc::Command {
+  private:
+  bool m_isGoingUp = false;
+  double m_setPoint;
  public:
-  ElevatorWaitForPositionCommand() : Command("ElevatorWaitForPositionCommand") {}
+  ElevatorWaitForPositionCommand(double setPoint) : Command("ElevatorWaitForPositionCommand") {  
+    m_setPoint = setPoint;
+    m_isGoingUp = CommandBase::m_pElevator->GetVelocity() > 0;
+  }
   bool IsFinished() override {
-    return fabs(CommandBase::m_pElevator->GetElevatorError()) < 1;
+    if((m_isGoingUp) && (m_setPoint - CommandBase::m_pElevator->GetElevatorPosition() < 1)){
+      return true;
+    }
+    else if((!m_isGoingUp) && (CommandBase::m_pElevator->GetElevatorPosition() - m_setPoint < 1)){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 };
 

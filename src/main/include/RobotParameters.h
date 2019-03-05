@@ -70,10 +70,10 @@ namespace RobotParameters {
     static constexpr double k_elevatorTicksPerRev = 4096;
     static constexpr double k_elevatorBeltCircumference = 1.504 * 3.14;
     static constexpr double k_elevatorCollisionMin = 0;
-    static constexpr double k_elevatorCollisionMax = 5000;
+    static constexpr double k_elevatorCollisionMax = 22; //inches
 
     // CargoIntake
-    static constexpr double k_cargoIntakeThreshold = 0; // point where it's no longer safe to move elevator down onto it
+    static constexpr double k_cargoIntakeThreshold = 1000; // point where it's no longer safe to move elevator down onto it
     static constexpr double k_cargoIntakeBeltCircumference = 1.128 * 3.14;
     static constexpr double k_cargoIntakeTicksPerRev = 4096;
     static constexpr double k_intakeSpeedFull = 1;

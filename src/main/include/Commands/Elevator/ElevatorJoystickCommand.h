@@ -5,16 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_ELEVATORRAISECOMMAND
-#define SRC_ELEVATORRAISECOMMAND
+#ifndef SRC_ELEVATORJOYSTICKCOMMAND
+#define SRC_ELEVATORJOYSTICKCOMMAND
 
 #include <frc/commands/Command.h>
 #include "CommandBase.h"
 #include "RobotParameters.h"
 
-class ElevatorRaiseCommand : public frc::Command {
+class ElevatorJoystickCommand : public frc::Command {
  public:
-  ElevatorRaiseCommand() : Command("ElevatorRaiseCommand") {
+  ElevatorJoystickCommand() : Command("ElevatorJoystickCommand") {
       Requires(CommandBase::m_pElevator.get());
   }
   void Initialize() override {
@@ -43,4 +43,4 @@ class ElevatorRaiseCommand : public frc::Command {
   }
 };
 
-#endif //SRC_ELEVATORRAISECOMMAND
+#endif //SRC_ELEVATORJOYSTICKCOMMAND

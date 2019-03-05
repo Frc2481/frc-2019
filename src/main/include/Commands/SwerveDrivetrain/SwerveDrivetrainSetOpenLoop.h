@@ -5,26 +5,33 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_SWERVEDRIVETRAINDISTANCE
-#define SRC_SWERVEDRIVETRAINDISTANCE
+#ifndef SRC_SWERVEDRIVETRAINSETOPENLOOP
+#define SRC_SWERVEDRIVETRAINSETOPENLOOP
 
 #include <frc/commands/Command.h>
 #include "Subsystems/SwerveDrivetrain.h"
 #include "CommandBase.h"
 
-class SwerveDrivetrainDistance : public frc::Command {
+class SwerveDrivetrainSetOpenLoop : public frc::Command {
  private:
   double m_desiredTime;
+  double m_xVel;
+  double m_yVel;
+  double m_yawRate;
 
  public:
-  SwerveDrivetrainDistance(double desiredTime) : Command("SwerveDrivetrainDistance"){
+  SwerveDrivetrainSetOpenLoop(double desiredTime, double xVel, double yVel, double yawRate) : Command("SwerveDrivetrainSetOpenLoop"){
+    Requires(CommandBase::m_pSwerveDrivetrain.get());
     m_desiredTime = desiredTime;
+    m_xVel = xVel;
+    m_yVel = yVel;
+    m_yawRate = yawRate;
   }
   void Initialize() override {
     SetTimeout(m_desiredTime);
   }
   void Execute() override {
-    CommandBase::m_pSwerveDrivetrain->driveClosedLoopControl(0, 0.3, 0, 0, 0, 0);
+    CommandBase::m_pSwerveDrivetrain->driveOpenLoopControl(m_xVel, m_yVel, m_yawRate);
   }
   bool IsFinished() override {
     return IsTimedOut();
@@ -37,4 +44,4 @@ class SwerveDrivetrainDistance : public frc::Command {
   }
 };
 
-#endif //SRC_SWERVEDRIVETRAINDISTANCE
+#endif //SRC_SWERVEDRIVETRAINSETOPENLOOP

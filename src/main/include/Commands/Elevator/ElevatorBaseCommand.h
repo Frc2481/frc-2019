@@ -49,7 +49,7 @@ class ElevatorBaseCommand : public frc::Command {
   }
 
   void End() {
-if(CommandBase::m_pToolChanger->HasCargo() && IsPositionSetPointAllowed(CARGO_HEIGHT)) {
+    if(CommandBase::m_pToolChanger->HasCargo() && IsPositionSetPointAllowed(CARGO_HEIGHT)) {
       CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT, false);
     }
     else if(CommandBase::m_pToolChanger->HasHatch() && IsPositionSetPointAllowed(HATCH_HEIGHT)){
@@ -57,6 +57,7 @@ if(CommandBase::m_pToolChanger->HasCargo() && IsPositionSetPointAllowed(CARGO_HE
     } else {
       CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT, false);
     }
+    SmartDashboard::PutNumber("ElevatorExecutionTime", TimeSinceInitialized());
   }
 
   void Interrupted() {
@@ -72,7 +73,8 @@ class ElevatorBaseCommandGroup : public CommandGroup {
   }
 }; 
 
-typedef ElevatorBaseCommandGroup<84, 59> ElevatorHighCommand; // 27393, 25412
+typedef ElevatorBaseCommandGroup<24, 24> ElevatorIntakeBallHeightCommand; //TODO check reasonable height
+typedef ElevatorBaseCommandGroup<65, 59> ElevatorHighCommand; // 27393, 25412
 typedef ElevatorBaseCommandGroup<37, 31> ElevatorMidCommand; // 16075, 13180
 typedef ElevatorBaseCommandGroup<9, 3> ElevatorLowCommand; // 3918, 1273
 typedef ElevatorBaseCommandGroup<9, 9> ElevatorCargoLowCommand; // 3918, 3918

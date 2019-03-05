@@ -24,6 +24,11 @@
 #include "Commands/CommandGroups/RevertElevatorTestingCommandGroup.h"
 #include "Commands/CargoIntake/CargoIntakeZeroCommand.h"
 #include "Commands/CommandGroups/ZeroAllCommandGroup.h"
+#include "Commands/Climber/ClimberToggleBigFootCommand.h"
+#include "Commands/Climber/ClimberToggleLittleFeetCommand.h"
+#include "Commands/CommandGroups/ClimbSequenceCommandGroup.h"
+#include "Commands/Climber/ClimberGuidesCommand.h"
+#include "Commands/ToolChanger/ToolChangerScoreCommand.h"
 
 Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 	m_server = CameraServer::GetInstance();
@@ -31,6 +36,8 @@ Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 
 void Robot::RobotInit() {
 	CommandBase::Init();
+
+	SmartDashboard::PutData("Score Command", new ToolChangerScoreCommand());
 
 	SmartDashboard::PutData("SwerveDrivetrainZeroSteer", new SwerveDrivetrainZeroSteer());
 	SmartDashboard::PutData("HatchSlideZeroCommand", new HatchSlideZeroCommand());
@@ -46,6 +53,14 @@ void Robot::RobotInit() {
 	SmartDashboard::PutData("CargoIntakeInCommand", new CargoIntakeInCommand("CargoIntakeInCommand"));
 	SmartDashboard::PutData("CargoIntakeOutCommand", new CargoIntakeOutCommand("CargoIntakeOutCommand"));
 
+	SmartDashboard::PutData("ClimberLittleFeetUpCommand", new ClimberLittleFeetUpCommand());
+	SmartDashboard::PutData("ClimberLittleFeetDownCommand", new ClimberLittleFeetDownCommand());
+	SmartDashboard::PutData("ClimberTiltBigFootCommand", new ClimberTiltBigFootCommand());
+	SmartDashboard::PutData("ClimberUntiltBigFootCommand", new ClimberUntiltBigFootCommand());
+	SmartDashboard::PutData("ClimberExtendGuidesCommand", new ClimberExtendGuidesCommand());
+	SmartDashboard::PutData("ClimberRetractGuidesCommand", new ClimberRetractGuidesCommand());
+
+	SmartDashboard::PutData("ClimbSequence2To3CommandGroup", new ClimbSequence2To3CommandGroup());
 
 	SmartDashboard::PutData("AcquireHatchCommand", new AcquireHatchCommandGroup());
 	SmartDashboard::PutData("AcquireCargoCommand", new AcquireCargoCommandGroup());
@@ -80,6 +95,13 @@ void Robot::RobotInit() {
 	m_usbCam2.SetResolution(320, 180);
 }
 
+void Robot::RobotPeriodic() {
+	double time0 = frc::Timer::GetFPGATimestamp();
+	frc::Scheduler::GetInstance()->Run();
+	double time1 = frc::Timer::GetFPGATimestamp();
+	printf("dt = %0.1f ms\n", (time1 - time0) * 1000);
+}
+
 void Robot::AutonomousInit() {
 }
 
@@ -94,13 +116,9 @@ void Robot::TeleopInit() {
 }
 
 void Robot::AutonomousPeriodic() {
-	CommandBase::Periodic();
 }
 
 void Robot::TeleopPeriodic() {
-	frc::Scheduler::GetInstance()->Run();
-	CommandBase::Periodic();
-
 	if(CommandBase::m_pHatchSlide->IsVibratable()) {
 		m_pVibrate->Start();
 		CommandBase::m_pHatchSlide->ResetVibratable();
@@ -111,15 +129,10 @@ void Robot::TeleopPeriodic() {
 }
 
 void Robot::DisabledPeriodic() {
-	frc::Scheduler::GetInstance()->Run();
-	CommandBase::Periodic();
-
 	frc::SmartDashboard::PutBoolean("ball intook", CommandBase::m_pCargoIntake->IsBallIntaken());
 }
 
 void Robot::TestPeriodic() {
-	frc::Scheduler::GetInstance()->Run();
-	CommandBase::Periodic();
 }
 
 #ifndef RUNNING_FRC_TESTS

@@ -29,20 +29,20 @@ public:
     frc::Button* m_climbRetract;
     frc::Button* m_climbLevel2;
     frc::Button* m_climbLevel3;
-    frc::Button* m_climberFeet;
+    frc::Button* m_climberLittleFeet;
+    frc::Button* m_climberBigFoot;
     frc::JoystickButton *m_pSetFieldFrameButton;
 
 //operator
     frc::Button* m_scoreHigh;
     frc::Button* m_scoreMid;
     frc::Button* m_scoreLow;
-    AnalogJoystickButton* m_elevatorRaise;
-    AnalogJoystickButton* m_elevatorLower;
+    AnalogJoystickButton* m_elevatorManual;
     AnalogJoystickButton* m_slideOpenLoop;
     frc::Button* m_cargoShip;
     frc::Button* m_toggleSlide;
     frc::Button* m_climberFeetOp;
-    frc::Button* m_scoreGamePiece;
+    AnalogJoystickButton* m_scoreGamePiece;
 
 };
 

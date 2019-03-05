@@ -26,12 +26,3 @@ void CommandBase::Init() {
 
 	Wait(1); // avoid race condition after constructing objects
 }
-
-void CommandBase::Periodic() {
-	m_pSwerveDrivetrain->Periodic();
-	m_pHatchSlide->Periodic();
-	m_pElevator->Periodic();
-	m_pCargoIntake->Periodic();
-	m_pToolChanger->Periodic();
-	m_pClimber->Periodic();
-}

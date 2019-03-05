@@ -17,7 +17,7 @@ class CargoIntakeWaitForNoBallCommand : public frc::Command {
 
   }
   bool IsFinished() override {
-    !CommandBase::m_pCargoIntake->IsBallIntaken();
+    return !CommandBase::m_pCargoIntake->IsBallIntaken();
   }
 };
 

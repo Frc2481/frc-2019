@@ -55,7 +55,7 @@ class CargoIntakeBaseCommandGroup : public CommandGroup {
   }
 }; 
 
-typedef CargoIntakeBaseCommandGroup<17700> CargoIntakeOutCommand; //TODO
+typedef CargoIntakeBaseCommandGroup<17700> CargoIntakeOutCommand;
 typedef CargoIntakeBaseCommandGroup<0> CargoIntakeInCommand;
 
 #endif //SRC_CARGOINTAKEBASECOMMAND

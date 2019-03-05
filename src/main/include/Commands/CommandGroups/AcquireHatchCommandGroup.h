@@ -25,7 +25,7 @@ class AcquireHatchCommandGroup : public frc::CommandGroup {
     AddSequential(new ElevatorLowCommand("ElevatorLowCommand"));
     AddSequential(new ToolChangerHatchExtendCommand());
     
-    AddSequential(new WaitCommand(0.1)); //shrink as we become confident
+    AddSequential(new WaitCommand(3)); //shrink as we become confident
     AddSequential(new ToolChangerHoldHatchCommand());
     AddSequential(new WaitCommand(0.1)); //shrink as we become confident
     AddSequential(new ToolChangerFreeCargoCommand());
