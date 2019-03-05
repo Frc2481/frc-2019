@@ -5,20 +5,26 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CARGOINTAKEZEROCOMMAND
-#define SRC_CARGOINTAKEZEROCOMMAND
+#ifndef SRC_CLIMBERGUIDESCOMMAND
+#define SRC_CLIMBERGUIDESCOMMAND
 
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 
-class CargoIntakeZeroCommand : public frc::InstantCommand {
+class ClimberRetractGuidesCommand : public frc::InstantCommand {
  public:
-  CargoIntakeZeroCommand() : InstantCommand("CargoIntakeZeroCommand"){
-    SetRunWhenDisabled(true);
-  }
+  ClimberRetractGuidesCommand() : InstantCommand("ClimberRetractGuidesCommand"){}
   void Initialize() override{
-    CommandBase::m_pCargoIntake->ZeroCargoIntake();
+    CommandBase::m_pClimber->RetractGuides();
   }
 };
 
-#endif //SRC_CARGOINTAKEZEROCOMMAND
+class ClimberExtendGuidesCommand : public frc::InstantCommand{
+  public:
+  ClimberExtendGuidesCommand() : InstantCommand("ClimberExtendGuidesCommand"){}
+  void Initialize() override{
+    CommandBase::m_pClimber->ExtendGuides();
+  }
+};
+
+#endif //SRC_CLIMBERGUIDESCOMMAND

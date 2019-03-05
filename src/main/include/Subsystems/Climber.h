@@ -18,24 +18,42 @@
 class Climber : public frc::Subsystem {
  private:
   rev::CANSparkMax* m_climberMotor;
-  frc::DoubleSolenoid* m_climberSolenoid;
+  rev::CANEncoder* m_encoder;
+  frc::DoubleSolenoid* m_climberBigFootSolenoid;
+  frc::DoubleSolenoid* m_climberLittleFeetSolenoid;
+  frc::DoubleSolenoid* m_climberGuidesSolenoid;
+  frc::Solenoid* m_weightsSolenoid;
 
   rev::CANPIDController m_pidController;
-  bool m_feetActivated;
+  bool m_littleFeetActivated;
+  bool m_bigFootActivated;
 
  public:
   Climber();
   void InitDefaultCommand() override;
+  void Periodic();
   void ClimberRetract();
   void ClimberLevel2();
   void ClimberLevel3();
   double ConvertInchesToTicks(int inches);
-  void ActivateFeet();
-  void DeactivateFeet();
-  bool IsFootToggleActivated();
-  void ActivateFootToggle();
-  void DeactivateFootToggle();
+  void ActivateLittleFeet();
+  void DeactivateLittleFeet();
+  void ActivateBigFoot();
+  void DeactivateBigFoot();
+  bool IsBigFootToggleActivated();
+  bool IsLittleFeetToggleActivated();
+  void ActivateBigFootToggle();
+  void DeactivateBigFootToggle();
+  bool IsBigFootTilted();
+  void ActivateLittleFeetToggle();
+  void DeactivateLittleFeetToggle();
   void SetOpenLoopSpeed(double speed);
+  double GetSpeed();
+  double GetPos();
+  void ZeroClimber();
+  void ExtendGuides();
+  void RetractGuides();
+  void ReleaseWeights();
 };
 
 #endif //SRC_CLIMBER_H

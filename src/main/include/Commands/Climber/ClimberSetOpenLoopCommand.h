@@ -5,20 +5,23 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CARGOINTAKEZEROCOMMAND
-#define SRC_CARGOINTAKEZEROCOMMAND
+#ifndef SRC_CLIMBERSETOPENLOOPCOMMAND
+#define SRC_CLIMBERSETOPENLOOPCOMMAND
 
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 
-class CargoIntakeZeroCommand : public frc::InstantCommand {
+class ClimberSetOpenLoopCommand : public frc::InstantCommand {
+  private:
+  double m_speed;
  public:
-  CargoIntakeZeroCommand() : InstantCommand("CargoIntakeZeroCommand"){
-    SetRunWhenDisabled(true);
+  ClimberSetOpenLoopCommand(double speed) : InstantCommand("ClimberSetOpenLoopCommand"){
+      m_speed = speed;
+      Requires(CommandBase::m_pClimber.get());
   }
   void Initialize() override{
-    CommandBase::m_pCargoIntake->ZeroCargoIntake();
+    CommandBase::m_pClimber->SetOpenLoopSpeed(m_speed);
   }
 };
 
-#endif //SRC_CARGOINTAKEZEROCOMMAND
+#endif //SRC_CLIMBERSETOPENLOOPCOMMAND

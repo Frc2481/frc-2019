@@ -23,26 +23,27 @@
 #include "Commands/CargoIntake/CargoIntakeStopCommand.h"
 #include "Commands/CargoIntake/CargoIntakeWaitForBallCommand.h"
 #include "Commands/CargoIntake/CargoIntakeWaitForNoBallCommand.h"
+#include "Commands/CommandGroups/ExtendIntakeIfNeededCommand.h"
 
 class AcquireCargoCommandGroup : public frc::CommandGroup {
  public:
   AcquireCargoCommandGroup() : CommandGroup("AcquireCargoCommandGroup") {
     AddSequential(new ToolChangerSetHasCargoCommand(true));
     AddSequential(new ToolChangerFreeHatchCommand());
-    AddSequential(new ToolChangerRetractCommand());
+    AddSequential(new WaitCommand(0.5));
     AddSequential(new ToolChangerFreeCargoCommand());
-    AddSequential(new ElevatorMidCommand("ElevatorMidCommand"));
-    AddSequential(new CargoIntakeOutCommand("CargoIntakeFrontCommand"));
+    AddSequential(new ExtendIntakeIfNeededCommand()); //TODO check to see if height is acceptable
+    AddSequential(new ToolChangerRetractCommand());
     AddSequential(new ElevatorStowCommand("ElevatorStowCommand"));
     AddSequential(new CargoIntakeBallCommand(1));
     AddSequential(new CargoIntakeWaitForBallCommand());
     AddSequential(new WaitCommand(0.1));
-    AddSequential(new CargoIntakeBallCommand(0.3));
+    AddSequential(new CargoIntakeBallCommand(0.28));
     AddSequential(new ToolChangerHoldCargoCommand());
     AddSequential(new WaitCommand(0.1));
     AddSequential(new CargoIntakeBallCommand(0.1));
+    AddSequential(new ElevatorIntakeBallHeightCommand("ElevatorIntakeBallHeightCommand")); //TODO check to see if height is acceptable
     AddSequential(new CargoIntakeWaitForNoBallCommand());
-    AddSequential(new ElevatorMidCommand("ElevatorMidCommand"));
     AddSequential(new CargoIntakeStopCommand());
     AddSequential(new CargoIntakeInCommand("CargoIntakeBackCommand"));
     AddSequential(new ElevatorCargoLowCommand("ElevatorCargoLowCommand"));

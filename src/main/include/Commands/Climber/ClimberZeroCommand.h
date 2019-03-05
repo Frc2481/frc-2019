@@ -5,25 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CLIMBERTOGGLEFEETCOMMAND
-#define SRC_CLIMBERTOGGLEFEETCOMMAND
+#ifndef SRC_CLIMBERZEROCOMMAND
+#define SRC_CLIMBERZEROCOMMAND
 
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 
-class ClimberToggleFeetCommand : public frc::InstantCommand {
+class ClimberZeroCommand : public frc::InstantCommand {
  public:
-  ClimberToggleFeetCommand() : InstantCommand("ClimberToggleFeetCommand") {}
+  ClimberZeroCommand() : InstantCommand("ClimberZeroCommand"){}
   void Initialize() override {
-    if(CommandBase::m_pClimber->IsFootToggleActivated()) {
-      CommandBase::m_pClimber->DeactivateFeet();
-      CommandBase::m_pClimber->DeactivateFootToggle();
-    }
-    else {
-      CommandBase::m_pClimber->ActivateFeet();
-      CommandBase::m_pClimber->ActivateFootToggle();
-    }
+    CommandBase::m_pClimber->ZeroClimber();
   }
 };
 
-#endif //SRC_CLIMBERTOGGLEFEETCOMMAND
+#endif //SRC_CLIMBERZEROCOMMAND
