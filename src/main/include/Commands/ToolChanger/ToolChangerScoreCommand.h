@@ -9,8 +9,7 @@
 #define SRC_TOOLCHANGERSCORECOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/ToolChanger.h"
-#include "Subsystems/Elevator.h"
+#include "CommandBase.h"
 
 class ToolChangerScoreCommand : public frc::InstantCommand {
  public:

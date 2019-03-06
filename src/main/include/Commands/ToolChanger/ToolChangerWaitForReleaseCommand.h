@@ -9,7 +9,7 @@
 #define SRC_TOOLCHANGERWAITFORRELEASECOMMAND
 
 #include <frc/commands/Command.h>
-#include "Subsystems/ToolChanger.h"
+#include "CommandBase.h"
 
 class ToolChangerWaitForReleaseCommand : public frc::Command {
  public:

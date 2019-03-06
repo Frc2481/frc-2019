@@ -9,7 +9,6 @@
 #define SRC_CARGOINTAKEWAITFORBALLCOMMAND
 #include <frc/commands/Command.h>
 #include "CommandBase.h"
-#include "Subsystems/CargoIntake.h"
 
 class CargoIntakeWaitForBallCommand : public frc::Command {
  public:

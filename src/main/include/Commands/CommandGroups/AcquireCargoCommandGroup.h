@@ -9,7 +9,6 @@
 #define SRC_ACQUIRECARGOCOMMANDGROUP
 
 #include <frc/commands/CommandGroup.h>
-#include "CommandBase.h"
 #include "Commands/CargoIntake/CargoIntakeBallCommand.h"
 #include "Commands/CargoIntake/CargoIntakeStopCommand.h"
 #include "Commands/CargoIntake/CargoIntakeBaseCommand.h"

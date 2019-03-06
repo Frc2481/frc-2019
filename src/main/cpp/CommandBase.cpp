@@ -7,6 +7,7 @@ std::unique_ptr<Elevator> CommandBase::m_pElevator;
 std::unique_ptr<CargoIntake> CommandBase::m_pCargoIntake;	
 std::unique_ptr<ToolChanger> CommandBase::m_pToolChanger;
 std::unique_ptr<Climber> CommandBase::m_pClimber;
+std::unique_ptr<PowerDistributionPanel> CommandBase::m_pPDP;
 
 CommandBase::CommandBase(const std::string &name) : Command(name) {
 }

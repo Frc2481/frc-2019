@@ -9,8 +9,6 @@
 #define SRC_CARGOINTAKEBASECOMMAND
 
 #include <frc/commands/Command.h>
-#include "Subsystems/CargoIntake.h"
-#include "Subsystems/ToolChanger.h"
 #include <frc/commands/CommandGroup.h>
 #include "CommandBase.h"
 #include "RobotParameters.h"

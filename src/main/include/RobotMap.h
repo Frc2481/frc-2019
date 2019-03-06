@@ -10,8 +10,8 @@ RoboRio -> CargoIntake -> BL Drive -> BR Drive -> Ball intake in/out -> PCM bott
     right elevator motor -> BL Steer -> BR Steer -> PDP -> left elevator up/down -> PCM (top of elevator)
 
 PDP Layout:
-    Left Elevator Motor 0
-    Right Elevator Motor 1
+    Left (Slave) Elevator Motor 0
+    Right (Master) Elevator Motor 1
     FL Drive 2
     FR Drive 3
     BR Steer 4
@@ -30,26 +30,25 @@ PDP Layout:
 
 
 // talonSRX
-#define FR_STEER_MOTOR_ID 4 //1
-#define BR_STEER_MOTOR_ID 8 //2
-#define BL_STEER_MOTOR_ID 6 //3
-#define FL_STEER_MOTOR_ID 2 //4
+#define FR_STEER_MOTOR_ID 1 //4
+#define BR_STEER_MOTOR_ID 2 //8
+#define BL_STEER_MOTOR_ID 3 //6
+#define FL_STEER_MOTOR_ID 4 //2
 
 #define HATCH_SLIDE_MOTOR_ID 66 //5
 #define MASTER_ELEVATOR_MOTOR_ID 63 //6
 #define CARGO_INTAKE_EXTEND_MOTOR_ID 54 //7
 
-// victorSPX
-#define FR_DRIVE_MOTOR_ID 3 //1
-#define BR_DRIVE_MOTOR_ID 7 //2
-#define BL_DRIVE_MOTOR_ID 5 //3
-#define FL_DRIVE_MOTOR_ID 1 //4
-
 #define SLAVE_ELEVATOR_MOTOR_ID 5
 #define CARGO_INTAKE_MOTOR_ID 6
 
 // sparkMAX
-#define CLIMBER_MOTOR_ID 1
+#define FR_DRIVE_MOTOR_ID 1 //3
+#define BR_DRIVE_MOTOR_ID 2 //7
+#define BL_DRIVE_MOTOR_ID 3 //5
+#define FL_DRIVE_MOTOR_ID 4 //1
+
+#define CLIMBER_MOTOR_ID 5
 
 // solenoid
 #define CARGO_TOOL_SOLENOID 0, 0, 1

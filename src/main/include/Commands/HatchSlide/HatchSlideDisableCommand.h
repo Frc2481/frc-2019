@@ -5,19 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_HATCHSLIDEWAITFORONTARGETCOMMAND
-#define SRC_HATCHSLIDEWAITFORONTARGETCOMMAND
-#include <frc/commands/Command.h>
+#ifndef SRC_HATCHSLIDEDISABLECOMMAND
+#define SRC_HATCHSLIDEDISABLECOMMAND
+
+#include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 
-class HatchSlideWaitForOnTargetCommand : public frc::Command {
+class HatchSlideDisableCommand : public frc::InstantCommand {
  public:
-  HatchSlideWaitForOnTargetCommand() : Command("HatchSlideWaitForOnTargetCommand") {}
-  bool IsFinished() override {
-    if(CommandBase::m_pHatchSlide->IsHatchSlideEnabled()) {
-      CommandBase::m_pHatchSlide->IsSlideOnTarget();
-    }
+  HatchSlideDisableCommand() : frc::InstantCommand("HatchSlideDisableCommand") {}
+  void Initialize() override {
+    CommandBase::m_pHatchSlide->DisableHatchSlide();
   }
 };
 
-#endif // SRC_HATCHSLIDEWAITFORONTARGETCOMMAND
+#endif //SRC_HATCHSLIDEDISABLECOMMAND

@@ -9,7 +9,6 @@
 #define SRC_TOOLCHANGERSETHASCARGOCOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/ToolChanger.h"
 #include "CommandBase.h"
 
 class ToolChangerSetHasCargoCommand: public frc::InstantCommand {

@@ -34,6 +34,9 @@ class Elevator : public frc::Subsystem {
   bool IsReverseLimitSwitchClosed();
 
   void SetOpenLoopSpeed(double speed);
+  void SetMasterOpenLoopSpeed(double speed);
+  void SetSlaveOpenLoopSpeed(double speed);  
+  void SetFollower();
 
   bool IsElevatorEncoderConnected();
   bool IsPositionInProtectedZone(double pos);

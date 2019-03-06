@@ -12,7 +12,7 @@ Climber::Climber() : Subsystem("Climber"),
   m_climberMotor(new rev::CANSparkMax(CLIMBER_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless)),
   m_pidController(m_climberMotor->GetPIDController()) {
   
-  // m_climberMotor->Re RestoreFactoryDefaults();
+  m_climberMotor->RestoreFactoryDefaults();
 
   m_climberSolenoid = new frc::DoubleSolenoid(CLIMBER_SOLENOID);
 

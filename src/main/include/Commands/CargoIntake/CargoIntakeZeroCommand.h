@@ -8,7 +8,6 @@
 #ifndef SRC_CARGOINTAKEZEROCOMMAND
 #define SRC_CARGOINTAKEZEROCOMMAND
 
-#include "Subsystems/CargoIntake.h"
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 

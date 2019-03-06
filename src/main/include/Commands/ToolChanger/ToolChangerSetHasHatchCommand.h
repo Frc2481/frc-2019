@@ -9,7 +9,6 @@
 #define SRC_TOOLCHANGERSETHASHATCHCOMMAND
 
 #include <frc/commands/InstantCommand.h>
-#include "Subsystems/ToolChanger.h"
 #include "CommandBase.h"
 
 class ToolChangerSetHasHatchCommand: public frc::InstantCommand {

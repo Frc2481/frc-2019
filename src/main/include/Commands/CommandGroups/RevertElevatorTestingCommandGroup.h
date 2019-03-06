@@ -11,7 +11,6 @@
 #include "Commands/Elevator/ElevatorBaseCommand.h"
 #include "Commands/CargoIntake/CargoIntakeBaseCommand.h"
 #include <frc/commands/CommandGroup.h>
-#include "CommandBase.h"
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
 
 class RevertElevatorTestingCommandGroup : public frc::CommandGroup {

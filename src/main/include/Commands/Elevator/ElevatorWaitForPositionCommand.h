@@ -9,7 +9,7 @@
 #define SRC_ELEVATORWAITFORPOSITIONCOMMAND
 
 #include <frc/commands/Command.h>
-#include "Subsystems/Elevator.h"
+#include "CommandBase.h"
 
 class ElevatorWaitForPositionCommand : public frc::Command {
  public:

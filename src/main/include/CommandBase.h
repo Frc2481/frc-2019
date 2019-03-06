@@ -26,6 +26,7 @@ public:
     static std::unique_ptr<CargoIntake> m_pCargoIntake;
     static std::unique_ptr<ToolChanger> m_pToolChanger;
     static std::unique_ptr<Climber> m_pClimber;
+    static std::unique_ptr<PowerDistributionPanel> m_pPDP;
 };
 
 #endif // COMMAND_BASE_H
