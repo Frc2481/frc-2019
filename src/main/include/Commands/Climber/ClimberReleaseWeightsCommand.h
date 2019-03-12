@@ -5,20 +5,20 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CARGOINTAKEZEROCOMMAND
-#define SRC_CARGOINTAKEZEROCOMMAND
+#ifndef SRC_CLIMBERRELEASEWEIGHTSCOMMAND
+#define SRC_CLIMBERRELEASEWEIGHTSCOMMAND
 
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 
-class CargoIntakeZeroCommand : public frc::InstantCommand {
+class ClimberReleaseWeightsCommand : public frc::InstantCommand {
  public:
-  CargoIntakeZeroCommand() : InstantCommand("CargoIntakeZeroCommand"){
-    SetRunWhenDisabled(true);
-  }
-  void Initialize() override{
-    CommandBase::m_pCargoIntake->ZeroCargoIntake();
+  ClimberReleaseWeightsCommand() : InstantCommand("ClimberReleaseWeightsCommand") {}
+  void Initialize() override {
+    if(!CommandBase::m_pClimber->IsBigFootTilted()) {
+      CommandBase::m_pClimber->ReleaseWeights();
+    }
   }
 };
 
-#endif //SRC_CARGOINTAKEZEROCOMMAND
+#endif //SRC_CLIMBERRELEASEWEIGHTSCOMMAND

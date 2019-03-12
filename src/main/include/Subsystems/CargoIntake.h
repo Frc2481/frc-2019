@@ -34,6 +34,7 @@ public:
   double GetPosition();
   double GetDesiredPosition();
   double GetCargoIntakeError();
+  double GetVelocity();
   double ConvertTicksToInches(int ticks);
   int ConvertInchesToTicks(double inches);
   bool IsIntakeOut();

@@ -5,20 +5,20 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CARGOINTAKEZEROCOMMAND
-#define SRC_CARGOINTAKEZEROCOMMAND
+#ifndef SRC_CLIMBERZEROCOMMAND
+#define SRC_CLIMBERZEROCOMMAND
 
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 
-class CargoIntakeZeroCommand : public frc::InstantCommand {
+class ClimberZeroCommand : public frc::InstantCommand {
  public:
-  CargoIntakeZeroCommand() : InstantCommand("CargoIntakeZeroCommand"){
+  ClimberZeroCommand() : InstantCommand("ClimberZeroCommand"){
     SetRunWhenDisabled(true);
   }
-  void Initialize() override{
-    CommandBase::m_pCargoIntake->ZeroCargoIntake();
+  void Initialize() override {
+    CommandBase::m_pClimber->ZeroClimber();
   }
 };
 
-#endif //SRC_CARGOINTAKEZEROCOMMAND
+#endif //SRC_CLIMBERZEROCOMMAND

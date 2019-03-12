@@ -17,7 +17,6 @@ public:
     CommandBase();
 
     static void Init();
-    static void Periodic();
 	
     static std::unique_ptr<OI> m_pOI;
     static std::unique_ptr<SwerveDrivetrain> m_pSwerveDrivetrain;

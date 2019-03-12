@@ -17,15 +17,19 @@
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
 #include "Commands/ToolChanger/ToolChangerFreeCargoCommand.h"
 
-class AcquireHatchCommandGroup : public frc::CommandGroup {
- public:
-  AcquireHatchCommandGroup() : CommandGroup("AcquireHatchCommandGroup") {
+class PrepForAcquireHatchCommandGroup : public frc::CommandGroup {
+  public:
+  PrepForAcquireHatchCommandGroup() : CommandGroup("PrepForAcquireHatchCommandGroup") {
     AddParallel(new ToolChangerSetHasHatchCommand(true));
     AddParallel(new ToolChangerFreeHatchCommand());
     AddSequential(new ElevatorLowCommand("ElevatorLowCommand"));
     AddSequential(new ToolChangerHatchExtendCommand());
-    
-    AddSequential(new WaitCommand(0.1)); //shrink as we become confident
+  }
+};
+
+class AcquireHatchCommandGroup : public frc::CommandGroup {
+ public:
+  AcquireHatchCommandGroup() : CommandGroup("AcquireHatchCommandGroup") {
     AddSequential(new ToolChangerHoldHatchCommand());
     AddSequential(new WaitCommand(0.1)); //shrink as we become confident
     AddSequential(new ToolChangerFreeCargoCommand());

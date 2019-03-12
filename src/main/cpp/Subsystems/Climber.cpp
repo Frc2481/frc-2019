@@ -10,16 +10,20 @@
 
 Climber::Climber() : Subsystem("Climber"),  
   m_climberMotor(new rev::CANSparkMax(CLIMBER_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless)),
+  m_encoder(new rev::CANEncoder(*m_climberMotor)),
   m_pidController(m_climberMotor->GetPIDController()) {
   
   m_climberMotor->RestoreFactoryDefaults();
 
-  m_climberSolenoid = new frc::DoubleSolenoid(CLIMBER_SOLENOID);
+  m_climberBigFootSolenoid = new frc::DoubleSolenoid(CLIMBER_BIG_FOOT_SOLENOID);
+  m_climberLittleFeetSolenoid = new frc::DoubleSolenoid(CLIMBER_LITTLE_FEET_SOLENOID);
+  m_climberGuidesSolenoid = new frc::DoubleSolenoid(CLIMBER_GUIDES_SOLENOID);
+  m_weightsSolenoid = new frc::Solenoid(CLIMBER_WEIGHTS_SOLENOID);
 
-  // m_pidController.SetFF(0); //TODO
-  // m_pidController.SetP(0);
-  // m_pidController.SetI(0);
-  // m_pidController.SetD(0);
+  m_pidController.SetP(0);
+  m_pidController.SetI(0);
+  m_pidController.SetD(0);
+  m_pidController.SetFF(0);
 
   // m_climberMotor->SetParameter(rev::CANSparkMax::ConfigParameter::kSoftLimitFwdEn, 0);
   // m_climberMotor->SetParameter(rev::CANSparkMax::ConfigParameter::kSoftLimitRevEn, 0);
@@ -29,11 +33,17 @@ Climber::Climber() : Subsystem("Climber"),
 
   m_climberMotor->SetSmartCurrentLimit(200);
 
-  m_feetActivated = false;
+  m_bigFootActivated = false;
+  m_littleFeetActivated = false;
 
-  m_climberSolenoid->Set(frc::DoubleSolenoid::kReverse);
+  m_climberBigFootSolenoid->Set(frc::DoubleSolenoid::kForward);
+  m_climberLittleFeetSolenoid->Set(frc::DoubleSolenoid::kForward);
+  m_climberManualActivated = false;
 }
-
+void Climber::Periodic(){
+  frc::SmartDashboard::PutNumber("Climber Position", GetPos());
+  frc::SmartDashboard::PutNumber("Climber Speed", GetSpeed());
+}
 void Climber::InitDefaultCommand() {
   SetDefaultCommand(new ClimberDriveWithJoystickCommand());
 }
@@ -50,21 +60,70 @@ void Climber::ClimberLevel3() {
 double Climber::ConvertInchesToTicks(int inches) {
   return inches * RobotParameters::k_climberTicksPerInch;
 }
-void Climber::ActivateFeet() {
-  m_climberSolenoid->Set(frc::DoubleSolenoid::kReverse);
+void Climber::ActivateLittleFeet() {
+  m_climberLittleFeetSolenoid->Set(frc::DoubleSolenoid::kForward);
+  m_littleFeetActivated = true;
 }
-void Climber::DeactivateFeet() {
-  m_climberSolenoid->Set(frc::DoubleSolenoid::kForward);
+void Climber::DeactivateLittleFeet() {
+  m_climberLittleFeetSolenoid->Set(frc::DoubleSolenoid::kReverse);
+  m_littleFeetActivated = false;
 }
-bool Climber::IsFootToggleActivated() {
-  return m_feetActivated;
+void Climber::ActivateBigFoot() {
+  m_climberBigFootSolenoid->Set(frc::DoubleSolenoid::kReverse);
+  m_bigFootActivated = true;
 }
-void Climber::ActivateFootToggle() {
-  m_feetActivated = true;
+void Climber::DeactivateBigFoot() {
+  m_climberBigFootSolenoid->Set(frc::DoubleSolenoid::kForward);
+  m_bigFootActivated = false;
 }
-void Climber::DeactivateFootToggle() {
-  m_feetActivated = false;
+bool Climber::IsBigFootToggleActivated() {
+  return m_bigFootActivated;
+}
+bool Climber::IsLittleFeetToggleActivated() {
+  return m_littleFeetActivated;
+}
+void Climber::ActivateBigFootToggle() {
+  m_bigFootActivated = true;
+}
+void Climber::DeactivateBigFootToggle() {
+  m_bigFootActivated = false;
+}
+bool Climber::IsBigFootTilted() {
+  return m_bigFootActivated;
+}
+void Climber::ActivateLittleFeetToggle() {
+  m_littleFeetActivated = true;
+}
+void Climber::DeactivateLittleFeetToggle() {
+  m_littleFeetActivated = false;
 }
 void Climber::SetOpenLoopSpeed(double speed) {
   m_climberMotor->Set(speed);
+}
+double Climber::GetSpeed(){
+  return m_climberMotor->Get();
+}
+double Climber::GetPos(){
+  return m_encoder->GetPosition();
+}
+void Climber::ZeroClimber(){
+  m_encoder->SetPosition(0.0); //is this right???
+}
+void Climber::RetractGuides(){
+  m_climberGuidesSolenoid->Set(frc::DoubleSolenoid::kReverse);
+}
+void Climber::ExtendGuides(){
+  m_climberGuidesSolenoid->Set(frc::DoubleSolenoid::kForward);//TODO check if correct
+}
+void Climber::ReleaseWeights() {
+  m_weightsSolenoid->Set(true);
+}
+void Climber::EnableClimberManual(){
+  m_climberManualActivated = true;
+}
+void Climber::DisableClimberManual(){
+  m_climberManualActivated = false;
+}
+bool Climber::IsClimberEnabled(){
+  return m_climberManualActivated;
 }

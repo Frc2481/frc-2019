@@ -27,6 +27,7 @@ class ToolChanger : public frc::Subsystem {
 
  public:
   ToolChanger();
+  void Periodic();
   void InitDefaultCommand() override;
   void HoldHatch();
   void FreeHatch();

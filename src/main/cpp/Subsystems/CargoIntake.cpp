@@ -24,22 +24,24 @@ CargoIntake::CargoIntake() : Subsystem("CargoIntake") {
   m_extendMotor->SetSensorPhase(true);
   m_extendMotor->SetInverted(true);
 
+  talonConfig.slot0.integralZone = 1700;
   talonConfig.slot0.kF = 0.3;
   talonConfig.slot0.kP = 0.5;
-  talonConfig.slot0.kI = 0;
+  talonConfig.slot0.kI = 0.05;
   talonConfig.slot0.kD = 1;
+  talonConfig.slot0.maxIntegralAccumulator = 500;
 
-  talonConfig.motionCruiseVelocity = 2800; //TODO: change
-  talonConfig.motionAcceleration = 15000; //TODO: change
-  talonConfig.motionCurveStrength = 8;
+  talonConfig.motionCruiseVelocity = 4000; 
+  talonConfig.motionAcceleration = 20000; 
+  talonConfig.motionCurveStrength = 5;
 
-  talonConfig.peakCurrentDuration = 0; //TODO:
-  talonConfig.continuousCurrentLimit = 30; //TODO:
+  talonConfig.peakCurrentDuration = 0; 
+  talonConfig.continuousCurrentLimit = 30;
 
-  talonConfig.peakCurrentLimit = 0; //TODO
+  talonConfig.peakCurrentLimit = 0; 
   talonConfig.primaryPID.selectedFeedbackSensor = CTRE_MagEncoder_Relative;
 
-  talonConfig.forwardSoftLimitThreshold = 17700; //TODO: change soft limit
+  talonConfig.forwardSoftLimitThreshold = 17700;
   talonConfig.forwardSoftLimitEnable = true;
   talonConfig.reverseSoftLimitThreshold = 0;
   talonConfig.reverseSoftLimitEnable = true;
@@ -98,6 +100,9 @@ double CargoIntake::GetDesiredPosition(){
 }
 double CargoIntake::GetPosition() {
   return m_extendMotor->GetSelectedSensorPosition(0);
+}
+double CargoIntake::GetVelocity() {
+  return m_extendMotor->GetActiveTrajectoryVelocity();
 }
 double CargoIntake::ConvertTicksToInches(int ticks) {
   return ticks * RobotParameters::k_cargoIntakeBeltCircumference / RobotParameters::k_cargoIntakeTicksPerRev;

@@ -5,25 +5,23 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CLIMBERTOGGLEFEETCOMMAND
-#define SRC_CLIMBERTOGGLEFEETCOMMAND
+#ifndef SRC_ELEVATORTOGGLEMANUALCONTROLCOMMAND
+#define SRC_ELEVATORTOGGLEMANUALCONTROLCOMMAND
 
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 
-class ClimberToggleFeetCommand : public frc::InstantCommand {
+class ElevatorToggleManualControlCommand : public frc::InstantCommand {
  public:
-  ClimberToggleFeetCommand() : InstantCommand("ClimberToggleFeetCommand") {}
-  void Initialize() override {
-    if(CommandBase::m_pClimber->IsFootToggleActivated()) {
-      CommandBase::m_pClimber->DeactivateFeet();
-      CommandBase::m_pClimber->DeactivateFootToggle();
+  ElevatorToggleManualControlCommand() : InstantCommand("ElevatorToggleManualControlCommand"){}
+  void Initialize() override{
+    if(CommandBase::m_pElevator->IsElevatorManualEnabled()){
+      CommandBase::m_pElevator->DisableElevatorManual();
     }
-    else {
-      CommandBase::m_pClimber->ActivateFeet();
-      CommandBase::m_pClimber->ActivateFootToggle();
+    else{
+      CommandBase::m_pElevator->EnableElevatorManual();
     }
   }
 };
 
-#endif //SRC_CLIMBERTOGGLEFEETCOMMAND
+#endif //SRC_ELEVATORTOGGLEMANUALCONTROLCOMMAND

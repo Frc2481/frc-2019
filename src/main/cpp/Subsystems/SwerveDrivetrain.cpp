@@ -31,7 +31,7 @@ SwerveDrivetrain::SwerveDrivetrain()
 	m_pBLDriveMotor->SetInverted(true);
 
 	m_pFLDriveMotor->SetSmartCurrentLimit(200);
-	m_pFLDriveMotor->SetInverted(false);
+	m_pFLDriveMotor->SetInverted(true);
 
 	m_pFRSteerMotor = new TalonSRX(FR_STEER_MOTOR_ID);
 	m_pFRSteerMotor->ConfigFactoryDefault();
@@ -39,8 +39,8 @@ SwerveDrivetrain::SwerveDrivetrain()
 	m_pFRSteerMotorController = new MotorPositionController(
 		m_pFRSteerMotor,
 		m_pFRSteerEncoder,
-		true,
-		true,
+		false,
+		false,
 		RobotParameters::k_steerMotorControllerKp,
 		RobotParameters::k_steerMotorControllerKi,
 		RobotParameters::k_steerMotorControllerKd,
@@ -58,8 +58,8 @@ SwerveDrivetrain::SwerveDrivetrain()
 	m_pBRSteerMotorController = new MotorPositionController(
 		m_pBRSteerMotor,
 		m_pBRSteerEncoder,
-		true,
-		true,
+		false,
+		false,
 		RobotParameters::k_steerMotorControllerKp,
 		RobotParameters::k_steerMotorControllerKi,
 		RobotParameters::k_steerMotorControllerKd,
@@ -77,8 +77,8 @@ SwerveDrivetrain::SwerveDrivetrain()
 	m_pBLSteerMotorController = new MotorPositionController(
 		m_pBLSteerMotor,
 		m_pBLSteerEncoder,
-		true,
-		true,
+		false,
+		false,
 		RobotParameters::k_steerMotorControllerKp,
 		RobotParameters::k_steerMotorControllerKi,
 		RobotParameters::k_steerMotorControllerKd,
@@ -96,8 +96,8 @@ SwerveDrivetrain::SwerveDrivetrain()
 	m_pFLSteerMotorController = new MotorPositionController(
 		m_pFLSteerMotor,
 		m_pFLSteerEncoder,
-		true,
-		true,
+		false,
+		false,
 		RobotParameters::k_steerMotorControllerKp,
 		RobotParameters::k_steerMotorControllerKi,
 		RobotParameters::k_steerMotorControllerKd,
@@ -191,14 +191,21 @@ void SwerveDrivetrain::Periodic() {
 	SmartDashboard::PutBoolean("BLSteerEncCalibrated", m_pBLSteerEncoder->isCalibrated());
 	SmartDashboard::PutBoolean("BRSteerEncCalibrated", m_pBRSteerEncoder->isCalibrated());
 
-	if(frc::DriverStation::GetInstance().IsDisabled()) {
-		SmartDashboard::PutBoolean("FL steer encoder connected", m_pFLSteerEncoder->isConnected());
-		SmartDashboard::PutBoolean("FR steer encoder connected", m_pFRSteerEncoder->isConnected());
-		SmartDashboard::PutBoolean("BL steer encoder connected", m_pBLSteerEncoder->isConnected());
-		SmartDashboard::PutBoolean("BR steer encoder connected", m_pBRSteerEncoder->isConnected());
-		m_areAllSteerEncodersConnected = m_pFLSteerEncoder->isConnected() && m_pFRSteerEncoder->isConnected()
-			 && m_pBLSteerEncoder->isConnected() && m_pBRSteerEncoder->isConnected();
-	}
+	bool flEncConnected = m_pFLSteerEncoder->isConnected();
+	bool frEncConnected = m_pFRSteerEncoder->isConnected();
+	bool blEncConnected = m_pBLSteerEncoder->isConnected();
+	bool brEncConnected = m_pBRSteerEncoder->isConnected();
+
+	SmartDashboard::PutBoolean("FL steer encoder connected", flEncConnected);
+	SmartDashboard::PutBoolean("FR steer encoder connected", frEncConnected);
+	SmartDashboard::PutBoolean("BL steer encoder connected", blEncConnected);
+	SmartDashboard::PutBoolean("BR steer encoder connected", brEncConnected);
+	m_areAllSteerEncodersConnected = flEncConnected && frEncConnected && blEncConnected && brEncConnected;
+
+	SmartDashboard::PutNumber("FL Steer encoder pos", m_pFLSteerEncoder->getAngle());
+	SmartDashboard::PutNumber("FR Steer encoder pos", m_pFRSteerEncoder->getAngle());
+	SmartDashboard::PutNumber("BL Steer encoder pos", m_pBLSteerEncoder->getAngle());
+	SmartDashboard::PutNumber("BR Steer encoder pos", m_pBRSteerEncoder->getAngle());
 }
 
 void SwerveDrivetrain::driveOpenLoopControl(
@@ -245,6 +252,7 @@ void SwerveDrivetrain::driveOpenLoopControl(
 	int frInvertDrive = 1;
 	Rotation2D frWheelYaw = Rotation2D(frWheelPercent.getX(), frWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 	steerError = frWheelYaw - Rotation2D::fromDegrees(m_pFRSteerEncoder->getAngle());
+	SmartDashboard::PutNumber("FR steer error", steerError.getDegrees());
 	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
 		frWheelYaw = frWheelYaw.rotateBy(Rotation2D::fromDegrees(180));
 		frInvertDrive = -1;
@@ -253,6 +261,7 @@ void SwerveDrivetrain::driveOpenLoopControl(
 	int brInvertDrive = 1;
 	Rotation2D brWheelYaw = Rotation2D(brWheelPercent.getX(), brWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 	steerError = brWheelYaw - Rotation2D::fromDegrees(m_pBRSteerEncoder->getAngle());
+	SmartDashboard::PutNumber("BR steer error", steerError.getDegrees());
 	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
 		brWheelYaw = brWheelYaw.rotateBy(Rotation2D::fromDegrees(180));
 		brInvertDrive = -1;
@@ -261,6 +270,7 @@ void SwerveDrivetrain::driveOpenLoopControl(
 	int blInvertDrive = 1;
 	Rotation2D blWheelYaw = Rotation2D(blWheelPercent.getX(), blWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 	steerError = blWheelYaw - Rotation2D::fromDegrees(m_pBLSteerEncoder->getAngle());
+	SmartDashboard::PutNumber("BL steer error", steerError.getDegrees());
 	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
 		blWheelYaw = blWheelYaw.rotateBy(Rotation2D::fromDegrees(180));
 		blInvertDrive = -1;
@@ -269,6 +279,7 @@ void SwerveDrivetrain::driveOpenLoopControl(
 	int flInvertDrive = 1;
 	Rotation2D flWheelYaw = Rotation2D(flWheelPercent.getX(), flWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 	steerError = flWheelYaw - Rotation2D::fromDegrees(m_pFLSteerEncoder->getAngle());
+	SmartDashboard::PutNumber("FL steer error", steerError.getDegrees());
 	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
 		flWheelYaw = flWheelYaw.rotateBy(Rotation2D::fromDegrees(180));
 		flInvertDrive = -1;

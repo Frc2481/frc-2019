@@ -18,7 +18,6 @@ class ToolChangerScoreCommand : public frc::InstantCommand {
     if(CommandBase::m_pToolChanger->HasHatch()) {
       CommandBase::m_pToolChanger->FreeHatch();
       Wait(0.3);
-      CommandBase::m_pToolChanger->RetractHatch();
       CommandBase::m_pToolChanger->HoldCargo();
 
     // state at end:

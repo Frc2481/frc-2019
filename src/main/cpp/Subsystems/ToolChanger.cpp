@@ -26,7 +26,10 @@ ToolChanger::ToolChanger() : Subsystem("ToolChanger") {
 
 void ToolChanger::InitDefaultCommand() {
 }
-
+void ToolChanger::Periodic() {
+  frc::SmartDashboard::PutBoolean("HasCargo", m_hasCargo);
+  frc::SmartDashboard::PutBoolean("HasHatch", m_hasHatch);
+}
 void ToolChanger::HoldHatch(){
   m_hatchTool->Set(frc::DoubleSolenoid::kReverse);
   m_isHatchToolHeld = true;

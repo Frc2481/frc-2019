@@ -5,25 +5,27 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_ELEVATORRAISECOMMAND
-#define SRC_ELEVATORRAISECOMMAND
+#ifndef SRC_ELEVATORJOYSTICKCOMMAND
+#define SRC_ELEVATORJOYSTICKCOMMAND
 
 #include <frc/commands/Command.h>
 #include "CommandBase.h"
 #include "RobotParameters.h"
 
-class ElevatorRaiseCommand : public frc::Command {
+class ElevatorJoystickCommand : public frc::Command {
  public:
-  ElevatorRaiseCommand() : Command("ElevatorRaiseCommand") {
+  ElevatorJoystickCommand() : Command("ElevatorJoystickCommand") {
       Requires(CommandBase::m_pElevator.get());
   }
   void Initialize() override {
   }
   void Execute() override {
-		double percentVelY = -CommandBase::m_pOI->GetOperatorStick()->GetRawAxis(XBOX_RIGHT_Y_AXIS);
+    if(CommandBase::m_pElevator->IsElevatorManualEnabled()){
+      double percentVelY = -CommandBase::m_pOI->GetOperatorStick()->GetRawAxis(XBOX_RIGHT_Y_AXIS);
 
-		// update climb
-		CommandBase::m_pElevator->SetOpenLoopSpeed(percentVelY); 
+      // update climb
+      CommandBase::m_pElevator->SetOpenLoopSpeed(percentVelY);
+    } 
   }
   void End() {
     CommandBase::m_pElevator->SetOpenLoopSpeed(0);
@@ -33,14 +35,19 @@ class ElevatorRaiseCommand : public frc::Command {
   }
   bool IsFinished() override {
     //if traveling through protected zone while cargoIntake out, don't allow movement
-    if(CommandBase::m_pCargoIntake->IsIntakeOut() &&
-        CommandBase::m_pElevator->IsPositionInProtectedZone(CommandBase::m_pElevator->GetElevatorPosition())) {
-      return true;
+    if(CommandBase::m_pElevator->IsElevatorManualEnabled()){
+      if(CommandBase::m_pCargoIntake->IsIntakeOut() &&
+          CommandBase::m_pElevator->IsPositionInProtectedZone(CommandBase::m_pElevator->GetElevatorPosition())) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
     else {
-      return false;
+      return true;
     }
   }
 };
 
-#endif //SRC_ELEVATORRAISECOMMAND
+#endif //SRC_ELEVATORJOYSTICKCOMMAND

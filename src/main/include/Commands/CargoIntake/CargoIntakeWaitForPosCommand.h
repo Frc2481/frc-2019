@@ -5,26 +5,26 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_ELEVATORWAITFORPOSITIONCOMMAND
-#define SRC_ELEVATORWAITFORPOSITIONCOMMAND
+#ifndef SRC_CARGOINTAKEWAITFORPOSCOMMAND
+#define SRC_CARGOINTAKEWAITFORPOSCOMMAND
 
 #include <frc/commands/Command.h>
 #include "CommandBase.h"
 
-class ElevatorWaitForPositionCommand : public frc::Command {
+class CargoIntakeWaitForPosCommand : public frc::Command {
   private:
-  bool m_isGoingUp = false;
+  bool m_isGoingForward = false;
   double m_setPoint;
  public:
-  ElevatorWaitForPositionCommand(double setPoint) : Command("ElevatorWaitForPositionCommand") {  
+  CargoIntakeWaitForPosCommand(double setPoint) : Command("CargoIntakeWaitForPosCommand") {  
     m_setPoint = setPoint;
-    m_isGoingUp = CommandBase::m_pElevator->GetVelocity() > 0;
+    m_isGoingForward = CommandBase::m_pCargoIntake->GetVelocity() > 0;
   }
   bool IsFinished() override {
-    if((m_isGoingUp) && (m_setPoint - CommandBase::m_pElevator->GetElevatorPosition() < 1)){
+    if((m_isGoingForward) && (m_setPoint - CommandBase::m_pCargoIntake->GetPosition() < 1)){
       return true;
     }
-    else if((!m_isGoingUp) && (CommandBase::m_pElevator->GetElevatorPosition() - m_setPoint < 1)){
+    else if((!m_isGoingForward) && (CommandBase::m_pCargoIntake->GetPosition() - m_setPoint < 1)){
       return true;
     }
     else{
@@ -33,4 +33,4 @@ class ElevatorWaitForPositionCommand : public frc::Command {
   }
 };
 
-#endif // SRC_ELEVATORWAITFORPOSITIONCOMMAND
+#endif // SRC_CARGOINTAKEWAITFORPOSCOMMAND

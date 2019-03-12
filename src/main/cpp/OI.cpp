@@ -13,14 +13,14 @@
 #include "Commands/CommandGroups/AcquireCargoCommandGroup.h"
 #include "Commands/CommandGroups/AcquireHatchCommandGroup.h"
 #include "Commands/HatchSlide/HatchSlideToCenterCommand.h"
-#include "Commands/Elevator/ElevatorRaiseCommand.h"
-#include "Commands/Elevator/ElevatorLowerCommand.h"
+#include "Commands/Elevator/ElevatorJoystickCommand.h"
 #include "Commands/Auto/AutoPlaceCommandGroup.h"
 #include "Commands/HatchSlide/HatchSlideToggleCommand.h"
 #include "Commands/Climber/ClimberLevel2Command.h"
 #include "Commands/Climber/ClimberLevel3Command.h"
 #include "Commands/Climber/ClimberRetractCommand.h"
-#include "Commands/Climber/ClimberToggleFeetCommand.h"
+#include "Commands/Climber/ClimberToggleLittleFeetCommand.h"
+#include "Commands/Climber/ClimberToggleBigFootCommand.h"
 #include "Commands/CargoIntake/CargoIntakeBallCommand.h"
 #include "Commands/SwerveDrivetrain/SwerveDrivetrainZeroGyroCommand.h"
 #include "Commands/ToolChanger/ToolChangerFreeHatchCommand.h"
@@ -30,7 +30,9 @@
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
 #include "Commands/ToolChanger/ToolChangerRetractCommand.h"
 #include "Commands/ToolChanger/ToolChangerScoreCommand.h"
-#include "Commands/HatchSlide/HatchSlideSetOpenLoopCommand.h"
+#include "Commands/HatchSlide/HatchSlideJoystickCommand.h"
+#include "Commands/Climber/ClimberToggleManualControlCommand.h"
+#include "Commands/Elevator/ElevatorToggleManualControlCommand.h"
 
 OI::OI() {
 	m_pDriverStick = new Joystick2481(DRIVER_XBOX_CONTROLLER_ID);
@@ -58,42 +60,51 @@ OI::OI() {
 	// m_climbRetract = new JoystickButton(m_pDriverStick, XBOX_A_BUTTON);
 	// m_climbRetract->WhenPressed(new ClimberRetractCommand());
 	
-	m_climberFeet = new JoystickButton(m_pDriverStick, XBOX_RIGHT_BUMPER);
-	m_climberFeet->ToggleWhenPressed(new ClimberToggleFeetCommand());
+	m_climberLittleFeet = new JoystickButton(m_pDriverStick, XBOX_LEFT_BUMPER);
+	m_climberLittleFeet->ToggleWhenPressed(new ClimberToggleLittleFeetCommand());
 
-	m_pSetFieldFrameButton = new JoystickButton(m_pDriverStick, XBOX_LEFT_BUMPER);
-	m_pSetFieldFrameButton->WhenPressed(new SwerveDrivetrainJoystickSetFieldFrame(true));
-	m_pSetFieldFrameButton->WhenReleased(new SwerveDrivetrainJoystickSetFieldFrame(false));
+	m_climberBigFoot = new JoystickButton(m_pDriverStick, XBOX_RIGHT_BUMPER);
+	m_climberBigFoot->ToggleWhenPressed(new ClimberToggleBigFootCommand());
+
+	// m_pSetFieldFrameButton = new JoystickButton(m_pDriverStick, XBOX_LEFT_BUMPER);
+	// m_pSetFieldFrameButton->WhenPressed(new SwerveDrivetrainJoystickSetFieldFrame(true));
+	// m_pSetFieldFrameButton->WhenReleased(new SwerveDrivetrainJoystickSetFieldFrame(false));
 
 //operator
 	m_scoreHigh = new JoystickButton(m_pOperatorStick, XBOX_Y_BUTTON);
-	m_scoreHigh->WhenPressed(new AutoPlaceCommandGroup(new ElevatorHighCommand("ElevatorHighCommand")));
+	m_scoreHigh->WhenPressed(new ElevatorHighCommand("ElevatorHighCommand"));
 
 	m_scoreMid = new JoystickButton(m_pOperatorStick, XBOX_B_BUTTON);
-	m_scoreMid->WhenPressed(new AutoPlaceCommandGroup(new ElevatorMidCommand("ElevatorMidCommand")));
+	m_scoreMid->WhenPressed(new ElevatorMidCommand("ElevatorMidCommand"));
 
 	m_scoreLow = new JoystickButton(m_pOperatorStick, XBOX_A_BUTTON);
-	m_scoreLow->WhenPressed(new AutoPlaceCommandGroup(new ElevatorLowCommand("ElevatorLowCommand")));
+	m_scoreLow->WhenPressed(new ElevatorLowCommand("ElevatorLowCommand"));
 
 	m_cargoShip = new JoystickButton(m_pOperatorStick, XBOX_X_BUTTON);
-	m_cargoShip->WhenPressed(new AutoPlaceCommandGroup(new ElevatorCargoShipCommand("ElevatorCargoShipCommand")));
+	m_cargoShip->WhenPressed(new ElevatorCargoShipCommand("ElevatorCargoShipCommand"));
 
-	// m_elevatorRaise = new AnalogJoystickButton(m_pOperatorStick, XBOX_RIGHT_Y_AXIS, -0.25); //right stick up
-	// m_elevatorRaise->WhileHeld(new ElevatorRaiseCommand());
+	m_elevatorManual = new AnalogJoystickButton(m_pOperatorStick, XBOX_RIGHT_Y_AXIS, -0.25);
+	m_elevatorManual->WhileHeld(new ElevatorJoystickCommand());
 
-	// m_elevatorLower = new AnalogJoystickButton(m_pOperatorStick, XBOX_RIGHT_Y_AXIS, 0.25); //right stick down
-	// m_elevatorLower->WhileHeld(new ElevatorLowerCommand());
-
-	// m_slideOpenLoop = new AnalogJoystickButton(m_pOperatorStick, XBOX_LEFT_Y_AXIS, 0.25);
-	// m_slideOpenLoop->WhileHeld(new HatchSlideSetOpenLoopCommand());
+	m_climberToggleManual = new JoystickButton(m_pOperatorStick, XBOX_START_BUTTON);
+	m_climberToggleManual->WhenPressed(new ClimberToggleManualControlCommand());
+	
+	m_elevatorToggleManual = new JoystickButton(m_pOperatorStick, XBOX_BACK_BUTTON);
+	m_elevatorToggleManual->WhenPressed(new ElevatorToggleManualControlCommand());
+	
+	m_slideOpenLoop = new AnalogJoystickButton(m_pOperatorStick, XBOX_LEFT_X_AXIS, 0.25);
+	m_slideOpenLoop->WhileHeld(new HatchSlideJoystickCommand());
+	
+	m_prepAcquireHatch = new JoystickButton(m_pOperatorStick, XBOX_LEFT_BUMPER);
+	m_prepAcquireHatch->WhenPressed(new PrepForAcquireHatchCommandGroup());
 
 	m_toggleSlide = new JoystickButton(m_pOperatorStick, XBOX_RIGHT_BUMPER);
 	m_toggleSlide->WhenPressed(new HatchSlideToggleCommand());
 
-	m_climberFeetOp = new JoystickButton(m_pOperatorStick, XBOX_LEFT_BUMPER);
-	m_climberFeetOp->ToggleWhenPressed(new ClimberToggleFeetCommand());
+	// m_climberFeetOp = new JoystickButton(m_pOperatorStick, XBOX_LEFT_BUMPER);
+	// m_climberFeetOp->ToggleWhenPressed(new ClimberToggleFeetCommand());
 
-	m_scoreGamePiece = new JoystickButton(m_pOperatorStick, XBOX_RIGHT_TRIGGER);
+	m_scoreGamePiece = new AnalogJoystickButton(m_pOperatorStick, XBOX_RIGHT_TRIGGER, 0.5);
 	m_scoreGamePiece->WhenPressed(new ToolChangerScoreCommand());
 }
 

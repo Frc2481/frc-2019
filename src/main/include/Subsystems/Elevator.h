@@ -27,6 +27,7 @@ class Elevator : public frc::Subsystem {
   double GetElevatorPosition();
   double GetElevatorError();
   double GetDesiredPos();
+  double GetVelocity();
   
   bool IsElevatorEncoderZeroed();
 
@@ -45,10 +46,14 @@ class Elevator : public frc::Subsystem {
   int ConvertInchesToTicks(double inches);
 
   bool IsOnTarget();
+  void EnableElevatorManual();
+  void DisableElevatorManual();
+  bool IsElevatorManualEnabled();
 
  private:
   TalonSRX* m_masterElevator;
-  VictorSPX* m_slaveElevator;
+  TalonSRX* m_slaveElevator;
+  // VictorSPX* m_slaveElevator; // make sure to change back
   CTREMagEncoder* m_elevatorEncoder;
 
   bool m_isMasterZeroed;
@@ -56,6 +61,7 @@ class Elevator : public frc::Subsystem {
   double m_elevatorPosition;
   double m_desiredElevatorPosition;
   bool m_encoderConnected;
+  bool m_isElevatorManualEnabled;
 };
 
 #endif //SRC_ELEVATOR_H

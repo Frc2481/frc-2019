@@ -30,9 +30,9 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
   talonConfig.slot0.allowableClosedloopError = 0;
   talonConfig.motionCruiseVelocity = 6000; //convert to talonConfig speed: encoder count/100 ms / 2.0
   talonConfig.motionAcceleration = 2400; //9200
-  talonConfig.peakCurrentDuration = 0; //TODO
-  talonConfig.continuousCurrentLimit = 30; //TODO
-  talonConfig.peakCurrentLimit = 0; //TODO
+  talonConfig.peakCurrentDuration = 0; 
+  talonConfig.continuousCurrentLimit = 30;
+  talonConfig.peakCurrentLimit = 0;
   talonConfig.primaryPID.selectedFeedbackSensor = CTRE_MagEncoder_Relative;
 
   talonConfig.forwardSoftLimitEnable = true;
