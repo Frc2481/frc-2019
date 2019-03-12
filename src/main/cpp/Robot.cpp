@@ -116,9 +116,11 @@ void Robot::TeleopInit() {
 }
 
 void Robot::AutonomousPeriodic() {
+	RobotPeriodic();
 }
 
 void Robot::TeleopPeriodic() {
+	RobotPeriodic();
 	if(CommandBase::m_pHatchSlide->IsVibratable()) {
 		m_pVibrate->Start();
 		CommandBase::m_pHatchSlide->ResetVibratable();

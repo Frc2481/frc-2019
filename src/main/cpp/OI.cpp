@@ -42,15 +42,21 @@ OI::OI() {
 	m_acquireCargo = new AnalogJoystickButton(m_pDriverStick, XBOX_RIGHT_TRIGGER, 0.5);
 	m_acquireCargo->WhenPressed(new AcquireCargoCommandGroup());
 
-	m_acquireHatch = new AnalogJoystickButton(m_pDriverStick, XBOX_LEFT_TRIGGER, 0.5);
+	m_acquireHatch = new JoystickButton(m_pDriverStick, XBOX_LEFT_BUMPER);
 	m_acquireHatch->WhenPressed(new AcquireHatchCommandGroup());
-
-	m_zeroGyro = new JoystickButton(m_pDriverStick, XBOX_START_BUTTON);
-	m_zeroGyro->WhenPressed(new SwerveDrivetrainZeroGyroCommand());
 
     m_elevatorStow = new JoystickButton(m_pDriverStick, XBOX_X_BUTTON);
 	m_elevatorStow->WhenPressed(new ElevatorStowCommand("ElevatorStowCommand"));
 
+	m_scoreHigh = new JoystickButton(m_pDriverStick, XBOX_Y_BUTTON);
+	m_scoreHigh->WhenPressed(new ElevatorHighCommand("ElevatorHighCommand"));
+
+	m_scoreMid = new JoystickButton(m_pDriverStick, XBOX_B_BUTTON);
+	m_scoreMid->WhenPressed(new ElevatorMidCommand("ElevatorMidCommand"));
+
+	m_scoreLow = new JoystickButton(m_pDriverStick, XBOX_A_BUTTON);
+	m_scoreLow->WhenPressed(new ElevatorLowCommand("ElevatorLowCommand"));
+	
 	// m_climbLevel3 = new JoystickButton(m_pDriverStick, XBOX_Y_BUTTON);
 	// m_climbLevel3->WhenPressed(new ClimberLevel3Command());
 	
@@ -71,14 +77,8 @@ OI::OI() {
 	// m_pSetFieldFrameButton->WhenReleased(new SwerveDrivetrainJoystickSetFieldFrame(false));
 
 //operator
-	m_scoreHigh = new JoystickButton(m_pOperatorStick, XBOX_Y_BUTTON);
-	m_scoreHigh->WhenPressed(new ElevatorHighCommand("ElevatorHighCommand"));
-
-	m_scoreMid = new JoystickButton(m_pOperatorStick, XBOX_B_BUTTON);
-	m_scoreMid->WhenPressed(new ElevatorMidCommand("ElevatorMidCommand"));
-
-	m_scoreLow = new JoystickButton(m_pOperatorStick, XBOX_A_BUTTON);
-	m_scoreLow->WhenPressed(new ElevatorLowCommand("ElevatorLowCommand"));
+	m_zeroGyro = new JoystickButton(m_pDriverStick, XBOX_START_BUTTON);
+	m_zeroGyro->WhenPressed(new SwerveDrivetrainZeroGyroCommand());	
 
 	m_cargoShip = new JoystickButton(m_pOperatorStick, XBOX_X_BUTTON);
 	m_cargoShip->WhenPressed(new ElevatorCargoShipCommand("ElevatorCargoShipCommand"));

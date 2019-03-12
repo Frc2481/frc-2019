@@ -155,7 +155,7 @@ double HatchSlide::GetDimPulseDist() {
 }
 
 bool HatchSlide::IsLineVisible() {
-  return (GetBrightPulseDist() >-1 && GetBrightPulseDist() < 28);
+  return GetBrightPulseDist() < 29;
 }
 
 bool HatchSlide::IsSlideOnTarget() {

@@ -20,13 +20,13 @@ class HatchSlideGoToPosition : public frc::InstantCommand {
       Requires(CommandBase::m_pHatchSlide.get());
     }
     void Initialize() {
-      m_setPoint = CommandBase::m_pHatchSlide->ConvertInchesToTicks(-CommandBase::m_pHatchSlide->GetBrightPulseDist());
+      m_setPoint = CommandBase::m_pHatchSlide->ConvertInchesToTicks(-CommandBase::m_pHatchSlide->GetBrightPulseDist()) - 13;
 
-      if(!CommandBase::m_pHatchSlide->IsHatchSlideEnabled()) {
-        if(CommandBase::m_pHatchSlide->GetBrightPulseDist() > CommandBase::m_pHatchSlide->GetDimPulseDist()) {
-          m_setPoint = CommandBase::m_pHatchSlide->ConvertInchesToTicks(-CommandBase::m_pHatchSlide->GetDimPulseDist());
-        }
-      }
+      // if(!CommandBase::m_pHatchSlide->IsHatchSlideEnabled()) {
+      //   if(CommandBase::m_pHatchSlide->GetBrightPulseDist() > CommandBase::m_pHatchSlide->GetDimPulseDist()) {
+      //     m_setPoint = CommandBase::m_pHatchSlide->ConvertInchesToTicks(-CommandBase::m_pHatchSlide->GetDimPulseDist());
+      //   }
+      // }
 
       if(CommandBase::m_pHatchSlide->IsLineVisible() && !CommandBase::m_pHatchSlide->IsHatchSlideEnabled()) {
         CommandBase::m_pHatchSlide->setSetPoint(m_setPoint);

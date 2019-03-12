@@ -23,7 +23,7 @@ public:
     
 //driver
     AnalogJoystickButton* m_acquireCargo;
-    AnalogJoystickButton* m_acquireHatch;
+    frc::Button* m_acquireHatch;
     frc::Button* m_zeroGyro;
     frc::Button* m_elevatorStow;
     frc::Button* m_climbRetract;
