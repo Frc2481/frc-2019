@@ -22,13 +22,13 @@ class HatchSlideGoToPosition : public frc::InstantCommand {
     void Initialize() {
       m_setPoint = CommandBase::m_pHatchSlide->ConvertInchesToTicks(-CommandBase::m_pHatchSlide->GetBrightPulseDist());
 
-      if(CommandBase::m_pOI->GetOperatorStick()->GetRawButton(XBOX_RIGHT_BUMPER)) {
+      if(!CommandBase::m_pHatchSlide->IsHatchSlideEnabled()) {
         if(CommandBase::m_pHatchSlide->GetBrightPulseDist() > CommandBase::m_pHatchSlide->GetDimPulseDist()) {
           m_setPoint = CommandBase::m_pHatchSlide->ConvertInchesToTicks(-CommandBase::m_pHatchSlide->GetDimPulseDist());
         }
       }
 
-      if(CommandBase::m_pHatchSlide->IsLineVisible() && CommandBase::m_pHatchSlide->IsHatchSlideEnabled()) {
+      if(CommandBase::m_pHatchSlide->IsLineVisible() && !CommandBase::m_pHatchSlide->IsHatchSlideEnabled()) {
         CommandBase::m_pHatchSlide->setSetPoint(m_setPoint);
       }
       else {

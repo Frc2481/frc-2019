@@ -67,6 +67,7 @@ Elevator::Elevator() : Subsystem("Elevator") {
   m_masterElevator->SelectProfileSlot(0, 0);
 
   m_desiredElevatorPosition = 0;
+  m_isElevatorManualEnabled = false;
 }
 
 void Elevator::InitDefaultCommand() {
@@ -182,4 +183,13 @@ bool Elevator::IsPositionInProtectedZone(double pos) {
 }
 void Elevator::SetFollower() {
   m_slaveElevator->Follow(*m_masterElevator);
+}
+void Elevator::EnableElevatorManual(){
+  m_isElevatorManualEnabled = true;
+}
+void Elevator::DisableElevatorManual(){
+  m_isElevatorManualEnabled = false;
+}
+bool Elevator::IsElevatorManualEnabled(){
+  return m_isElevatorManualEnabled;
 }

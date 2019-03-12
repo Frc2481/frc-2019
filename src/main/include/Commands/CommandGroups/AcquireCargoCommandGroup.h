@@ -23,7 +23,7 @@
 #include "Commands/CargoIntake/CargoIntakeStopCommand.h"
 #include "Commands/CargoIntake/CargoIntakeWaitForBallCommand.h"
 #include "Commands/CargoIntake/CargoIntakeWaitForNoBallCommand.h"
-#include "Commands/CommandGroups/ExtendIntakeIfNeededCommand.h"
+#include "Commands/CommandGroups/ConditionalIntakeCommandGroup.h"
 
 class AcquireCargoCommandGroup : public frc::CommandGroup {
  public:

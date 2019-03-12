@@ -5,20 +5,23 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CLIMBERZEROCOMMAND
-#define SRC_CLIMBERZEROCOMMAND
-
+#ifndef SRC_CLIMBERTOGGLEMANUALCONTROLCOMMAND
+#define SRC_CLIMBERTOGGLEMANUALCONTROLCOMMAND
+ 
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 
-class ClimberZeroCommand : public frc::InstantCommand {
+class ClimberToggleManualControlCommand : public frc::InstantCommand {
  public:
-  ClimberZeroCommand() : InstantCommand("ClimberZeroCommand"){
-    SetRunWhenDisabled(true);
-  }
-  void Initialize() override {
-    CommandBase::m_pClimber->ZeroClimber();
+  ClimberToggleManualControlCommand() : InstantCommand("ClimberToggleManualControlCommand"){}
+  void Initialize() override{
+    if(CommandBase::m_pClimber->IsClimberEnabled()){
+      CommandBase::m_pClimber->DisableClimberManual();
+    }
+    else{
+      CommandBase::m_pClimber->EnableClimberManual();
+    }
   }
 };
 
-#endif //SRC_CLIMBERZEROCOMMAND
+#endif //SRC_CLIMBERTOGGLEMANUALCONTROLCOMMAND

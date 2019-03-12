@@ -31,6 +31,8 @@
 #include "Commands/ToolChanger/ToolChangerRetractCommand.h"
 #include "Commands/ToolChanger/ToolChangerScoreCommand.h"
 #include "Commands/HatchSlide/HatchSlideJoystickCommand.h"
+#include "Commands/Climber/ClimberToggleManualControlCommand.h"
+#include "Commands/Elevator/ElevatorToggleManualControlCommand.h"
 
 OI::OI() {
 	m_pDriverStick = new Joystick2481(DRIVER_XBOX_CONTROLLER_ID);
@@ -84,8 +86,17 @@ OI::OI() {
 	m_elevatorManual = new AnalogJoystickButton(m_pOperatorStick, XBOX_RIGHT_Y_AXIS, -0.25);
 	m_elevatorManual->WhileHeld(new ElevatorJoystickCommand());
 
-	// m_slideOpenLoop = new AnalogJoystickButton(m_pOperatorStick, XBOX_LEFT_X_AXIS, 0.25);
-	// m_slideOpenLoop->WhileHeld(new HatchSlideJoystickCommand());
+	m_climberToggleManual = new JoystickButton(m_pOperatorStick, XBOX_START_BUTTON);
+	m_climberToggleManual->WhenPressed(new ClimberToggleManualControlCommand());
+	
+	m_elevatorToggleManual = new JoystickButton(m_pOperatorStick, XBOX_BACK_BUTTON);
+	m_elevatorToggleManual->WhenPressed(new ElevatorToggleManualControlCommand());
+	
+	m_slideOpenLoop = new AnalogJoystickButton(m_pOperatorStick, XBOX_LEFT_X_AXIS, 0.25);
+	m_slideOpenLoop->WhileHeld(new HatchSlideJoystickCommand());
+	
+	m_prepAcquireHatch = new JoystickButton(m_pOperatorStick, XBOX_LEFT_BUMPER);
+	m_prepAcquireHatch->WhenPressed(new PrepForAcquireHatchCommandGroup());
 
 	m_toggleSlide = new JoystickButton(m_pOperatorStick, XBOX_RIGHT_BUMPER);
 	m_toggleSlide->WhenPressed(new HatchSlideToggleCommand());

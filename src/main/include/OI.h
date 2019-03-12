@@ -42,6 +42,9 @@ public:
     frc::Button* m_cargoShip;
     frc::Button* m_toggleSlide;
     frc::Button* m_climberFeetOp;
+    frc::Button* m_prepAcquireHatch;
+    frc::Button* m_climberToggleManual;
+    frc::Button* m_elevatorToggleManual;
     AnalogJoystickButton* m_scoreGamePiece;
 
 };

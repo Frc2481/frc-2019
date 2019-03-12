@@ -27,6 +27,7 @@ class Climber : public frc::Subsystem {
   rev::CANPIDController m_pidController;
   bool m_littleFeetActivated;
   bool m_bigFootActivated;
+  bool m_climberManualActivated; 
 
  public:
   Climber();
@@ -54,6 +55,9 @@ class Climber : public frc::Subsystem {
   void ExtendGuides();
   void RetractGuides();
   void ReleaseWeights();
+  bool IsClimberEnabled();
+  void EnableClimberManual();
+  void DisableClimberManual();
 };
 
 #endif //SRC_CLIMBER_H

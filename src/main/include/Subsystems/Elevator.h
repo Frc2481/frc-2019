@@ -46,6 +46,9 @@ class Elevator : public frc::Subsystem {
   int ConvertInchesToTicks(double inches);
 
   bool IsOnTarget();
+  void EnableElevatorManual();
+  void DisableElevatorManual();
+  bool IsElevatorManualEnabled();
 
  private:
   TalonSRX* m_masterElevator;
@@ -58,6 +61,7 @@ class Elevator : public frc::Subsystem {
   double m_elevatorPosition;
   double m_desiredElevatorPosition;
   bool m_encoderConnected;
+  bool m_isElevatorManualEnabled;
 };
 
 #endif //SRC_ELEVATOR_H

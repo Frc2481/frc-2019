@@ -38,6 +38,7 @@ Climber::Climber() : Subsystem("Climber"),
 
   m_climberBigFootSolenoid->Set(frc::DoubleSolenoid::kForward);
   m_climberLittleFeetSolenoid->Set(frc::DoubleSolenoid::kForward);
+  m_climberManualActivated = false;
 }
 void Climber::Periodic(){
   frc::SmartDashboard::PutNumber("Climber Position", GetPos());
@@ -116,4 +117,13 @@ void Climber::ExtendGuides(){
 }
 void Climber::ReleaseWeights() {
   m_weightsSolenoid->Set(true);
+}
+void Climber::EnableClimberManual(){
+  m_climberManualActivated = true;
+}
+void Climber::DisableClimberManual(){
+  m_climberManualActivated = false;
+}
+bool Climber::IsClimberEnabled(){
+  return m_climberManualActivated;
 }

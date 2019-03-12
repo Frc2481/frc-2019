@@ -12,15 +12,15 @@
 #include "Commands/CargoIntake/CargoIntakeZeroCommand.h"
 #include "Commands/Elevator/ElevatorZeroCommand.h"
 #include "Commands/HatchSlide/HatchSlideZeroCommand.h"
-#include "Commands/Climber/ClimberZeroCommand.h"
+// #include "Commands/Climber/ClimberZeroCommand.h"
 
 class ZeroAllCommandGroup : public frc::CommandGroup {
  public:
   ZeroAllCommandGroup() : CommandGroup("ZeroAllCommandGroup"){
-    AddParallel(new CargoIntakeZeroCommand());
-    AddParallel(new ElevatorZeroCommand());
-    AddParallel(new HatchSlideZeroCommand());
-    AddParallel(new ClimberZeroCommand());
+    AddSequential(new CargoIntakeZeroCommand());
+    AddSequential(new ElevatorZeroCommand());
+    AddSequential(new HatchSlideZeroCommand());
+    // AddParallel(new ClimberZeroCommand());
   }
 };
 

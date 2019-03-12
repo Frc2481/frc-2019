@@ -23,7 +23,7 @@ class HatchSlideJoystickCommand : public frc::Command {
     }
   }
   bool IsFinished() override{
-    return CommandBase::m_pHatchSlide->IsHatchSlideEnabled();
+    return !CommandBase::m_pHatchSlide->IsHatchSlideEnabled();
   }
   void End() override{
     CommandBase::m_pHatchSlide->SetOpenLoopSpeed(0.0);
