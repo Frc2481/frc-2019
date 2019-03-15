@@ -11,19 +11,19 @@
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 
-class ClimberRetractGuidesCommand : public frc::InstantCommand {
- public:
-  ClimberRetractGuidesCommand() : InstantCommand("ClimberRetractGuidesCommand"){}
-  void Initialize() override{
-    CommandBase::m_pClimber->RetractGuides();
-  }
-};
-
 class ClimberExtendGuidesCommand : public frc::InstantCommand{
   public:
   ClimberExtendGuidesCommand() : InstantCommand("ClimberExtendGuidesCommand"){}
   void Initialize() override{
     CommandBase::m_pClimber->ExtendGuides();
+  }
+};
+
+class ClimberRetractGuidesCommand : public frc::InstantCommand{
+  public:
+  ClimberRetractGuidesCommand() : InstantCommand("ClimberRetractGuidesCommand"){}
+  void Initialize() override{
+    CommandBase::m_pClimber->RetractGuides();
   }
 };
 

@@ -5,19 +5,17 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CARGOINTAKEWAITFORBALLCOMMAND
-#define SRC_CARGOINTAKEWAITFORBALLCOMMAND
-#include <frc/commands/Command.h>
-#include "CommandBase.h"
+#ifndef USER_BUTTON
+#define USER_BUTTON
 
-class CargoIntakeWaitForBallCommand : public frc::Command {
- public:
-  CargoIntakeWaitForBallCommand() : Command("CargoIntakeWaitForBallCommand") {
+#include <frc/WPILib.h>
 
-  }
-  bool IsFinished() override {
-    return CommandBase::m_pHatchSlide->IsLimitSwitchHit();
-  }
+class UserButton : public frc::Button {
+public:
+    UserButton();
+    virtual ~UserButton();
+
+    virtual bool Get();
 };
 
-#endif //SRC_CARGOINTAKEWAITFORBALLCOMMAND
+#endif // USER_BUTTON

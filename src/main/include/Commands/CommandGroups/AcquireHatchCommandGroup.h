@@ -16,20 +16,26 @@
 #include "Commands/ToolChanger/ToolChangerRetractCommand.h"
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
 #include "Commands/ToolChanger/ToolChangerFreeCargoCommand.h"
+#include "Commands/ToolChanger/ToolChangerWaitForHatchCommand.h"
+#include "Commands/ToolChanger/ToolChangerHoldCargoCommand.h"
 
 class PrepForAcquireHatchCommandGroup : public frc::CommandGroup {
   public:
   PrepForAcquireHatchCommandGroup() : CommandGroup("PrepForAcquireHatchCommandGroup") {
     AddParallel(new ToolChangerSetHasHatchCommand(true));
-    AddParallel(new ToolChangerFreeHatchCommand());
-    AddSequential(new ElevatorLowCommand("ElevatorLowCommand"));
     AddSequential(new ToolChangerHatchExtendCommand());
+    AddSequential(new ToolChangerFreeHatchCommand());
+    AddSequential(new ElevatorLowCommand("ElevatorLowCommand"));
+    AddSequential(new ToolChangerHoldCargoCommand());
+    // AddSequential(new ToolChangerWaitForHatchCommand());
   }
 };
 
 class AcquireHatchCommandGroup : public frc::CommandGroup {
  public:
   AcquireHatchCommandGroup() : CommandGroup("AcquireHatchCommandGroup") {
+    // if()
+    AddSequential(new ToolChangerWaitForHatchCommand());
     AddSequential(new ToolChangerHoldHatchCommand());
     AddSequential(new WaitCommand(0.1)); //shrink as we become confident
     AddSequential(new ToolChangerFreeCargoCommand());

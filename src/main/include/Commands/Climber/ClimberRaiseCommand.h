@@ -5,19 +5,27 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CLIMBERLEVEL3COMMAND
-#define SRC_CLIMBERLEVEL3COMMAND
-#include <frc/commands/InstantCommand.h>
+#ifndef SRC_CLIMBERRAISECOMMAND
+#define SRC_CLIMBERRAISECOMMAND
+
+#include <frc/commands/Command.h>
 #include "CommandBase.h"
 
-class ClimberLevel3Command : public frc::InstantCommand {
+class ClimberRaiseCommand : public frc::Command {
  public:
-  ClimberLevel3Command() : InstantCommand("ClimberLevel3Command") {
-
+  ClimberRaiseCommand() : Command("ClimberRaiseCommand"){}
+  void Execute() override{
+      CommandBase::m_pClimber->SetOpenLoopSpeed(0.8);
   }
-  void Initialize() override {
-    CommandBase::m_pClimber->ClimberLevel3();
+  bool IsFinished() override{
+    return false;
+  }
+  void End() override{
+    CommandBase::m_pClimber->SetOpenLoopSpeed(0.0);
+  }
+  void Interrupted() override{
+    End();
   }
 };
 
-#endif //SRC_CLIMBERLEVEL3COMMAND
+#endif //SRC_CLIMBERRAISECOMMAND

@@ -9,6 +9,7 @@
 #include "frc/WPILib.h"
 #include "frc/XboxController.h"
 #include "frc/buttons/trigger.h"
+#include "Components/UserButton.h"
 
 class OI {
 public:
@@ -24,29 +25,34 @@ public:
 //driver
     AnalogJoystickButton* m_acquireCargo;
     frc::Button* m_acquireHatch;
-    frc::Button* m_zeroGyro;
     frc::Button* m_elevatorStow;
-    frc::Button* m_climbRetract;
-    frc::Button* m_climbLevel2;
-    frc::Button* m_climbLevel3;
-    frc::Button* m_climberLittleFeet;
-    frc::Button* m_climberBigFoot;
-    frc::JoystickButton *m_pSetFieldFrameButton;
-
-//operator
     frc::Button* m_scoreHigh;
     frc::Button* m_scoreMid;
     frc::Button* m_scoreLow;
-    AnalogJoystickButton* m_elevatorManual;
-    AnalogJoystickButton* m_slideOpenLoop;
-    frc::Button* m_cargoShip;
-    frc::Button* m_toggleSlide;
-    frc::Button* m_climberFeetOp;
-    frc::Button* m_prepAcquireHatch;
-    frc::Button* m_climberToggleManual;
-    frc::Button* m_elevatorToggleManual;
-    AnalogJoystickButton* m_scoreGamePiece;
+    AnalogJoystickButton* m_scoreGamePiece;  
+    frc::JoystickButton *m_pSetFieldFrameButton;
 
+//operator
+    frc::Button* m_shiftWeights;
+    frc::Button* m_zeroGyro;
+    frc::Button* m_prepAcquireHatch;
+    // frc::Button* m_climberLittleFeet;
+    // frc::Button* m_climberBigFoot;
+    frc::Button* m_climbL1ToL2;
+    frc::Button* m_climbL2ToL3;
+    frc::Button* m_climbL1ToL3;
+    frc::Button* m_climberGuides;
+    AnalogJoystickButton* m_elevatorManual;
+    frc::Button* m_toggleSlide;
+    AnalogJoystickButton* m_slideOpenLoop;
+    frc::Button* m_climberUp;
+    frc::Button* m_climberDown;
+    frc::Button* m_hatchExtend;
+    // frc::Button* m_cargoShip;
+    // frc::Button* m_climberFeetOp;
+
+// RoboRio
+    UserButton* m_userButton;
 };
 
 #endif // OI_H

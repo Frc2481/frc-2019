@@ -15,6 +15,8 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
   m_slideEncoder = new CTREMagEncoder(m_motor, "SLIDE_MOTOR_ENCODER");
   ctre::phoenix::motorcontrol::can::TalonSRXConfiguration talonConfig;
 
+  m_motor->ConfigForwardLimitSwitchSource(LimitSwitchSource_FeedbackConnector, LimitSwitchNormal_NormallyOpen, 0);
+
   m_motor->SetInverted(false);
   m_motor->SetSensorPhase(true);
   m_motor->SetNeutralMode(Brake);
@@ -24,12 +26,11 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
 
   talonConfig.motionCurveStrength = 5;
 
-
-  talonConfig.slot0.kF = 0.1; // 1024/max speed //old = 0.1528;
+  talonConfig.slot0.kF = 0.15; // 1024/max speed //old = 0.1528;
   talonConfig.slot0.kP = 1;
   talonConfig.slot0.allowableClosedloopError = 0;
-  talonConfig.motionCruiseVelocity = 6000; //convert to talonConfig speed: encoder count/100 ms / 2.0
-  talonConfig.motionAcceleration = 2400; //9200
+  talonConfig.motionCruiseVelocity = 7000; //convert to talonConfig speed: encoder count/100 ms / 2.0
+  talonConfig.motionAcceleration = 56000; //9200
   talonConfig.peakCurrentDuration = 0; 
   talonConfig.continuousCurrentLimit = 30;
   talonConfig.peakCurrentLimit = 0;
@@ -37,8 +38,8 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
 
   talonConfig.forwardSoftLimitEnable = true;
   talonConfig.reverseSoftLimitEnable = true;
-  talonConfig.forwardSoftLimitThreshold = 8984;
-  talonConfig.reverseSoftLimitThreshold = -8678;
+  talonConfig.forwardSoftLimitThreshold = 9000;
+  talonConfig.reverseSoftLimitThreshold = -9000;
 
   m_motor->ConfigAllSettings(talonConfig);
   m_motor->SelectProfileSlot(0, 0);
@@ -60,6 +61,7 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
   m_encoderConnected = false;
   m_hatchSlideEnabled = false;
   m_oldTargetValid = false;
+  m_hasResetOccurred = m_motor->HasResetOccurred();
 }
 
 void HatchSlide::InitDefaultCommand() {
@@ -71,7 +73,7 @@ void HatchSlide::Periodic() {
   SmartDashboard::PutBoolean("IsHatchZeroed", m_isHatchZeroed);
   SmartDashboard::PutBoolean("IsSlideOnTarget", IsSlideOnTarget());
   SmartDashboard::PutNumber("HatchSlidePos", ConvertTicksToInches(GetHatchPosition()));
-  SmartDashboard::PutBoolean("IsSlideTalonReset", m_motor->HasResetOccurred());
+  // SmartDashboard::PutBoolean("IsSlideTalonReset", m_motor->HasResetOccurred());
   if(m_motor->HasResetOccurred() && m_isHatchZeroed){
     m_isHatchZeroed = false;
     SetOpenLoopSpeed(0);
@@ -105,28 +107,27 @@ void HatchSlide::Periodic() {
 
 void HatchSlide::setSetPoint(int value) {
   if(m_isHatchZeroed){
-    // m_motor->Config_kF(0, CommandBase::m_pLineFinder->getXVel() * RobotParameters::k_lineFinderKp, 0);
-    m_motor->Set(ControlMode::MotionMagic, value);
-    if(m_motor->GetSelectedSensorPosition() < value) {
-      m_motor->Set(ControlMode::MotionMagic, value, DemandType::DemandType_ArbitraryFeedForward, 0.1);
+    // m_motor->Set(ControlMode::MotionMagic, value);
+    if(fabs(m_motor->GetSelectedSensorPosition() - value) > ConvertInchesToTicks(0.3)) {
+      if(m_motor->GetSelectedSensorPosition() < value) {
+        m_motor->Set(ControlMode::MotionMagic, value, DemandType::DemandType_ArbitraryFeedForward, 0.1);
+      }
+      else {
+        m_motor->Set(ControlMode::MotionMagic, value, DemandType::DemandType_ArbitraryFeedForward, -0.1);
+      }
     }
-    else {
-      m_motor->Set(ControlMode::MotionMagic, value, DemandType::DemandType_ArbitraryFeedForward, -0.1);
-    }
-
-    // m_motor->Set(ControlMode::MotionMagic, value, DemandType_ArbitraryFeedForward, .03 * CommandBase::m_pLineFinder->getXVel());
     SmartDashboard::PutNumber("HatchDesiredPos", value);
   }
 }
 
 void HatchSlide::ZeroHatchPosition() {
-  m_isHatchZeroed = true;
   for(int i = 0; i < 5; i++) {
     ErrorCode error = m_motor->SetSelectedSensorPosition(0, 0, 10);
     if(error == OK) {
       break;
     }
   }
+  m_isHatchZeroed = true;
   m_motor->ClearStickyFaults();
 }
 
@@ -188,4 +189,11 @@ bool HatchSlide::IsHatchSlideEnabled() {
 
 void HatchSlide::SetOpenLoopSpeed(double speed) {
   m_motor->Set(ControlMode::PercentOutput, speed);
+}
+
+bool HatchSlide::isZeroed(){
+  return m_isHatchZeroed;
+}
+bool HatchSlide::IsLimitSwitchHit() {
+  return m_motor->GetSensorCollection().IsFwdLimitSwitchClosed();
 }

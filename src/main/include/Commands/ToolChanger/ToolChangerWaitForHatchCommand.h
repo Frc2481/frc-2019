@@ -5,19 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CLIMBERLEVEL2COMMAND
-#define SRC_CLIMBERLEVEL2COMMAND
-#include <frc/commands/InstantCommand.h>
+#ifndef SRC_TOOLCHANGERWAITFORHATCHCOMMAND
+#define SRC_TOOLCHANGERWAITFORHATCHCOMMAND
+
+#include <frc/commands/Command.h>
 #include "CommandBase.h"
 
-class ClimberLevel2Command : public frc::InstantCommand {
+class ToolChangerWaitForHatchCommand : public frc::Command {
  public:
-  ClimberLevel2Command() : InstantCommand("ClimberLevel2Command") {
-
-  }
-  void Initialize() override {
-    CommandBase::m_pClimber->ClimberLevel2();
+  ToolChangerWaitForHatchCommand() : Command("ToolChangerWaitForHatchCommand") {}
+  bool IsFinished() override {
+    return CommandBase::m_pToolChanger->GetIsHatchSeen();
   }
 };
 
-#endif //SRC_CLIMBERLEVEL2COMMAND
+#endif //SRC_TOOLCHANGERWAITFORHATCHCOMMAND

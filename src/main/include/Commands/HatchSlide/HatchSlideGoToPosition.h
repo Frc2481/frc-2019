@@ -20,20 +20,15 @@ class HatchSlideGoToPosition : public frc::InstantCommand {
       Requires(CommandBase::m_pHatchSlide.get());
     }
     void Initialize() {
-      m_setPoint = CommandBase::m_pHatchSlide->ConvertInchesToTicks(-CommandBase::m_pHatchSlide->GetBrightPulseDist()) - 13;
+      m_setPoint = CommandBase::m_pHatchSlide->ConvertInchesToTicks(CommandBase::m_pHatchSlide->GetBrightPulseDist() - 13);
 
-      // if(!CommandBase::m_pHatchSlide->IsHatchSlideEnabled()) {
-      //   if(CommandBase::m_pHatchSlide->GetBrightPulseDist() > CommandBase::m_pHatchSlide->GetDimPulseDist()) {
-      //     m_setPoint = CommandBase::m_pHatchSlide->ConvertInchesToTicks(-CommandBase::m_pHatchSlide->GetDimPulseDist());
-      //   }
-      // }
-
-      if(CommandBase::m_pHatchSlide->IsLineVisible() && !CommandBase::m_pHatchSlide->IsHatchSlideEnabled()) {
+      if(CommandBase::m_pHatchSlide->IsLineVisible() && CommandBase::m_pHatchSlide->isZeroed()) {
         CommandBase::m_pHatchSlide->setSetPoint(m_setPoint);
       }
-      else {
+      else if(CommandBase::m_pHatchSlide->isZeroed()) {
         CommandBase::m_pHatchSlide->setSetPoint(0);
       }
+      SmartDashboard::PutNumber("hatch slide setpoint", m_setPoint);
     }
 };
 

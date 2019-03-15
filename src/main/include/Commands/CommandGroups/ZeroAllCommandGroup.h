@@ -17,6 +17,7 @@
 class ZeroAllCommandGroup : public frc::CommandGroup {
  public:
   ZeroAllCommandGroup() : CommandGroup("ZeroAllCommandGroup"){
+    SetRunWhenDisabled(true);
     AddSequential(new CargoIntakeZeroCommand());
     AddSequential(new ElevatorZeroCommand());
     AddSequential(new HatchSlideZeroCommand());

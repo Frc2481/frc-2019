@@ -59,7 +59,10 @@
     "cstdarg": "cpp",
     "iomanip": "cpp",
     "algorithm": "cpp",
-    "*.inc": "cpp"
+    "*.inc": "cpp",
+    "bitset": "cpp",
+    "complex": "cpp",
+    "numeric": "cpp"
   },
   "C_Cpp.configurationWarnings": "Disabled",
   "C_Cpp.dimInactiveRegions": false,

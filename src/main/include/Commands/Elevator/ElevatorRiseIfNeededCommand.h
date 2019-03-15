@@ -35,7 +35,17 @@ class ElevatorRiseForIntakeInCommand : public frc::ConditionalCommand {
   ElevatorRiseForIntakeInCommand() : frc::ConditionalCommand("ElevatorRiseForIntakeInCommand",
        new ElevatorRiseForIntakeOutCommandGroup(), nullptr) {}
   bool Condition() {
-    return CommandBase::m_pCargoIntake->IsIntakeOut() && CommandBase::m_pElevator->GetElevatorPosition() < RobotParameters::k_elevatorCollisionMax;
+    return !CommandBase::m_pCargoIntake->IsIntakeIn() && CommandBase::m_pElevator->GetElevatorPosition() < RobotParameters::k_elevatorCollisionMax;
+  }
+};
+
+class ElevatorRiseForIntakeCommand : public frc::ConditionalCommand {
+ public:
+  ElevatorRiseForIntakeCommand() : frc::ConditionalCommand("ElevatorRiseForIntakeCommand",
+       new ElevatorRiseForIntakeOutCommandGroup(), nullptr) {}
+  bool Condition() {
+    return (!CommandBase::m_pCargoIntake->IsIntakeIn() || !CommandBase::m_pCargoIntake->IsIntakeOut()) 
+            && CommandBase::m_pElevator->GetElevatorPosition() < RobotParameters::k_elevatorCollisionMax;
   }
 };
 

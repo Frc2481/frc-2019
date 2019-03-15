@@ -206,6 +206,8 @@ void SwerveDrivetrain::Periodic() {
 	SmartDashboard::PutNumber("FR Steer encoder pos", m_pFRSteerEncoder->getAngle());
 	SmartDashboard::PutNumber("BL Steer encoder pos", m_pBLSteerEncoder->getAngle());
 	SmartDashboard::PutNumber("BR Steer encoder pos", m_pBRSteerEncoder->getAngle());
+
+	m_gyroYaw = -m_pChassisIMU->GetYaw();
 }
 
 void SwerveDrivetrain::driveOpenLoopControl(

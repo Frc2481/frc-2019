@@ -34,17 +34,12 @@ class AcquireCargoCommandGroup : public frc::CommandGroup {
     AddSequential(new ToolChangerFreeCargoCommand());
     AddSequential(new ExtendIntakeIfNeededCommand()); //TODO check to see if height is acceptable
     AddSequential(new ToolChangerRetractCommand());
-    AddSequential(new ElevatorStowCommand("ElevatorStowCommand"));
+    AddSequential(new ElevatorPreIntakeBallHeightCommand("ElevatorPreIntakeBallHeightCommand", false));
     AddSequential(new CargoIntakeBallCommand(1));
     AddSequential(new CargoIntakeWaitForBallCommand());
-    AddSequential(new WaitCommand(0.1));
-    AddSequential(new CargoIntakeBallCommand(0.28));
-    AddSequential(new ToolChangerHoldCargoCommand());
-    AddSequential(new WaitCommand(0.1));
-    AddSequential(new CargoIntakeBallCommand(0.1));
-    AddSequential(new ElevatorIntakeBallHeightCommand("ElevatorIntakeBallHeightCommand")); //TODO check to see if height is acceptable
-    AddSequential(new CargoIntakeWaitForNoBallCommand());
     AddSequential(new CargoIntakeStopCommand());
+    AddSequential(new ToolChangerHoldCargoCommand());
+    AddSequential(new ElevatorIntakeBallHeightCommand("ElevatorIntakeBallHeightCommand")); //TODO check to see if height is acceptable
     AddSequential(new CargoIntakeInCommand("CargoIntakeBackCommand"));
     AddSequential(new ElevatorCargoLowCommand("ElevatorCargoLowCommand"));
 

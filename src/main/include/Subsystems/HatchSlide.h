@@ -29,7 +29,8 @@ class HatchSlide : public frc::Subsystem {
   bool m_encoderConnected;
   bool m_hatchSlideEnabled;
   bool m_oldTargetValid;
-
+  bool m_hasResetOccurred;
+  
  public:
   HatchSlide();
   void InitDefaultCommand() override;
@@ -51,6 +52,8 @@ class HatchSlide : public frc::Subsystem {
   void DisableHatchSlide();
   bool IsHatchSlideEnabled();
   void SetOpenLoopSpeed(double speed);
+  bool isZeroed();
+  bool IsLimitSwitchHit(); //NOTE: this is for cargo intake and on the tool changer but more convenient here
 };
 
 #endif //SRC_HATCH_SLIDE_H

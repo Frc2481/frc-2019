@@ -12,6 +12,7 @@
 #include <frc/commands/CommandGroup.h>
 #include "CommandBase.h"
 #include "RobotParameters.h"
+#include "Commands/CommandGroups/RetractIntakeIfNeededCommandGroup.h"
 
 template <int CARGO_HEIGHT,int HATCH_HEIGHT>
 class ElevatorBaseCommand : public frc::Command {
@@ -25,7 +26,7 @@ class ElevatorBaseCommand : public frc::Command {
     }
     else if(CommandBase::m_pToolChanger->HasHatch() && IsPositionSetPointAllowed(HATCH_HEIGHT)){
       CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT, true);
-    } else {
+    } else if(IsPositionSetPointAllowed(HATCH_HEIGHT)){
       CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT, true);
     }
   }
@@ -37,8 +38,7 @@ class ElevatorBaseCommand : public frc::Command {
 
   bool IsPositionSetPointAllowed(int pos) {
     //if traveling through protected zone while cargoIntake out, don't allow movement
-    return true;
-    if(CommandBase::m_pCargoIntake->IsIntakeOut() &&
+    if(CommandBase::m_pCargoIntake->IsIntakeInProtectedZone() &&
           (CommandBase::m_pElevator->IsPositionInProtectedZone(CommandBase::m_pElevator->GetElevatorPosition()) ||
           CommandBase::m_pElevator->IsPositionInProtectedZone(pos))) {
       return false;
@@ -68,17 +68,21 @@ class ElevatorBaseCommand : public frc::Command {
 template <int CARGO_HEIGHT, int HATCH_HEIGHT>
 class ElevatorBaseCommandGroup : public CommandGroup {
   public:
-  ElevatorBaseCommandGroup(std::string name) : CommandGroup(name) {
+  ElevatorBaseCommandGroup(std::string name, bool safeIntakeRetract = true) : CommandGroup(name) {
+    if(safeIntakeRetract) {
+      AddSequential(new RetractIntakeIfNeededCommand());
+    }
     AddSequential(new ElevatorBaseCommand<CARGO_HEIGHT, HATCH_HEIGHT>(name), 3.0);
   }
 }; 
 
-typedef ElevatorBaseCommandGroup<24, 24> ElevatorIntakeBallHeightCommand; //TODO check reasonable height
-typedef ElevatorBaseCommandGroup<65, 59> ElevatorHighCommand; // 27393, 25412
-typedef ElevatorBaseCommandGroup<37, 31> ElevatorMidCommand; // 16075, 13180
-typedef ElevatorBaseCommandGroup<9, 3> ElevatorLowCommand; // 3918, 1273
-typedef ElevatorBaseCommandGroup<9, 9> ElevatorCargoLowCommand; // 3918, 3918
-typedef ElevatorBaseCommandGroup<9, 3> ElevatorCargoShipCommand; // 3918, 1273
+typedef ElevatorBaseCommandGroup<3, 3> ElevatorPreIntakeBallHeightCommand;
+typedef ElevatorBaseCommandGroup<24, 24> ElevatorIntakeBallHeightCommand;
+typedef ElevatorBaseCommandGroup<67, 65> ElevatorHighCommand;
+typedef ElevatorBaseCommandGroup<40, 35> ElevatorMidCommand;
+typedef ElevatorBaseCommandGroup<11, 3> ElevatorLowCommand;
+typedef ElevatorBaseCommandGroup<9, 9> ElevatorCargoLowCommand;
+typedef ElevatorBaseCommandGroup<9, 3> ElevatorCargoShipCommand;
 typedef ElevatorBaseCommandGroup<0, 0> ElevatorStowCommand;
 
 #endif //SRC_ELEVATORBASECOMMAND

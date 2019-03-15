@@ -51,9 +51,12 @@ CargoIntake::CargoIntake() : Subsystem("CargoIntake") {
 
   m_desiredPosition = 0;
   m_isZeroed = false;
+  m_hasResetOccurred = m_extendMotor->HasResetOccurred();
 }
 
-void CargoIntake::InitDefaultCommand() {}
+void CargoIntake::InitDefaultCommand() {
+  SetOpenLoopSpeed(0.0);
+}
 
 void CargoIntake::Periodic() {
   frc::SmartDashboard::PutBoolean("intakeEncConnnected", m_extendEncoder->isConnected());
@@ -63,7 +66,7 @@ void CargoIntake::Periodic() {
   frc::SmartDashboard::PutNumber("CargoPos", GetPosition());
   frc::SmartDashboard::PutNumber("GetDesiredPos", GetDesiredPosition());
   frc::SmartDashboard::PutBoolean("IsCargoIntakeOnTarget", IsOnTarget());
-  frc::SmartDashboard::PutBoolean("IsCargoIntakeTalonReset", m_extendMotor->HasResetOccurred());
+  // frc::SmartDashboard::PutBoolean("IsCargoIntakeTalonReset", m_extendMotor->HasResetOccurred());
   frc::SmartDashboard::PutBoolean("IsCargoIntakeZeroed", m_isZeroed);
   if (m_extendMotor->HasResetOccurred() && m_isZeroed){
     m_isZeroed = false;
@@ -115,8 +118,14 @@ int CargoIntake::ConvertInchesToTicks(double inches) {
 double CargoIntake::GetCargoIntakeError() {
   return ConvertTicksToInches(m_extendMotor->GetClosedLoopError());
 }
+bool CargoIntake::IsIntakeInProtectedZone() {
+  return GetPosition() > RobotParameters::k_cargoIntakeThresholdIn && GetPosition() < RobotParameters::k_cargoIntakeThresholdOut; //assuming zero measures from point that intake is in
+}
 bool CargoIntake::IsIntakeOut() {
-  return GetPosition() > RobotParameters::k_cargoIntakeThreshold; //assuming zero measures from point that intake is in
+  return GetPosition() > RobotParameters::k_cargoIntakeThresholdOut; //assuming zero measures from point that intake is in
+}
+bool CargoIntake::IsIntakeIn() {
+  return GetPosition() < RobotParameters::k_cargoIntakeThresholdIn; //assuming zero measures from point that intake is in
 }
 bool CargoIntake::IsBallIntaken() {
   return !m_beamBreak->Get();

@@ -51,6 +51,7 @@ template <int INTAKE_POS>
 class CargoIntakeBaseCommandGroup : public CommandGroup {
   public:
   CargoIntakeBaseCommandGroup(std::string name) : CommandGroup(name) {
+    // AddSequential(new ElevatorRiseForIntakeCommand());
     AddSequential(new CargoIntakeBaseCommand<INTAKE_POS>(name));
   }
 }; 

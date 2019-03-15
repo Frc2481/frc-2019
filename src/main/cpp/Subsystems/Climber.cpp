@@ -12,6 +12,8 @@ Climber::Climber() : Subsystem("Climber"),
   m_climberMotor(new rev::CANSparkMax(CLIMBER_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless)),
   m_encoder(new rev::CANEncoder(*m_climberMotor)),
   m_pidController(m_climberMotor->GetPIDController()) {
+
+  m_pidController = m_climberMotor->GetPIDController();
   
   m_climberMotor->RestoreFactoryDefaults();
 
@@ -23,13 +25,19 @@ Climber::Climber() : Subsystem("Climber"),
   m_pidController.SetP(0);
   m_pidController.SetI(0);
   m_pidController.SetD(0);
-  m_pidController.SetFF(0);
+  m_pidController.SetFF(1/4000.0);
+  m_pidController.SetOutputRange(-1, 1);
 
   // m_climberMotor->SetParameter(rev::CANSparkMax::ConfigParameter::kSoftLimitFwdEn, 0);
   // m_climberMotor->SetParameter(rev::CANSparkMax::ConfigParameter::kSoftLimitRevEn, 0);
 
   // m_pidController.SetOutputRange(0, 0); //TODO
   // m_pidController.SetReference(0, rev::ControlType::kVelocity);
+
+  m_pidController.SetSmartMotionMaxAccel(12000);
+  m_pidController.SetSmartMotionMaxVelocity(4000);
+  m_pidController.SetSmartMotionAllowedClosedLoopError(0);
+  m_pidController.SetSmartMotionMinOutputVelocity(0);
 
   m_climberMotor->SetSmartCurrentLimit(200);
 
@@ -38,24 +46,26 @@ Climber::Climber() : Subsystem("Climber"),
 
   m_climberBigFootSolenoid->Set(frc::DoubleSolenoid::kForward);
   m_climberLittleFeetSolenoid->Set(frc::DoubleSolenoid::kForward);
+  m_climberGuidesSolenoid->Set(frc::DoubleSolenoid::kForward);
+  m_weightsSolenoid->Set(false);
+
   m_climberManualActivated = false;
+
+  m_isClimberZeroed = false;
+  m_areClimberGuidesExtended = false;
+  m_desiredSetpoint = 0;
 }
 void Climber::Periodic(){
   frc::SmartDashboard::PutNumber("Climber Position", GetPos());
   frc::SmartDashboard::PutNumber("Climber Speed", GetSpeed());
+  frc::SmartDashboard::PutNumber("Climber sensor speed", m_encoder->GetVelocity());
 }
 void Climber::InitDefaultCommand() {
   SetDefaultCommand(new ClimberDriveWithJoystickCommand());
 }
-
-void Climber::ClimberRetract() {
-  m_pidController.SetReference(ConvertInchesToTicks(0), rev::ControlType::kPosition, 0);
-}
-void Climber::ClimberLevel2() {
-  m_pidController.SetReference(ConvertInchesToTicks(0), rev::ControlType::kPosition, 0);
-}
-void Climber::ClimberLevel3() {
-  m_pidController.SetReference(ConvertInchesToTicks(0), rev::ControlType::kPosition, 0);
+void Climber::SetPosition(double setPoint) {
+  m_pidController.SetReference(setPoint, rev::ControlType::kSmartMotion);
+  m_desiredSetpoint = setPoint;
 }
 double Climber::ConvertInchesToTicks(int inches) {
   return inches * RobotParameters::k_climberTicksPerInch;
@@ -103,20 +113,36 @@ void Climber::SetOpenLoopSpeed(double speed) {
 double Climber::GetSpeed(){
   return m_climberMotor->Get();
 }
+double Climber::GetSensorSpeed(){
+  return m_encoder->GetVelocity();
+}
 double Climber::GetPos(){
   return m_encoder->GetPosition();
 }
+double Climber::GetDesiredPos(){
+  return m_desiredSetpoint;
+}
 void Climber::ZeroClimber(){
   m_encoder->SetPosition(0.0); //is this right???
-}
-void Climber::RetractGuides(){
-  m_climberGuidesSolenoid->Set(frc::DoubleSolenoid::kReverse);
+  m_isClimberZeroed = true;
 }
 void Climber::ExtendGuides(){
+  m_climberGuidesSolenoid->Set(frc::DoubleSolenoid::kReverse);//TODO check if correct
+  m_areClimberGuidesExtended = true;
+}
+
+void Climber::RetractGuides(){
   m_climberGuidesSolenoid->Set(frc::DoubleSolenoid::kForward);//TODO check if correct
+  m_areClimberGuidesExtended = false;
+}
+bool Climber::IsGuidesExtended(){
+  return m_areClimberGuidesExtended;
 }
 void Climber::ReleaseWeights() {
   m_weightsSolenoid->Set(true);
+}
+void Climber::ResetWeights() {
+  m_weightsSolenoid->Set(false);
 }
 void Climber::EnableClimberManual(){
   m_climberManualActivated = true;
@@ -126,4 +152,10 @@ void Climber::DisableClimberManual(){
 }
 bool Climber::IsClimberEnabled(){
   return m_climberManualActivated;
+}
+bool Climber::IsClimberZeroed(){
+  return m_isClimberZeroed;
+}
+bool Climber::IsOnTarget() {
+  return fabs(GetPos() - GetDesiredPos()) < 10;
 }

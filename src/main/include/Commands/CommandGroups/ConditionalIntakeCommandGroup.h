@@ -19,7 +19,7 @@ class SafeIntakeExtendCommandGroup : public frc::CommandGroup {
  public:
   SafeIntakeExtendCommandGroup() : CommandGroup("SafeIntakeExtendCommandGroup") {
     AddSequential(new ElevatorRiseForIntakeOutCommand()); //TODO check to see if height is acceptable
-    AddSequential(new CargoIntakeOutCommand("CargoIntakeFrontCommand"));
+    AddSequential(new CargoIntakeOutCommand("CargoIntakeOutCommand"));
   }
 };
 

@@ -5,19 +5,14 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CLIMBERRETRACTCOMMAND
-#define SRC_CLIMBERRETRACTCOMMAND
-#include <frc/commands/InstantCommand.h>
-#include "CommandBase.h"
+#include "Components/UserButton.h"
 
-class ClimberRetractCommand : public frc::InstantCommand {
- public:
-  ClimberRetractCommand() : InstantCommand("ClimberRetractCommand") {
+UserButton::UserButton(){
+}
 
-  }
-  void Initialize() override {
-    CommandBase::m_pClimber->ClimberRetract();
-  }
-};
+UserButton::~UserButton() {
+}
 
-#endif //SRC_CLIMBERRETRACTCOMMAND
+bool UserButton::Get() {
+  return frc::RobotController::GetUserButton();
+}

@@ -5,27 +5,27 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_HATCHSLIDEENABLECOMMAND
-#define SRC_HATCHSLIDEENABLECOMMAND
+#ifndef SRC_CLIMBERLOWERCOMMAND
+#define SRC_CLIMBERLOWERCOMMAND
 
 #include <frc/commands/Command.h>
 #include "CommandBase.h"
 
-class HatchSlideEnableCommand : public frc::Command {
+class ClimberLowerCommand : public frc::Command {
  public:
-  HatchSlideEnableCommand() : frc::Command("HatchSlideEnableCommand") {}
-  void Initialize() override {
-    CommandBase::m_pHatchSlide->EnableHatchSlide();
+  ClimberLowerCommand() : Command("ClimberLowerCommand"){}
+  void Execute() override{
+      CommandBase::m_pClimber->SetOpenLoopSpeed(-0.8);
   }
-  void End() override{
-    CommandBase::m_pHatchSlide->DisableHatchSlide();
-  }
-  bool IsFinished() override {
+  bool IsFinished() override{
     return false;
   }
-  void Interrupted() override {
+  void End() override{
+    CommandBase::m_pClimber->SetOpenLoopSpeed(0.0);
+  }
+  void Interrupted() override{
     End();
   }
 };
 
-#endif //SRC_HATCHSLIDEENABLECOMMAND
+#endif //SRC_CLIMBERLOWERCOMMAND

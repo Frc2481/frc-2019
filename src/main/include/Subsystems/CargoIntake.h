@@ -21,6 +21,8 @@ private:
   frc::DigitalInput* m_beamBreak;
   double m_desiredPosition;
   bool m_isZeroed;
+  bool m_hasResetOccurred;
+  bool m_safeHarborPosition;
 
 public:
   CargoIntake();
@@ -37,11 +39,13 @@ public:
   double GetVelocity();
   double ConvertTicksToInches(int ticks);
   int ConvertInchesToTicks(double inches);
-  bool IsIntakeOut();
+  bool IsIntakeInProtectedZone();
   bool IsBallIntaken();
   void SetOpenLoopSpeed(double speed);
   bool IsOnTarget();
   void ZeroCargoIntake();
+  bool IsIntakeOut();
+  bool IsIntakeIn();
 };
 
 #endif // SRC_CARGO_INTAKE_H

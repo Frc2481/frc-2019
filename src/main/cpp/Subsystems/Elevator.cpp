@@ -56,7 +56,7 @@ Elevator::Elevator() : Subsystem("Elevator") {
   talonConfig.peakCurrentLimit = 0;
   talonConfig.primaryPID.selectedFeedbackSensor = CTRE_MagEncoder_Relative;
 
-  talonConfig.forwardSoftLimitThreshold = 27450; 
+  talonConfig.forwardSoftLimitThreshold = 29100; 
   talonConfig.forwardSoftLimitEnable = true;
   talonConfig.reverseSoftLimitThreshold = 0; //5200;
   talonConfig.reverseSoftLimitEnable = true;
@@ -68,6 +68,7 @@ Elevator::Elevator() : Subsystem("Elevator") {
 
   m_desiredElevatorPosition = 0;
   m_isElevatorManualEnabled = false;
+  m_hasResetOccurred = m_masterElevator->HasResetOccurred();
 }
 
 void Elevator::InitDefaultCommand() {
@@ -93,9 +94,8 @@ void Elevator::Periodic() {
     frc::SmartDashboard::PutNumber("ElevatorDesiredPos", GetDesiredPos());
   } 
   else if (loopCounter == 4) {
-    bool hasResetOccurred = m_masterElevator->HasResetOccurred();
-    frc::SmartDashboard::PutBoolean("IsElevatorMasterTalonReset", hasResetOccurred);
-    if(hasResetOccurred && m_isMasterZeroed){
+    // frc::SmartDashboard::PutBoolean("IsElevatorMasterTalonReset", m_hasResetOccurred);
+    if(m_masterElevator->HasResetOccurred() && m_isMasterZeroed){
       m_isMasterZeroed = false;
       SetOpenLoopSpeed(0);
     }

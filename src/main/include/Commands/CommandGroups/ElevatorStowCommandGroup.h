@@ -5,30 +5,19 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_REVERTELEVATORTESTINGCOMMANDGROUP
-#define SRC_REVERTELEVATORTESTINGCOMMANDGROUP
+#ifndef SRC_ELEVATORSTOWCOMMANDGROUP
+#define SRC_ELEVATORSTOWCOMMANDGROUP
 
-#include "Commands/Elevator/ElevatorBaseCommand.h"
-#include "Commands/CargoIntake/CargoIntakeBaseCommand.h"
 #include <frc/commands/CommandGroup.h>
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
-#include "Commands/Elevator/ElevatorRiseIfNeededCommand.h"
+#include "Commands/Elevator/ElevatorBaseCommand.h"
 
-class RevertElevatorTestingCommandGroup : public frc::CommandGroup {
+class ElevatorStowCommandGroup : public frc::CommandGroup {
  public:
-  RevertElevatorTestingCommandGroup() : CommandGroup("RevertElevatorTestingCommandGroup") {
-    AddSequential(new ElevatorRiseForIntakeInCommand());
-    AddSequential(new CargoIntakeInCommand("CargoIntakeBackCommand"));
+  ElevatorStowCommandGroup() : CommandGroup("ElevatorStowCommandGroup"){
     AddSequential(new ToolChangerHatchExtendCommand());
     AddSequential(new ElevatorStowCommand("ElevatorStowCommand"));
-
-    // state at end:
-    // Elevator: Low
-    // Cargo Intake: In
-    // Cargo: Held
-    // Hatch: Held
-    // HatchExt: Retracted
   }
 };
 
-#endif //SRC_REVERTELEVATORTESTINGCOMMANDGROUP
+#endif //SRC_ELEVATORSTOWCOMMANDGROUP

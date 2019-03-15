@@ -62,6 +62,7 @@ class Elevator : public frc::Subsystem {
   double m_desiredElevatorPosition;
   bool m_encoderConnected;
   bool m_isElevatorManualEnabled;
+  bool m_hasResetOccurred;
 };
 
 #endif //SRC_ELEVATOR_H

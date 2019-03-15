@@ -9,9 +9,11 @@
 #define SRC_CLIMBERGUIDESSEQUENCECOMMANDGROUP
 
 #include <frc/commands/CommandGroup.h>
+#include <frc/commands/InstantCommand.h>
 #include "Commands/Climber/ClimberGuidesCommand.h"
 #include "Commands/Elevator/ElevatorBaseCommand.h"
 #include "Commands/Elevator/ElevatorWaitForPositionCommand.h"
+#include "CommandBase.h"
 
 class ClimbGuidesSequenceCommandGroup : public frc::CommandGroup {
  public:

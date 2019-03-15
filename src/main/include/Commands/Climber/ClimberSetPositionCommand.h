@@ -5,27 +5,26 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_HATCHSLIDEENABLECOMMAND
-#define SRC_HATCHSLIDEENABLECOMMAND
+#ifndef SRC_CLIMBERSETPOSITIONCOMMAND
+#define SRC_CLIMBERSETPOSITIONCOMMAND
 
 #include <frc/commands/Command.h>
 #include "CommandBase.h"
 
-class HatchSlideEnableCommand : public frc::Command {
+class ClimberSetPositionCommand : public frc::Command {
+  private:
+  double m_pos;
  public:
-  HatchSlideEnableCommand() : frc::Command("HatchSlideEnableCommand") {}
-  void Initialize() override {
-    CommandBase::m_pHatchSlide->EnableHatchSlide();
+  ClimberSetPositionCommand(double pos) : Command("ClimberSetPositionCommand") {
+    Requires(CommandBase::m_pClimber.get());
+    m_pos = pos;
   }
-  void End() override{
-    CommandBase::m_pHatchSlide->DisableHatchSlide();
+  void Initialize() override {
+    CommandBase::m_pClimber->SetPosition(m_pos);
   }
   bool IsFinished() override {
-    return false;
-  }
-  void Interrupted() override {
-    End();
+    return CommandBase::m_pClimber->IsOnTarget();
   }
 };
 
-#endif //SRC_HATCHSLIDEENABLECOMMAND
+#endif //SRC_CLIMBERSETPOSITIONCOMMAND
