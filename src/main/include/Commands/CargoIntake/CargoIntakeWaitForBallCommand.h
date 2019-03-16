@@ -16,7 +16,7 @@ class CargoIntakeWaitForBallCommand : public frc::Command {
 
   }
   bool IsFinished() override {
-    return CommandBase::m_pHatchSlide->IsLimitSwitchHit();
+    return CommandBase::m_pHatchSlide->IsCargoLimitSwitchHit();
   }
 };
 

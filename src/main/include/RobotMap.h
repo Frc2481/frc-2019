@@ -52,21 +52,26 @@ PDP Layout:
 
 #define CLIMBER_MOTOR_ID 5
 
-// solenoid
+// solenoid 0
 #define CARGO_TOOL_SOLENOID 0, 0, 1
 #define HATCH_EXTENDER_SOLENOID 0, 2, 3
 #define HATCH_TOOL_SOLENOID 0, 4, 5
 
+#define HATCH_SENSOR 0, 7
+
+// solenoid 1
 #define CLIMBER_BIG_FOOT_SOLENOID 1, 4, 5
 #define CLIMBER_LITTLE_FEET_SOLENOID 1, 0, 1
 
-#define CLIMBER_GUIDES_SOLENOID 1, 2 //check
+#define CLIMBER_GUIDES_SOLENOID 1, 2, 3 //check
 #define CLIMBER_WEIGHTS_SOLENOID 1, 6 //check
 
-// limit switch
+
+// digital input/output
 #define IR_SENSOR_BRIGHT 0
 #define IR_SENSOR_DIM 1
 #define CARGO_BEAM_BREAK_SENSOR 2
 #define TOOL_CHANGER_CAPACITIVE_SENSOR 3
+#define LED 6
 
 #endif // ROBOT_MAP_H

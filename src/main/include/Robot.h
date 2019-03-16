@@ -21,7 +21,6 @@ private:
 	std::unique_ptr<Command> m_pVibrate;
 	CameraServer* m_server;
 	cs::UsbCamera m_usbCam1;
-	cs::UsbCamera m_usbCam2;
 	Command* m_hatchExtend;
 	Command* m_elevatorLow;
 	Command* m_zeroAll;

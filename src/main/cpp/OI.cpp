@@ -95,11 +95,11 @@ OI::OI() {
 	// m_climberBigFoot = new JoystickButton(m_pOperatorStick, XBOX_RIGHT_BUMPER);
 	// m_climberBigFoot->ToggleWhenPressed(new ClimberToggleBigFootCommand());
 	
-	// m_elevatorManual = new AnalogJoystickButton(m_pOperatorStick, XBOX_LEFT_Y_AXIS, -0.25);
-	// m_elevatorManual->WhileHeld(new ElevatorJoystickCommand());
-
 	m_elevatorManual = new AnalogJoystickButton(m_pOperatorStick, XBOX_LEFT_Y_AXIS, -0.25);
-	m_elevatorManual->WhileHeld(new ClimberDriveWithJoystickCommand());
+	m_elevatorManual->WhileHeld(new ElevatorJoystickCommand());
+
+	// m_elevatorManual = new AnalogJoystickButton(m_pOperatorStick, XBOX_LEFT_Y_AXIS, -0.25);
+	// m_elevatorManual->WhileHeld(new ClimberDriveWithJoystickCommand());
 
 	m_toggleSlide = new JoystickButton(m_pOperatorStick, XBOX_RIGHT_BUMPER);
 	m_toggleSlide->WhileHeld(new HatchSlideEnableCommand());
@@ -110,10 +110,10 @@ OI::OI() {
 	m_hatchExtend = new JoystickButton(m_pOperatorStick, XBOX_X_BUTTON);
 	m_hatchExtend->WhenPressed(new ToolChangerHatchExtendCommand());
 
-	m_climberUp = new JoystickButton(m_pOperatorStick, XBOX_DPAD_TOP);
+	m_climberUp = new POVJoystickButton(m_pOperatorStick, 0, XBOX_DPAD_TOP);
 	m_climberUp->WhileHeld(new ClimberRaiseCommand());
 
-	m_climberDown = new JoystickButton(m_pOperatorStick, XBOX_DPAD_BOTTOM);
+	m_climberDown = new POVJoystickButton(m_pOperatorStick, 0, XBOX_DPAD_BOTTOM);
 	m_climberDown->WhileHeld(new ClimberLowerCommand());
 
 	// m_climberFeetOp = new JoystickButton(m_pOperatorStick, XBOX_LEFT_BUMPER);

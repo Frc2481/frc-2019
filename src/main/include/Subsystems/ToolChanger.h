@@ -42,14 +42,6 @@ class ToolChanger : public frc::Subsystem {
   bool HasHatch();
   void SetHasCargo(bool hasCargo);
   void SetHasHatch(bool hasHatch);
-  bool GetIsHatchSeen();
 };
 
 #endif //SRC_TOOLCHANGER
-
-//leds:
-// sense: turn on
-// have: turn off
-
-//on target: turn on
-//released: turn off

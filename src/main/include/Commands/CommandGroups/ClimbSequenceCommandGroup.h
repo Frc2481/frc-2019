@@ -22,15 +22,13 @@ class ClimbSequence2To3CommandGroup : public frc::CommandGroup {
  public:
   ClimbSequence2To3CommandGroup() : CommandGroup("ClimbSequence2To3CommandGroup"){
     AddSequential(new SwerveDrivetrainSetOpenLoop(0.1, 0.0, 0.25, 0.0));
-    AddSequential(new ClimberSetPositionCommand(150)); 
+    AddParallel(new ClimberSetPositionCommand(150));
     AddSequential(new ClimberWaitForHeightCommand(50));
     AddSequential(new ClimberLittleFeetDownCommand());
     AddSequential(new ClimberWaitForHeightCommand(148));
     AddSequential(new SwerveDrivetrainSetOpenLoop(0.5, 0.0, 0.25, 0.0));
     AddSequential(new WaitCommand(3));
     AddSequential(new ClimberTiltBigFootCommand());
-    AddSequential(new ClimberSetOpenLoopCommand(-0.5));
-    AddSequential(new ClimberWaitForHeightCommand(23));
   }
 };
 
@@ -41,7 +39,7 @@ class ClimbSequenceLevel3CommandGroup : public frc::CommandGroup {
     AddParallel(new ClimberSetPositionCommand(200));    
     AddSequential(new ClimberWaitForHeightCommand(50));
     AddSequential(new ClimberLittleFeetDownCommand());
-    AddSequential(new ClimberWaitForHeightCommand(200)); //change
+    AddSequential(new ClimberWaitForHeightCommand(198)); //change
     AddSequential(new SwerveDrivetrainSetOpenLoop(0.5, 0.0, 0.25, 0.0));
     AddSequential(new WaitCommand(3));
     AddSequential(new ClimberTiltBigFootCommand());

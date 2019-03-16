@@ -56,7 +56,7 @@ Elevator::Elevator() : Subsystem("Elevator") {
   talonConfig.peakCurrentLimit = 0;
   talonConfig.primaryPID.selectedFeedbackSensor = CTRE_MagEncoder_Relative;
 
-  talonConfig.forwardSoftLimitThreshold = 29100; 
+  talonConfig.forwardSoftLimitThreshold = 29100;
   talonConfig.forwardSoftLimitEnable = true;
   talonConfig.reverseSoftLimitThreshold = 0; //5200;
   talonConfig.reverseSoftLimitEnable = true;
@@ -124,7 +124,7 @@ double Elevator::GetVelocity(){
   return m_masterElevator->GetActiveTrajectoryVelocity();
 }
 bool Elevator::IsOnTarget() {
-  return fabs(m_desiredElevatorPosition - GetElevatorPosition()) < 1;
+  return fabs(m_desiredElevatorPosition - GetElevatorPosition()) < 0.5; //1
 }
 void Elevator::ZeroElevatorEncoder() {
   for(int i = 0; i < 5; i++) {
@@ -192,4 +192,7 @@ void Elevator::DisableElevatorManual(){
 }
 bool Elevator::IsElevatorManualEnabled(){
   return m_isElevatorManualEnabled;
+}
+bool Elevator::IsElevatorGoingUp() {
+  return GetElevatorPosition() - GetDesiredPos() < 0;
 }

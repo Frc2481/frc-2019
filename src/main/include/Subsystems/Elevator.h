@@ -50,6 +50,8 @@ class Elevator : public frc::Subsystem {
   void DisableElevatorManual();
   bool IsElevatorManualEnabled();
 
+  bool IsElevatorGoingUp();
+
  private:
   TalonSRX* m_masterElevator;
   TalonSRX* m_slaveElevator;

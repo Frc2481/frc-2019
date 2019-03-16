@@ -16,7 +16,7 @@ ToolChanger::ToolChanger() : Subsystem("ToolChanger") {
 
   m_hatchTool->Set(frc::DoubleSolenoid::kReverse);
   m_cargoTool->Set(frc::DoubleSolenoid::kReverse);
-  m_hatchExtender->Set(frc::DoubleSolenoid::kForward);
+  m_hatchExtender->Set(frc::DoubleSolenoid::kReverse);
 
   m_isHatchToolHeld = false;
   m_isCargoToolHeld = false; 
@@ -29,7 +29,6 @@ void ToolChanger::InitDefaultCommand() {
 void ToolChanger::Periodic() {
   frc::SmartDashboard::PutBoolean("HasCargo", m_hasCargo);
   frc::SmartDashboard::PutBoolean("HasHatch", m_hasHatch);
-  frc::SmartDashboard::PutBoolean("GetIsHatchSeen", GetIsHatchSeen());
 }
 void ToolChanger::HoldHatch(){
   m_hatchTool->Set(frc::DoubleSolenoid::kReverse);
@@ -77,8 +76,4 @@ void ToolChanger::SetHasCargo(bool hasCargo){
 void ToolChanger::SetHasHatch(bool hasHatch){
   m_hasHatch = hasHatch;
   m_hasCargo = false;
-}
-
-bool ToolChanger::GetIsHatchSeen() {
-  return m_capacitiveSensor->Get();
 }

@@ -46,7 +46,7 @@ Climber::Climber() : Subsystem("Climber"),
 
   m_climberBigFootSolenoid->Set(frc::DoubleSolenoid::kForward);
   m_climberLittleFeetSolenoid->Set(frc::DoubleSolenoid::kForward);
-  m_climberGuidesSolenoid->Set(frc::DoubleSolenoid::kForward);
+  m_climberGuidesSolenoid->Set(frc::DoubleSolenoid::kReverse);
   m_weightsSolenoid->Set(false);
 
   m_climberManualActivated = false;
@@ -127,12 +127,12 @@ void Climber::ZeroClimber(){
   m_isClimberZeroed = true;
 }
 void Climber::ExtendGuides(){
-  m_climberGuidesSolenoid->Set(frc::DoubleSolenoid::kReverse);//TODO check if correct
+  m_climberGuidesSolenoid->Set(frc::DoubleSolenoid::kForward);//TODO check if correct
   m_areClimberGuidesExtended = true;
 }
 
 void Climber::RetractGuides(){
-  m_climberGuidesSolenoid->Set(frc::DoubleSolenoid::kForward);//TODO check if correct
+  m_climberGuidesSolenoid->Set(frc::DoubleSolenoid::kReverse);//TODO check if correct
   m_areClimberGuidesExtended = false;
 }
 bool Climber::IsGuidesExtended(){

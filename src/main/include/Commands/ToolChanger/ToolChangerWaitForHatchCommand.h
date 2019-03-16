@@ -15,7 +15,7 @@ class ToolChangerWaitForHatchCommand : public frc::Command {
  public:
   ToolChangerWaitForHatchCommand() : Command("ToolChangerWaitForHatchCommand") {}
   bool IsFinished() override {
-    return CommandBase::m_pToolChanger->GetIsHatchSeen();
+    return CommandBase::m_pHatchSlide->IsHatchSeen();
   }
 };
 

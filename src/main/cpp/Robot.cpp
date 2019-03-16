@@ -1,6 +1,7 @@
 #include "Robot.h"
 #include "CommandBase.h"
 #include "RobotParameters.h"
+#include "RobotMap.h"
 #include <frc/WPILib.h>
 #include "Commands/SwerveDrivetrain/SwerveDrivetrainZeroSteer.h"
 #include "Commands/HatchSlide/HatchSlideZeroCommand.h"
@@ -32,6 +33,7 @@
 #include "Commands/CommandGroups/ZeroAllCommandGroup.h"
 #include "Commands/Climber/ClimberReleaseWeightsCommand.h"
 #include "Commands/Climber/ClimberSetPositionCommand.h"
+#include "Commands/HatchSlide/HatchSlideGoToPosition.h"
 
 Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 	m_server = CameraServer::GetInstance();
@@ -112,6 +114,8 @@ void Robot::RobotPeriodic() {
 	frc::Scheduler::GetInstance()->Run();
 	double time1 = frc::Timer::GetFPGATimestamp();
 	// printf("dt = %0.1f ms\n", (time1 - time0) * 1000);
+	// printf("LOGGER elevPos: %df, elevDesiredPos: %df, intakePos: %df\n", CommandBase::m_pElevator->GetElevatorPosition(), 
+	// 		CommandBase::m_pElevator->GetDesiredPos(), CommandBase::m_pCargoIntake->GetPosition());
 }
 
 void Robot::AutonomousInit() {

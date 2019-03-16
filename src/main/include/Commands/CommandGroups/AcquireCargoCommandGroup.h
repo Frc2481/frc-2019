@@ -24,24 +24,32 @@
 #include "Commands/CargoIntake/CargoIntakeWaitForBallCommand.h"
 #include "Commands/CargoIntake/CargoIntakeWaitForNoBallCommand.h"
 #include "Commands/CommandGroups/ConditionalIntakeCommandGroup.h"
+#include "Commands/HatchSlide/HatchSlideEnableCommand.h"
+#include "Commands/HatchSlide/HatchSlideToCenterCommand.h"
+#include "Commands/SetLEDsCommand.h"
 
 class AcquireCargoCommandGroup : public frc::CommandGroup {
  public:
   AcquireCargoCommandGroup() : CommandGroup("AcquireCargoCommandGroup") {
-    AddSequential(new ToolChangerSetHasCargoCommand(true));
-    AddSequential(new ToolChangerFreeHatchCommand());
-    AddSequential(new WaitCommand(0.5));
-    AddSequential(new ToolChangerFreeCargoCommand());
-    AddSequential(new ExtendIntakeIfNeededCommand()); //TODO check to see if height is acceptable
-    AddSequential(new ToolChangerRetractCommand());
-    AddSequential(new ElevatorPreIntakeBallHeightCommand("ElevatorPreIntakeBallHeightCommand", false));
-    AddSequential(new CargoIntakeBallCommand(1));
-    AddSequential(new CargoIntakeWaitForBallCommand());
-    AddSequential(new CargoIntakeStopCommand());
-    AddSequential(new ToolChangerHoldCargoCommand());
-    AddSequential(new ElevatorIntakeBallHeightCommand("ElevatorIntakeBallHeightCommand")); //TODO check to see if height is acceptable
-    AddSequential(new CargoIntakeInCommand("CargoIntakeBackCommand"));
-    AddSequential(new ElevatorCargoLowCommand("ElevatorCargoLowCommand"));
+    if(!CommandBase::m_pHatchSlide->IsCargoLimitSwitchHit()) {
+      AddParallel(new HatchSlideDisableCommand());
+      AddParallel(new HatchSlideToCenterCommand());
+      AddParallel(new ToolChangerFreeHatchCommand());
+      AddSequential(new WaitCommand(0.5));
+      AddSequential(new ToolChangerFreeCargoCommand());
+      AddSequential(new ExtendIntakeIfNeededCommand()); //TODO check to see if height is acceptable
+      AddSequential(new ToolChangerRetractCommand());
+      AddSequential(new ElevatorPreIntakeBallHeightCommand("ElevatorPreIntakeBallHeightCommand", false));
+      AddSequential(new CargoIntakeBallCommand(1));
+      AddSequential(new CargoIntakeWaitForBallCommand());
+      AddSequential(new CargoIntakeStopCommand());
+      AddSequential(new ToolChangerHoldCargoCommand());
+      AddSequential(new ElevatorIntakeBallHeightCommand("ElevatorIntakeBallHeightCommand")); //TODO check to see if height is acceptable
+      AddSequential(new CargoIntakeInCommand("CargoIntakeBackCommand"));
+      AddSequential(new ElevatorCargoLowCommand("ElevatorCargoLowCommand"));
+      AddParallel(new ToolChangerSetHasCargoCommand(true));
+      AddSequential(new SetLEDsCommand(false));
+    }
 
     // state at end:
     // Elevator: Low

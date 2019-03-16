@@ -13,14 +13,19 @@
 #include "CommandBase.h"
 #include "RobotParameters.h"
 #include "Commands/CommandGroups/RetractIntakeIfNeededCommandGroup.h"
+#include "Commands/ToolChanger/ToolChangerFreeCargoCommand.h"
+#include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
 
-template <int CARGO_HEIGHT,int HATCH_HEIGHT>
+template <int CARGO_HEIGHT, int HATCH_HEIGHT>
 class ElevatorBaseCommand : public frc::Command {
  public:
   ElevatorBaseCommand(std::string name) : Command(name) {
     Requires(CommandBase::m_pElevator.get());
   }
   void Initialize() override {
+    if(HATCH_HEIGHT < 7 && !CommandBase::m_pToolChanger->HasHatch()) {
+      CommandBase::m_pToolChanger->ExtendHatch();
+    }
     if(CommandBase::m_pToolChanger->HasCargo() && IsPositionSetPointAllowed(CARGO_HEIGHT)) {
       CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT, true);
     }
@@ -78,11 +83,12 @@ class ElevatorBaseCommandGroup : public CommandGroup {
 
 typedef ElevatorBaseCommandGroup<3, 3> ElevatorPreIntakeBallHeightCommand;
 typedef ElevatorBaseCommandGroup<24, 24> ElevatorIntakeBallHeightCommand;
-typedef ElevatorBaseCommandGroup<67, 65> ElevatorHighCommand;
-typedef ElevatorBaseCommandGroup<40, 35> ElevatorMidCommand;
-typedef ElevatorBaseCommandGroup<11, 3> ElevatorLowCommand;
+typedef ElevatorBaseCommandGroup<68, 65> ElevatorHighCommand; //67 cargo height
+typedef ElevatorBaseCommandGroup<40, 36> ElevatorMidCommand;
+typedef ElevatorBaseCommandGroup<11, 6> ElevatorLowCommand;
 typedef ElevatorBaseCommandGroup<9, 9> ElevatorCargoLowCommand;
 typedef ElevatorBaseCommandGroup<9, 3> ElevatorCargoShipCommand;
 typedef ElevatorBaseCommandGroup<0, 0> ElevatorStowCommand;
+typedef ElevatorBaseCommandGroup<0, 0> ElevatorIntakePosCommand;
 
 #endif //SRC_ELEVATORBASECOMMAND
