@@ -24,6 +24,11 @@ class CargoIntakeBaseCommand : public frc::Command {
       CommandBase::m_pCargoIntake->SetPosition(INTAKE_POS);
     }
   }
+  void Execute() override {
+    if(TimeSinceInitialized() < 3 && INTAKE_POS == 0) {
+      CommandBase::m_pCargoIntake->SetOpenLoopSpeed(-0.8);
+    }
+  }
   
   bool IsFinished() override {
     return fabs(CommandBase::m_pCargoIntake->IsOnTarget());

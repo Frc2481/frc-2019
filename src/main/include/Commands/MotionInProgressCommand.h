@@ -5,20 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CARGOINTAKEWAITFORNOBALLCOMMAND
-#define SRC_CARGOINTAKEWAITFORNOBALLCOMMAND
+#ifndef SRC_MOTIONINPROGRESSCOMMAND
+#define SRC_MOTIONINPROGRESSCOMMAND
 
-#include "CommandBase.h"
-#include <frc/commands/Command.h>
+#include <frc/commands/ConditionalCommand.h>
 
-class CargoIntakeWaitForNoBallCommand : public frc::Command {
+class MotionInProgressCommand : public frc::ConditionalCommand {
+  private:
+  Command* m_command;
  public:
-  CargoIntakeWaitForNoBallCommand() : Command("CargoIntakeWaitForNoBallCommand") {
-
+  MotionInProgressCommand(Command* command) : ConditionalCommand("MotionInProgressCommand") {
+    m_command = command;
   }
-  bool IsFinished() override {
-    return !CommandBase::m_pCargoIntake->IsBallIntaken();
+  bool Condition() {
+
   }
 };
 
-#endif //SRC_CARGOINTAKEWAITFORNOBALLCOMMAND
+#endif //SRC_MOTIONINPROGRESSCOMMAND

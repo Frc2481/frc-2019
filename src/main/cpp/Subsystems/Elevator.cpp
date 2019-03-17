@@ -69,6 +69,7 @@ Elevator::Elevator() : Subsystem("Elevator") {
   m_desiredElevatorPosition = 0;
   m_isElevatorManualEnabled = false;
   m_hasResetOccurred = m_masterElevator->HasResetOccurred();
+  frc::SmartDashboard::PutBoolean("IsElevatorMasterTalonReset", true);
 }
 
 void Elevator::InitDefaultCommand() {
@@ -94,8 +95,8 @@ void Elevator::Periodic() {
     frc::SmartDashboard::PutNumber("ElevatorDesiredPos", GetDesiredPos());
   } 
   else if (loopCounter == 4) {
-    // frc::SmartDashboard::PutBoolean("IsElevatorMasterTalonReset", m_hasResetOccurred);
     if(m_masterElevator->HasResetOccurred() && m_isMasterZeroed){
+      frc::SmartDashboard::PutBoolean("IsElevatorMasterTalonReset", !m_masterElevator->HasResetOccurred());
       m_isMasterZeroed = false;
       SetOpenLoopSpeed(0);
     }

@@ -13,7 +13,8 @@ CargoIntake::CargoIntake() : Subsystem("CargoIntake") {
   m_intakeMotor = new VictorSPX(CARGO_INTAKE_MOTOR_ID);
   m_extendMotor = new TalonSRX(CARGO_INTAKE_EXTEND_MOTOR_ID);
   m_extendEncoder = new CTREMagEncoder(m_extendMotor, "CARGO_INTAKE_ENCODER");
-  m_beamBreak = new frc::DigitalInput(CARGO_BEAM_BREAK_SENSOR);
+
+  m_cargoPreIntakeSensor = new frc::DigitalInput(CARGO_PRE_INTAKE_BALL_SENSOR);
 
 	ctre::phoenix::motorcontrol::can::TalonSRXConfiguration talonConfig;
 
@@ -23,6 +24,8 @@ CargoIntake::CargoIntake() : Subsystem("CargoIntake") {
 
   m_extendMotor->SetSensorPhase(true);
   m_extendMotor->SetInverted(true);
+
+  m_extendMotor->SetNeutralMode(Coast);
 
   talonConfig.slot0.integralZone = 1700;
   talonConfig.slot0.kF = 0.3;
@@ -44,7 +47,10 @@ CargoIntake::CargoIntake() : Subsystem("CargoIntake") {
   talonConfig.forwardSoftLimitThreshold = 17700;
   talonConfig.forwardSoftLimitEnable = true;
   talonConfig.reverseSoftLimitThreshold = 0;
-  talonConfig.reverseSoftLimitEnable = true;
+  talonConfig.reverseSoftLimitEnable = false;
+
+  talonConfig.reverseLimitSwitchNormal = LimitSwitchNormal_NormallyOpen;
+  talonConfig.clearPositionOnLimitR = true;
 
   m_extendMotor->ConfigAllSettings(talonConfig);
   m_extendMotor->SelectProfileSlot(0, 0);
@@ -52,6 +58,7 @@ CargoIntake::CargoIntake() : Subsystem("CargoIntake") {
   m_desiredPosition = 0;
   m_isZeroed = false;
   m_hasResetOccurred = m_extendMotor->HasResetOccurred();
+  frc::SmartDashboard::PutBoolean("IsCargoIntakeTalonReset", true);
 }
 
 void CargoIntake::InitDefaultCommand() {
@@ -60,18 +67,18 @@ void CargoIntake::InitDefaultCommand() {
 
 void CargoIntake::Periodic() {
   frc::SmartDashboard::PutBoolean("intakeEncConnnected", m_extendEncoder->isConnected());
-  frc::SmartDashboard::PutBoolean("ballIntaken", IsBallIntaken());
-  frc::SmartDashboard::PutBoolean("HasBall", HasBall()); //Only returns False
   frc::SmartDashboard::PutNumber("CargoIntakeError", GetCargoIntakeError());
   frc::SmartDashboard::PutNumber("CargoPos", GetPosition());
   frc::SmartDashboard::PutNumber("GetDesiredPos", GetDesiredPosition());
   frc::SmartDashboard::PutBoolean("IsCargoIntakeOnTarget", IsOnTarget());
-  // frc::SmartDashboard::PutBoolean("IsCargoIntakeTalonReset", m_extendMotor->HasResetOccurred());
   frc::SmartDashboard::PutBoolean("IsCargoIntakeZeroed", m_isZeroed);
   if (m_extendMotor->HasResetOccurred() && m_isZeroed){
+    frc::SmartDashboard::PutBoolean("IsCargoIntakeTalonReset", !m_extendMotor->HasResetOccurred());
     m_isZeroed = false;
     SetOpenLoopSpeed(0);
   }
+  frc::SmartDashboard::PutBoolean("IsBallIntaken", IsBallIntaken());
+  frc::SmartDashboard::PutBoolean("IsIntakeIn", IsIntakeIn());
 }
 
 void CargoIntake::SetSpeedIn(double speed) {
@@ -82,9 +89,6 @@ void CargoIntake::SetSpeedOut(double speed) {
 }
 void CargoIntake::StopIntake() {
     m_intakeMotor->Set(ControlMode::PercentOutput, 0);
-}
-bool CargoIntake::HasBall() { //TODO
-  return false;
 }
 void CargoIntake::SetPosition(double pos) {
   if(m_isZeroed){
@@ -125,10 +129,8 @@ bool CargoIntake::IsIntakeOut() {
   return GetPosition() > RobotParameters::k_cargoIntakeThresholdOut; //assuming zero measures from point that intake is in
 }
 bool CargoIntake::IsIntakeIn() {
-  return GetPosition() < RobotParameters::k_cargoIntakeThresholdIn; //assuming zero measures from point that intake is in
-}
-bool CargoIntake::IsBallIntaken() {
-  return !m_beamBreak->Get();
+  return m_extendMotor->GetSensorCollection().IsRevLimitSwitchClosed();
+ //assuming zero measures from point that intake is in
 }
 void CargoIntake::SetOpenLoopSpeed(double speed) {
   m_extendMotor->Set(ControlMode::PercentOutput, speed);
@@ -147,4 +149,9 @@ void CargoIntake::ZeroCargoIntake() {
   }
   m_isZeroed = true;
   m_extendMotor->ClearStickyFaults(0);
+}
+
+
+bool CargoIntake::IsBallIntaken() {
+  return !m_cargoPreIntakeSensor->Get();
 }

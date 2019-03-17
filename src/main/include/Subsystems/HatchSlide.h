@@ -22,8 +22,8 @@ class HatchSlide : public frc::Subsystem {
   CTREMagEncoder* m_slideEncoder;
   frc::Counter *m_irSensorBright;
   frc::Counter *m_irSensorDim;
-  frc::Solenoid* m_hatchSensor;
-	frc::DigitalOutput* m_LED;
+  frc::DigitalInput* m_hatchSensor;
+	frc::Solenoid* m_LED;
 
   double m_desiredSetpoint;
   double m_hatchPosition;
@@ -38,6 +38,8 @@ class HatchSlide : public frc::Subsystem {
   bool m_hasResetOccurred;
   bool m_ledDesiredState;
   int m_noLineCounter;
+  double m_desiredPos;
+
   
  public:
   HatchSlide();
@@ -64,7 +66,7 @@ class HatchSlide : public frc::Subsystem {
   bool IsHatchSlideSafetyEnabled();
   void SetOpenLoopSpeed(double speed);
   bool isZeroed();
-  bool IsCargoLimitSwitchHit(); //NOTE: this is for tool changer but more convenient here
+  bool HasBall(); //NOTE: this is for tool changer but more convenient here
   bool IsHatchSeen();
   void SetLEDs(bool led);
   bool GetLEDs();

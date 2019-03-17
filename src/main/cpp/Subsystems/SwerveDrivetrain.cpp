@@ -115,6 +115,11 @@ SwerveDrivetrain::SwerveDrivetrain()
 	m_pBRSteerMotorController->updateAngular(0, 0, 0);
 	m_pBLSteerMotorController->updateAngular(0, 0, 0);
 	m_pFLSteerMotorController->updateAngular(0, 0, 0);
+
+	SmartDashboard::PutBoolean("FLSteerTalonReset", true);
+	SmartDashboard::PutBoolean("FRSteerTalonReset", true);
+	SmartDashboard::PutBoolean("BLSteerTalonReset", true);
+	SmartDashboard::PutBoolean("BRSteerTalonReset", true);
 }
 
 SwerveDrivetrain::~SwerveDrivetrain() {
@@ -181,10 +186,10 @@ void SwerveDrivetrain::Periodic() {
 	m_pBLSteerEncoder->update();
 	m_pFLSteerEncoder->update();
 	
-	SmartDashboard::PutBoolean("FLSteerTalonReset", m_pFLSteerMotor->HasResetOccurred());
-	SmartDashboard::PutBoolean("FRSteerTalonReset", m_pFRSteerMotor->HasResetOccurred());
-	SmartDashboard::PutBoolean("BLSteerTalonReset", m_pBLSteerMotor->HasResetOccurred());
-	SmartDashboard::PutBoolean("BRSteerTalonReset", m_pBRSteerMotor->HasResetOccurred());
+	SmartDashboard::PutBoolean("FLSteerTalonReset", !m_pFLSteerMotor->HasResetOccurred());
+	SmartDashboard::PutBoolean("FRSteerTalonReset", !m_pFRSteerMotor->HasResetOccurred());
+	SmartDashboard::PutBoolean("BLSteerTalonReset", !m_pBLSteerMotor->HasResetOccurred());
+	SmartDashboard::PutBoolean("BRSteerTalonReset", !m_pBRSteerMotor->HasResetOccurred());
 
 	SmartDashboard::PutBoolean("FLSteerEncCalibrated", m_pFLSteerEncoder->isCalibrated());
 	SmartDashboard::PutBoolean("FRSteerEncCalibrated", m_pFRSteerEncoder->isCalibrated());
@@ -208,6 +213,8 @@ void SwerveDrivetrain::Periodic() {
 	SmartDashboard::PutNumber("BR Steer encoder pos", m_pBRSteerEncoder->getAngle());
 
 	m_gyroYaw = -m_pChassisIMU->GetYaw();
+
+	SmartDashboard::PutNumber("Gyro Yaw", m_gyroYaw);
 }
 
 void SwerveDrivetrain::driveOpenLoopControl(
@@ -254,7 +261,6 @@ void SwerveDrivetrain::driveOpenLoopControl(
 	int frInvertDrive = 1;
 	Rotation2D frWheelYaw = Rotation2D(frWheelPercent.getX(), frWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 	steerError = frWheelYaw - Rotation2D::fromDegrees(m_pFRSteerEncoder->getAngle());
-	SmartDashboard::PutNumber("FR steer error", steerError.getDegrees());
 	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
 		frWheelYaw = frWheelYaw.rotateBy(Rotation2D::fromDegrees(180));
 		frInvertDrive = -1;
@@ -263,7 +269,6 @@ void SwerveDrivetrain::driveOpenLoopControl(
 	int brInvertDrive = 1;
 	Rotation2D brWheelYaw = Rotation2D(brWheelPercent.getX(), brWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 	steerError = brWheelYaw - Rotation2D::fromDegrees(m_pBRSteerEncoder->getAngle());
-	SmartDashboard::PutNumber("BR steer error", steerError.getDegrees());
 	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
 		brWheelYaw = brWheelYaw.rotateBy(Rotation2D::fromDegrees(180));
 		brInvertDrive = -1;
@@ -272,7 +277,6 @@ void SwerveDrivetrain::driveOpenLoopControl(
 	int blInvertDrive = 1;
 	Rotation2D blWheelYaw = Rotation2D(blWheelPercent.getX(), blWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 	steerError = blWheelYaw - Rotation2D::fromDegrees(m_pBLSteerEncoder->getAngle());
-	SmartDashboard::PutNumber("BL steer error", steerError.getDegrees());
 	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
 		blWheelYaw = blWheelYaw.rotateBy(Rotation2D::fromDegrees(180));
 		blInvertDrive = -1;
@@ -281,7 +285,6 @@ void SwerveDrivetrain::driveOpenLoopControl(
 	int flInvertDrive = 1;
 	Rotation2D flWheelYaw = Rotation2D(flWheelPercent.getX(), flWheelPercent.getY()).rotateBy(Rotation2D::fromDegrees(-90));
 	steerError = flWheelYaw - Rotation2D::fromDegrees(m_pFLSteerEncoder->getAngle());
-	SmartDashboard::PutNumber("FL steer error", steerError.getDegrees());
 	if((steerError.getDegrees() > 90) || (steerError.getDegrees() < -90)) {
 		flWheelYaw = flWheelYaw.rotateBy(Rotation2D::fromDegrees(180));
 		flInvertDrive = -1;
@@ -394,7 +397,7 @@ void SwerveDrivetrain::zeroGyroYaw() {
 void SwerveDrivetrain::setIsOpenLoopFieldFrame(bool isOpenLoopFieldFrame) {
 	// zero gyro yaw if changed state
 	if(m_isOpenLoopFieldFrame != isOpenLoopFieldFrame) {
-		zeroGyroYaw();
+		// zeroGyroYaw();
 	}
 	
 	m_isOpenLoopFieldFrame = isOpenLoopFieldFrame;

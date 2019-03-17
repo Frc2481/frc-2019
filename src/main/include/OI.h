@@ -29,15 +29,15 @@ public:
     frc::Button* m_scoreHigh;
     frc::Button* m_scoreMid;
     frc::Button* m_scoreLow;
-    AnalogJoystickButton* m_scoreGamePiece;  
     frc::JoystickButton *m_pSetFieldFrameButton;
+    frc::Button* m_zeroGyro;
 
 //operator
     frc::Button* m_shiftWeights;
-    frc::Button* m_zeroGyro;
     frc::Button* m_prepAcquireHatch;
     // frc::Button* m_climberLittleFeet;
     // frc::Button* m_climberBigFoot;
+    AnalogJoystickButton* m_scoreGamePiece;  
     frc::Button* m_climbL1ToL2;
     frc::Button* m_climbL2ToL3;
     frc::Button* m_climbL1ToL3;
@@ -48,8 +48,15 @@ public:
     frc::Button* m_climberUp;
     frc::Button* m_climberDown;
     frc::Button* m_hatchExtend;
+    frc::Button* m_backpedal;
+    frc::Button* m_intakeOut;
     // frc::Button* m_cargoShip;
     // frc::Button* m_climberFeetOp;
+
+    frc::Button* m_elevatorStowOp;
+    frc::Button* m_scoreHighOp;
+    frc::Button* m_scoreMidOp;
+    frc::Button* m_scoreLowOp;
 
 // RoboRio
     UserButton* m_userButton;

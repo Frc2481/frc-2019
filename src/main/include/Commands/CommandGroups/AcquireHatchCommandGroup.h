@@ -34,10 +34,9 @@ class AcquireHatchCommandGroup : public frc::CommandGroup {
  public:
   AcquireHatchCommandGroup() : CommandGroup("AcquireHatchCommandGroup") {
     // AddSequential(new ToolChangerWaitForHatchCommand());
-    // AddSequential(new SetLEDsCommand(3));
+    AddParallel(new SetLEDsCommand(5));
     AddSequential(new ToolChangerHoldHatchCommand());
     AddParallel(new ToolChangerSetHasHatchCommand(true));
-    AddSequential(new WaitCommand(0.1)); //shrink as we become confident
 
     // state at end:
     // Elevator: Low

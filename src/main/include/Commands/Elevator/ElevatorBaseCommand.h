@@ -23,16 +23,16 @@ class ElevatorBaseCommand : public frc::Command {
     Requires(CommandBase::m_pElevator.get());
   }
   void Initialize() override {
-    if(HATCH_HEIGHT < 7 && !CommandBase::m_pToolChanger->HasHatch()) {
+    if(((HATCH_HEIGHT / 10.0) < 7 || (CARGO_HEIGHT / 10.0) < 7) && CommandBase::m_pCargoIntake->IsIntakeIn()) {
       CommandBase::m_pToolChanger->ExtendHatch();
     }
-    if(CommandBase::m_pToolChanger->HasCargo() && IsPositionSetPointAllowed(CARGO_HEIGHT)) {
-      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT, true);
+    if(CommandBase::m_pToolChanger->HasCargo() && IsPositionSetPointAllowed(CARGO_HEIGHT / 10.0)) {
+      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT / 10.0, true);
     }
-    else if(CommandBase::m_pToolChanger->HasHatch() && IsPositionSetPointAllowed(HATCH_HEIGHT)){
-      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT, true);
-    } else if(IsPositionSetPointAllowed(HATCH_HEIGHT)){
-      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT, true);
+    else if(CommandBase::m_pToolChanger->HasHatch() && IsPositionSetPointAllowed(HATCH_HEIGHT / 10.0)){
+      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT / 10.0, true);
+    } else if(IsPositionSetPointAllowed(HATCH_HEIGHT / 10.0)){
+      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT / 10.0, true);
     }
   }
   
@@ -54,13 +54,13 @@ class ElevatorBaseCommand : public frc::Command {
   }
 
   void End() {
-    if(CommandBase::m_pToolChanger->HasCargo() && IsPositionSetPointAllowed(CARGO_HEIGHT)) {
-      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT, false);
+    if(CommandBase::m_pToolChanger->HasCargo() && IsPositionSetPointAllowed(CARGO_HEIGHT / 10.0)) {
+      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT / 10.0, false);
     }
-    else if(CommandBase::m_pToolChanger->HasHatch() && IsPositionSetPointAllowed(HATCH_HEIGHT)){
-      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT, false);
+    else if(CommandBase::m_pToolChanger->HasHatch() && IsPositionSetPointAllowed(HATCH_HEIGHT / 10.0)){
+      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT / 10.0, false);
     } else {
-      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT, false);
+      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT / 10.0, false);
     }
     SmartDashboard::PutNumber("ElevatorExecutionTime", TimeSinceInitialized());
   }
@@ -78,16 +78,19 @@ class ElevatorBaseCommandGroup : public CommandGroup {
       AddSequential(new RetractIntakeIfNeededCommand());
     }
     AddSequential(new ElevatorBaseCommand<CARGO_HEIGHT, HATCH_HEIGHT>(name), 3.0);
+    if(safeIntakeRetract) {
+      AddSequential(new RetractIntakeIfNeededCommand());
+    }
   }
 }; 
 
-typedef ElevatorBaseCommandGroup<3, 3> ElevatorPreIntakeBallHeightCommand;
-typedef ElevatorBaseCommandGroup<24, 24> ElevatorIntakeBallHeightCommand;
-typedef ElevatorBaseCommandGroup<68, 65> ElevatorHighCommand; //67 cargo height
-typedef ElevatorBaseCommandGroup<40, 36> ElevatorMidCommand;
-typedef ElevatorBaseCommandGroup<11, 6> ElevatorLowCommand;
-typedef ElevatorBaseCommandGroup<9, 9> ElevatorCargoLowCommand;
-typedef ElevatorBaseCommandGroup<9, 3> ElevatorCargoShipCommand;
+typedef ElevatorBaseCommandGroup<25, 25> ElevatorPreIntakeBallHeightCommand;
+typedef ElevatorBaseCommandGroup<300, 300> ElevatorIntakeBallHeightCommand;
+typedef ElevatorBaseCommandGroup<680, 650> ElevatorHighCommand; //67 cargo height
+typedef ElevatorBaseCommandGroup<400, 360> ElevatorMidCommand;
+typedef ElevatorBaseCommandGroup<110, 60> ElevatorLowCommand;
+typedef ElevatorBaseCommandGroup<90, 90> ElevatorCargoLowCommand;
+typedef ElevatorBaseCommandGroup<90, 30> ElevatorCargoShipCommand;
 typedef ElevatorBaseCommandGroup<0, 0> ElevatorStowCommand;
 typedef ElevatorBaseCommandGroup<0, 0> ElevatorIntakePosCommand;
 

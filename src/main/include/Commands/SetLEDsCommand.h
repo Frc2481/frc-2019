@@ -18,19 +18,25 @@ class SetLEDsCommand : public frc::Command {
   public:
   SetLEDsCommand(int blinkCount) : Command("SetLEDsCommand") {
     m_blinkCount = blinkCount;
-    m_currBlinkCount = 0;
+  }
+  void Initialize() override {
+    m_currBlinkCount = 1;
   }
   void Execute() override {
-    if(TimeSinceInitialized() < 0.5 * m_currBlinkCount) {
+    if(TimeSinceInitialized() < 0.2 * m_currBlinkCount - 0.1) {
       CommandBase::m_pHatchSlide->SetLEDs(true);
     }
-    else if(TimeSinceInitialized() < 0.5 * m_currBlinkCount - 0.25) {
+    else if(TimeSinceInitialized() < 0.2 * m_currBlinkCount) {
       CommandBase::m_pHatchSlide->SetLEDs(false);
+    } else {
       m_currBlinkCount++;
     }
   }
   bool IsFinished() override {
     return m_currBlinkCount >= m_blinkCount;
+  }
+  void End() override {
+    CommandBase::m_pHatchSlide->SetLEDs(false);
   }
 };
 

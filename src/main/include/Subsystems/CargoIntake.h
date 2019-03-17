@@ -18,7 +18,8 @@ private:
   VictorSPX* m_intakeMotor;
   TalonSRX* m_extendMotor;
   CTREMagEncoder* m_extendEncoder;
-  frc::DigitalInput* m_beamBreak;
+  frc::DigitalInput* m_cargoPreIntakeSensor;
+
   double m_desiredPosition;
   bool m_isZeroed;
   bool m_hasResetOccurred;
@@ -40,12 +41,12 @@ public:
   double ConvertTicksToInches(int ticks);
   int ConvertInchesToTicks(double inches);
   bool IsIntakeInProtectedZone();
-  bool IsBallIntaken();
   void SetOpenLoopSpeed(double speed);
   bool IsOnTarget();
   void ZeroCargoIntake();
   bool IsIntakeOut();
   bool IsIntakeIn();
+  bool IsBallIntaken();
 };
 
 #endif // SRC_CARGO_INTAKE_H

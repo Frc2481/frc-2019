@@ -56,6 +56,7 @@ PDP Layout:
 #define CARGO_TOOL_SOLENOID 0, 0, 1
 #define HATCH_EXTENDER_SOLENOID 0, 2, 3
 #define HATCH_TOOL_SOLENOID 0, 4, 5
+#define LED 0, 6
 
 #define HATCH_SENSOR 0, 7
 
@@ -70,8 +71,7 @@ PDP Layout:
 // digital input/output
 #define IR_SENSOR_BRIGHT 0
 #define IR_SENSOR_DIM 1
-#define CARGO_BEAM_BREAK_SENSOR 2
 #define TOOL_CHANGER_CAPACITIVE_SENSOR 3
-#define LED 6
+#define CARGO_PRE_INTAKE_BALL_SENSOR 2
 
 #endif // ROBOT_MAP_H
