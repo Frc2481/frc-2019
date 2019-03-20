@@ -28,7 +28,12 @@ class CargoIntakeBaseCommand : public frc::Command {
   }
   
   bool IsFinished() override {
-    return fabs(CommandBase::m_pCargoIntake->IsOnTarget());
+    if(INTAKE_POS == -1000) {
+      return CommandBase::m_pCargoIntake->IsIntakeIn();
+    }
+    else {
+      return fabs(CommandBase::m_pCargoIntake->IsOnTarget());
+    }
   }
 
   bool IsPositionSetPointAllowed(int pos) {
@@ -58,6 +63,6 @@ class CargoIntakeBaseCommandGroup : public CommandGroup {
 }; 
 
 typedef CargoIntakeBaseCommandGroup<17700> CargoIntakeOutCommand;
-typedef CargoIntakeBaseCommandGroup<0> CargoIntakeInCommand;
+typedef CargoIntakeBaseCommandGroup<-500> CargoIntakeInCommand;
 
 #endif //SRC_CARGOINTAKEBASECOMMAND
