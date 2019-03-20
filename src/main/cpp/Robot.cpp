@@ -35,6 +35,7 @@
 #include "Commands/Climber/ClimberSetPositionCommand.h"
 #include "Commands/HatchSlide/HatchSlideGoToPosition.h"
 #include "Commands/SetLEDsCommand.h"
+#include "Commands/CommandGroups/StopAllCommand.h"
 
 Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 	m_server = CameraServer::GetInstance();
@@ -96,6 +97,8 @@ void Robot::RobotInit() {
 	SmartDashboard::PutData("CargoIntakeZeroCommand", new CargoIntakeZeroCommand());
 	
 	SmartDashboard::PutData("ZeroAllCommandGroup", new ZeroAllCommandGroup());
+
+	SmartDashboard::PutData("StopAllCommand", new StopAllCommand());
 	
 	SmartDashboard::PutData(frc::Scheduler::GetInstance());
 

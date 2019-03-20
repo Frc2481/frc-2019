@@ -58,14 +58,14 @@ OI::OI() {
     m_elevatorStow = new JoystickButton(m_pDriverStick, XBOX_X_BUTTON);
 	m_elevatorStow->WhenPressed(new RevertElevatorTestingCommandGroup());
 
-	m_scoreHigh = new JoystickButton(m_pDriverStick, XBOX_Y_BUTTON);
-	m_scoreHigh->WhenPressed(new ElevatorHighCommand("ElevatorHighCommand"));
+	m_climbL1ToL2 = new JoystickButton(m_pDriverStick, XBOX_A_BUTTON);
+	m_climbL1ToL2->WhenPressed(new ClimbSequence1To2CommandGroup());
 
-	m_scoreMid = new JoystickButton(m_pDriverStick, XBOX_B_BUTTON);
-	m_scoreMid->WhenPressed(new ElevatorMidCommand("ElevatorMidCommand"));
+	m_climbL2ToL3 = new JoystickButton(m_pDriverStick, XBOX_B_BUTTON);
+	m_climbL2ToL3->WhenPressed(new ClimbSequence2To3CommandGroup());
 
-	m_scoreLow = new JoystickButton(m_pDriverStick, XBOX_A_BUTTON);
-	m_scoreLow->WhenPressed(new ElevatorLowCommand("ElevatorLowCommand"));
+	m_climbL1ToL3 = new JoystickButton(m_pDriverStick, XBOX_Y_BUTTON);
+	m_climbL1ToL3->WhenPressed(new ClimbSequenceLevel3CommandGroup());
 
 	m_pSetFieldFrameButton = new JoystickButton(m_pDriverStick, XBOX_LEFT_BUMPER);
 	m_pSetFieldFrameButton->WhenPressed(new SwerveDrivetrainJoystickSetFieldFrame(false));

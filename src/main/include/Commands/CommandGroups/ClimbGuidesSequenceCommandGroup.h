@@ -21,7 +21,7 @@ class ClimbGuidesSequenceCommandGroup : public frc::CommandGroup {
     AddSequential(new ElevatorIntakeBallHeightCommand("ElevatorIntakeBallHeightCommand"));
     // AddSequential(new ElevatorWaitForPositionCommand(0)); // TODO set to the ElevatorInatakeBallHeightCommand Template
     AddSequential(new ClimberExtendGuidesCommand());
-    AddSequential(new WaitCommand(0.25));
+    AddSequential(new WaitCommand(0.5));
     AddSequential(new ElevatorStowCommand("ElevatorStowCommand"));
   }
 };

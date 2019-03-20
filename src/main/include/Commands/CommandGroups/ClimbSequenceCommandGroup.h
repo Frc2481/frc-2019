@@ -43,6 +43,7 @@ class ClimbSequenceLevel3CommandGroup : public frc::CommandGroup {
     AddSequential(new SwerveDrivetrainSetOpenLoop(0.5, 0.0, 0.25, 0.0));
     AddSequential(new WaitCommand(3));
     AddSequential(new ClimberTiltBigFootCommand());
+    AddSequential(new ClimberSetPositionCommand(175));
   }
 };
 
