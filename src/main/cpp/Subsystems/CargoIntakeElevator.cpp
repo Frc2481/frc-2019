@@ -150,7 +150,7 @@ bool CargoIntakeElevator::IsCargoBeamBreakTriggered() {
 }
 
 void CargoIntakeElevator::MoveCargoIntakeSlideToPosition(CargoIntakeSlidePositions refP) {
-    m_cargoIntakeSlideRefP = refP;
+    m_cargoIntakeSlideRefP = refP / 10.0;
     
     if(!IsElevatorInProtectedZone()) {
         if(refP > GetCargoIntakeSlidePosition()) {

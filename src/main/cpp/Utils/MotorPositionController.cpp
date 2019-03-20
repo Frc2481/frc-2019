@@ -134,6 +134,7 @@ void MotorPositionController::updateLinear(double refP, double refV, double refA
 
     printf("refP = %0.1f\n", refP);
     printf("feedforwardControl = %0.1f\n", feedforwardControl);
+    printf("encoderZero = %0.1f\n", getEncoderZero());
     
     if(!m_enableMotionMagic) {
         m_pDriveMotor->Set(ControlMode::Position, refP, DemandType::DemandType_ArbitraryFeedForward, feedforwardControl);
