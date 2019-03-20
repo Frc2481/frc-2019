@@ -23,7 +23,7 @@ class ElevatorBaseCommand : public frc::Command {
     Requires(CommandBase::m_pElevator.get());
   }
   void Initialize() override {
-    if(((HATCH_HEIGHT / 10.0) < 7 || (CARGO_HEIGHT / 10.0) < 7) && CommandBase::m_pCargoIntake->IsIntakeIn()) {
+    if(((HATCH_HEIGHT / 10.0) < 3 || (CARGO_HEIGHT / 10.0) < 3) && CommandBase::m_pCargoIntake->IsIntakeIn()) {
       CommandBase::m_pToolChanger->ExtendHatch();
     }
     if(CommandBase::m_pToolChanger->HasCargo() && IsPositionSetPointAllowed(CARGO_HEIGHT / 10.0)) {
