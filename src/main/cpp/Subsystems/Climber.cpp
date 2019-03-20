@@ -61,7 +61,7 @@ void Climber::Periodic(){
   frc::SmartDashboard::PutNumber("Climber sensor speed", m_encoder->GetVelocity());
 }
 void Climber::InitDefaultCommand() {
-  SetDefaultCommand(new ClimberDriveWithJoystickCommand());
+  // SetDefaultCommand(new ClimberDriveWithJoystickCommand());
 }
 void Climber::SetPosition(double setPoint) {
   m_pidController.SetReference(setPoint, rev::ControlType::kSmartMotion);

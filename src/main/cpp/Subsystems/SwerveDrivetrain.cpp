@@ -406,3 +406,10 @@ void SwerveDrivetrain::setIsOpenLoopFieldFrame(bool isOpenLoopFieldFrame) {
 bool SwerveDrivetrain::areAllSteerEncodersConnected() {
 	return m_areAllSteerEncodersConnected;
 }
+
+void SwerveDrivetrain::setBrakeMode() {
+	m_pBLDriveMotor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+	m_pBRDriveMotor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+	m_pFLDriveMotor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+	m_pFRDriveMotor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+}

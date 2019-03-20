@@ -17,6 +17,7 @@
 #include "Commands/Climber/ClimberSetOpenLoopCommand.h"
 #include "Commands/Climber/ClimberReleaseWeightsCommand.h"
 #include "Commands/Climber/ClimberSetPositionCommand.h"
+#include "Commands/SwerveDrivetrain/SwerveDrivetrainSetBrakeCommand.h"
 
 class ClimbSequence2To3CommandGroup : public frc::CommandGroup {
  public:
@@ -36,13 +37,19 @@ class ClimbSequenceLevel3CommandGroup : public frc::CommandGroup {
  public:
   ClimbSequenceLevel3CommandGroup() : CommandGroup("ClimbSequenceLevel3CommandGroup"){
     AddSequential(new SwerveDrivetrainSetOpenLoop(0.1, 0.0, 0.25, 0.0));
-    AddParallel(new ClimberSetPositionCommand(200));    
-    AddSequential(new ClimberWaitForHeightCommand(50));
+    AddSequential(new SwerveDrivetrainSetBrakeCommand());
+    AddParallel(new ClimberSetPositionCommand(210));
+    AddSequential(new ClimberWaitForHeightCommand(60));
     AddSequential(new ClimberLittleFeetDownCommand());
     AddSequential(new ClimberWaitForHeightCommand(198)); //change
-    AddSequential(new SwerveDrivetrainSetOpenLoop(0.5, 0.0, 0.25, 0.0));
-    AddSequential(new WaitCommand(3));
+    AddSequential(new SwerveDrivetrainSetOpenLoop(0.3, 0.0, 0.3, 0.0));
+    // AddSequential(new WaitCommand(4));
     AddSequential(new ClimberTiltBigFootCommand());
+    AddSequential(new WaitCommand(0.5));
+    AddSequential(new ClimberUntiltBigFootCommand());
+    AddSequential(new WaitCommand(0.5));
+    AddSequential(new ClimberTiltBigFootCommand());
+    AddSequential(new WaitCommand(1.0));
     AddSequential(new ClimberSetPositionCommand(175));
   }
 };

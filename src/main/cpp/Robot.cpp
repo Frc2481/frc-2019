@@ -110,7 +110,7 @@ void Robot::RobotInit() {
 	
 	m_zeroAll = new ZeroAllCommandGroup();
 	m_hatchExtend = new ToolChangerHatchExtendCommand();
-	m_elevatorLow = new ElevatorLowCommand("ElevatorLowCommand");
+	m_elevatorCargoShip = new ElevatorCargoShipCommand("ElevatorLowCommand");
 	m_freeCargo = new ToolChangerFreeCargoCommand();
 	m_zeroAll->Start();
 }
@@ -126,7 +126,7 @@ void Robot::RobotPeriodic() {
 
 void Robot::AutonomousInit() {
 	m_hatchExtend->Start();
-	m_elevatorLow->Start();
+	m_elevatorCargoShip->Start();
 	m_freeCargo->Start();
 }
 

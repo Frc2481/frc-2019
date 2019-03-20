@@ -21,7 +21,7 @@ class ClimberWaitForHeightCommand : public frc::Command {
     m_pos = pos;
   }
   void Initialize() override{
-    if(CommandBase::m_pClimber->GetSpeed() > 0){
+    if(CommandBase::m_pClimber->GetPos() < m_pos){
       m_isGoingUp = true;
     }
   }

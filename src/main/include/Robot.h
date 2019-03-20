@@ -22,7 +22,7 @@ private:
 	CameraServer* m_server;
 	cs::UsbCamera m_usbCam1;
 	Command* m_hatchExtend;
-	Command* m_elevatorLow;
+	Command* m_elevatorCargoShip;
 	Command* m_zeroAll;
 	Command* m_freeCargo;
 };
