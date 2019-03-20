@@ -42,7 +42,7 @@ class ClimbSequenceLevel3CommandGroup : public frc::CommandGroup {
     AddSequential(new ClimberWaitForHeightCommand(60));
     AddSequential(new ClimberLittleFeetDownCommand());
     AddSequential(new ClimberWaitForHeightCommand(198)); //change
-    AddSequential(new SwerveDrivetrainSetOpenLoop(0.3, 0.0, 0.3, 0.0));
+    AddSequential(new SwerveDrivetrainSetOpenLoop(0.4, 0.0, 0.3, 0.0));
     // AddSequential(new WaitCommand(4));
     // AddSequential(new ClimberTiltBigFootCommand());
     AddSequential(new WaitCommand(1.0));
