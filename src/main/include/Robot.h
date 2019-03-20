@@ -22,9 +22,9 @@ private:
 	CameraServer* m_server;
 	cs::UsbCamera m_usbCam1;
 	Command* m_hatchExtend;
-	Command* m_elevatorLow;
+	// Command* m_elevatorLow;
 	Command* m_zeroAll;
-	Command* m_freeCargo;
+	// Command* m_freeCargo;
 };
 
 #endif // ROBOT_H

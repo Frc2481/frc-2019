@@ -36,6 +36,20 @@
 #include "Commands/HatchSlide/HatchSlideGoToPosition.h"
 #include "Commands/SetLEDsCommand.h"
 
+#include "Commands/CargoIntakeElevator/CargoIntakeElevatorCargoEject.h"
+#include "Commands/CargoIntakeElevator/CargoIntakeElevatorCargoIntake.h"
+#include "Commands/CargoIntakeElevator/CargoIntakeElevatorCargoIntakeSlideIn.h"
+#include "Commands/CargoIntakeElevator/CargoIntakeElevatorCargoIntakeSlideOut.h"
+#include "Commands/CargoIntakeElevator/CargoIntakeElevatorCargoIntakeSlideStop.h"
+#include "Commands/CargoIntakeElevator/CargoIntakeElevatorCargoIntakeSlideZero.h"
+#include "Commands/CargoIntakeElevator/CargoIntakeElevatorCargoIntakeStop.h"
+#include "Commands/CargoIntakeElevator/CargoIntakeElevatorElevatorHigh.h"
+#include "Commands/CargoIntakeElevator/CargoIntakeElevatorElevatorIntake.h"
+#include "Commands/CargoIntakeElevator/CargoIntakeElevatorElevatorLow.h"
+#include "Commands/CargoIntakeElevator/CargoIntakeElevatorElevatorMid.h"
+#include "Commands/CargoIntakeElevator/CargoIntakeElevatorElevatorStop.h"
+#include "Commands/CargoIntakeElevator/CargoIntakeElevatorElevatorZero.h"
+
 Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 	m_server = CameraServer::GetInstance();
 }
@@ -49,8 +63,8 @@ void Robot::RobotInit() {
 
 	SmartDashboard::PutData("SwerveDrivetrainZeroSteer", new SwerveDrivetrainZeroSteer());
 	SmartDashboard::PutData("HatchSlideZeroCommand", new HatchSlideZeroCommand());
-	SmartDashboard::PutData("ElevatorHomeCommand", new ElevatorHomeCommand());
-	SmartDashboard::PutData("ElevatorZeroCommand", new ElevatorZeroCommand());
+	// SmartDashboard::PutData("ElevatorHomeCommand", new ElevatorHomeCommand());
+	// SmartDashboard::PutData("ElevatorZeroCommand", new ElevatorZeroCommand());
 	SmartDashboard::PutData("FreeCargoCommand", new ToolChangerFreeCargoCommand());
 	SmartDashboard::PutData("HoldCargoCommand", new ToolChangerHoldCargoCommand());
 	SmartDashboard::PutData("FreeHatchCommand", new ToolChangerFreeHatchCommand());
@@ -58,8 +72,8 @@ void Robot::RobotInit() {
 	SmartDashboard::PutData("HatchExtendCommand", new ToolChangerHatchExtendCommand());
 	SmartDashboard::PutData("HatchRetractCommand", new ToolChangerRetractCommand());
 
-	SmartDashboard::PutData("CargoIntakeInCommand", new CargoIntakeInCommand("CargoIntakeInCommand"));
-	SmartDashboard::PutData("CargoIntakeOutCommand", new CargoIntakeOutCommand("CargoIntakeOutCommand"));
+	// SmartDashboard::PutData("CargoIntakeInCommand", new CargoIntakeInCommand("CargoIntakeInCommand"));
+	// SmartDashboard::PutData("CargoIntakeOutCommand", new CargoIntakeOutCommand("CargoIntakeOutCommand"));
 
 	SmartDashboard::PutData("ClimberSetPositionCommand(80)", new ClimberSetPositionCommand(80));
 
@@ -72,28 +86,28 @@ void Robot::RobotInit() {
 	SmartDashboard::PutData("ClimberRetractGuidesCommand", new ClimberRetractGuidesCommand());
 	SmartDashboard::PutData("ClimberResetWeightsCommand", new ClimberResetWeightsCommand());
 	
-	SmartDashboard::PutData("ClimbSequence1To2CommandGroup", new ClimbSequence1To2CommandGroup());
-	SmartDashboard::PutData("ClimbSequence2To3CommandGroup", new ClimbSequence2To3CommandGroup());
-	SmartDashboard::PutData("ClimbSequenceLevel3CommandGroup", new ClimbSequenceLevel3CommandGroup());
+	// SmartDashboard::PutData("ClimbSequence1To2CommandGroup", new ClimbSequence1To2CommandGroup());
+	// SmartDashboard::PutData("ClimbSequence2To3CommandGroup", new ClimbSequence2To3CommandGroup());
+	// SmartDashboard::PutData("ClimbSequenceLevel3CommandGroup", new ClimbSequenceLevel3CommandGroup());
 	
-	SmartDashboard::PutData("PrepForAcquireHatchCommandGroup", new PrepForAcquireHatchCommandGroup());
-	SmartDashboard::PutData("AcquireHatchCommand", new AcquireHatchCommandGroup());
-	SmartDashboard::PutData("AcquireCargoCommand", new AcquireCargoCommandGroup());
-	SmartDashboard::PutData("ScoreHatchCommand", new ToolChangerScoreHatchCommandGroup());
-	SmartDashboard::PutData("ScoreCargoCommand", new ToolChangerScoreCargoCommandGroup());
+	// SmartDashboard::PutData("PrepForAcquireHatchCommandGroup", new PrepForAcquireHatchCommandGroup());
+	// SmartDashboard::PutData("AcquireHatchCommand", new AcquireHatchCommandGroup());
+	// SmartDashboard::PutData("AcquireCargoCommand", new AcquireCargoCommandGroup());
+	// SmartDashboard::PutData("ScoreHatchCommand", new ToolChangerScoreHatchCommandGroup());
+	// SmartDashboard::PutData("ScoreCargoCommand", new ToolChangerScoreCargoCommandGroup());
 
-	SmartDashboard::PutData("ElevatorHighCommand", new ElevatorHighCommand("ElevatorHighCommand"));
-	SmartDashboard::PutData("ElevatorMidCommand", new ElevatorMidCommand("ElevatorMidCommand"));
-	SmartDashboard::PutData("ElevatorLowCommand", new ElevatorLowCommand("ElevatorLowCommand"));
+	// SmartDashboard::PutData("ElevatorHighCommand", new ElevatorHighCommand("ElevatorHighCommand"));
+	// SmartDashboard::PutData("ElevatorMidCommand", new ElevatorMidCommand("ElevatorMidCommand"));
+	// SmartDashboard::PutData("ElevatorLowCommand", new ElevatorLowCommand("ElevatorLowCommand"));
 
-	SmartDashboard::PutData("ElevatorCargoShipCommand", new ElevatorCargoShipCommand("ElevatorCargoShipCommand"));
+	// SmartDashboard::PutData("ElevatorCargoShipCommand", new ElevatorCargoShipCommand("ElevatorCargoShipCommand"));
 
 	SmartDashboard::PutData("SetHasHatchCommand", new ToolChangerSetHasHatchCommand(true));
 	SmartDashboard::PutData("SetHasCargoCommand", new ToolChangerSetHasCargoCommand(true));
 
-	SmartDashboard::PutData("RevertElevatorCommand", new RevertElevatorTestingCommandGroup());
+	// SmartDashboard::PutData("RevertElevatorCommand", new RevertElevatorTestingCommandGroup());
 
-	SmartDashboard::PutData("CargoIntakeZeroCommand", new CargoIntakeZeroCommand());
+	// SmartDashboard::PutData("CargoIntakeZeroCommand", new CargoIntakeZeroCommand());
 	
 	SmartDashboard::PutData("ZeroAllCommandGroup", new ZeroAllCommandGroup());
 	
@@ -101,14 +115,28 @@ void Robot::RobotInit() {
 
 	// m_pVibrate.reset(new VibrateCommand());
 
+	SmartDashboard::PutData("CargoIntakeElevatorCargoEject", new CargoIntakeElevatorCargoEject());
+	SmartDashboard::PutData("CargoIntakeElevatorCargoIntake", new CargoIntakeElevatorCargoIntake());
+	SmartDashboard::PutData("CargoIntakeElevatorCargoIntakeSlideIn", new CargoIntakeElevatorCargoIntakeSlideIn());
+	SmartDashboard::PutData("CargoIntakeElevatorCargoIntakeSlideOut", new CargoIntakeElevatorCargoIntakeSlideOut());
+	SmartDashboard::PutData("CargoIntakeElevatorCargoIntakeSlideStop", new CargoIntakeElevatorCargoIntakeSlideStop());
+	SmartDashboard::PutData("CargoIntakeElevatorCargoIntakeSlideZero", new CargoIntakeElevatorCargoIntakeSlideZero());
+	SmartDashboard::PutData("CargoIntakeElevatorCargoIntakeStop", new CargoIntakeElevatorCargoIntakeStop());
+	SmartDashboard::PutData("CargoIntakeElevatorElevatorHigh", new CargoIntakeElevatorElevatorHigh());
+	SmartDashboard::PutData("CargoIntakeElevatorElevatorIntake", new CargoIntakeElevatorElevatorIntake());
+	SmartDashboard::PutData("CargoIntakeElevatorElevatorLow", new CargoIntakeElevatorElevatorLow());
+	SmartDashboard::PutData("CargoIntakeElevatorElevatorMid", new CargoIntakeElevatorElevatorMid());
+	SmartDashboard::PutData("CargoIntakeElevatorElevatorStop", new CargoIntakeElevatorElevatorStop());
+	SmartDashboard::PutData("CargoIntakeElevatorElevatorZero", new CargoIntakeElevatorElevatorZero());
+
 	m_usbCam1 = m_server->StartAutomaticCapture("cam1", 0);
 	m_usbCam1.SetFPS(15);
 	m_usbCam1.SetResolution(320, 180);
 	
 	m_zeroAll = new ZeroAllCommandGroup();
 	m_hatchExtend = new ToolChangerHatchExtendCommand();
-	m_elevatorLow = new ElevatorLowCommand("ElevatorLowCommand");
-	m_freeCargo = new ToolChangerFreeCargoCommand();
+	// m_elevatorLow = new ElevatorLowCommand("ElevatorLowCommand");
+	// m_freeCargo = new ToolChangerFreeCargoCommand();
 	m_zeroAll->Start();
 }
 
@@ -123,16 +151,16 @@ void Robot::RobotPeriodic() {
 
 void Robot::AutonomousInit() {
 	m_hatchExtend->Start();
-	m_elevatorLow->Start();
-	m_freeCargo->Start();
+	// m_elevatorLow->Start();
+	// m_freeCargo->Start();
 }
 
 void Robot::DisabledInit() {
-	CommandBase::m_pElevator->SetOpenLoopSpeed(0);
-	CommandBase::m_pCargoIntake->SetOpenLoopSpeed(0);
+	// CommandBase::m_pElevator->SetOpenLoopSpeed(0);
+	// CommandBase::m_pCargoIntake->SetOpenLoopSpeed(0);
 	CommandBase::m_pHatchSlide->SetOpenLoopSpeed(0);
-	CommandBase::m_pCargoIntake->SetSpeedIn(0);
-	frc::Scheduler::GetInstance()->RemoveAll();
+	// CommandBase::m_pCargoIntake->SetSpeedIn(0);
+	// frc::Scheduler::GetInstance()->RemoveAll();
 }
 
 
@@ -150,8 +178,8 @@ void Robot::TeleopPeriodic() {
 	// 	CommandBase::m_pHatchSlide->ResetVibratable();
 	// }
 
-	SmartDashboard::PutBoolean("All Systems Go ", CommandBase::m_pSwerveDrivetrain->areAllSteerEncodersConnected() 
-		&& CommandBase::m_pHatchSlide->SlideEncoderConnected() && CommandBase::m_pElevator->IsElevatorEncoderConnected());
+	// SmartDashboard::PutBoolean("All Systems Go ", CommandBase::m_pSwerveDrivetrain->areAllSteerEncodersConnected() 
+	// 	&& CommandBase::m_pHatchSlide->SlideEncoderConnected() && CommandBase::m_pElevator->IsElevatorEncoderConnected());
 }
 
 void Robot::DisabledPeriodic() {

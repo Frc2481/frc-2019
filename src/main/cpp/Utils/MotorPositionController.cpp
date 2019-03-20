@@ -88,11 +88,11 @@ void MotorPositionController::setMotionMagicLinear(
     m_enableMotionMagic = isEnabled;
     m_pDriveMotor->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
 
-    maxVel = m_pEncoder->convertWheelDistanceToTicks(wheelRadius, maxVel) / 10.0; // convert to talon native units
+    // maxVel = m_pEncoder->convertWheelDistanceToTicks(wheelRadius, maxVel) / 10.0; // convert to talon native units
     m_pDriveMotor->ConfigMotionCruiseVelocity(maxVel, 0);
     m_pDriveMotor->Config_kF(0, kf, 0);
 
-    maxAccel = m_pEncoder->convertWheelDistanceToTicks(wheelRadius, maxAccel) / 10.0; // convert to talon native units
+    // maxAccel = m_pEncoder->convertWheelDistanceToTicks(wheelRadius, maxAccel) / 10.0; // convert to talon native units
 	m_pDriveMotor->ConfigMotionAcceleration(maxAccel, 0);
 
     m_pDriveMotor->ConfigMotionSCurveStrength(curveStrength);
@@ -131,6 +131,9 @@ void MotorPositionController::updateLinear(double refP, double refV, double refA
 	}
 
     double feedforwardControl = refV * m_kv + refA * ka + Sign::Sign(refV) * m_ksf;
+
+    printf("refP = %0.1f\n", refP);
+    printf("feedforwardControl = %0.1f\n", feedforwardControl);
     
     if(!m_enableMotionMagic) {
         m_pDriveMotor->Set(ControlMode::Position, refP, DemandType::DemandType_ArbitraryFeedForward, feedforwardControl);

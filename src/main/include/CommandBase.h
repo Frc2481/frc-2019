@@ -5,10 +5,11 @@
 #include "OI.h"
 #include "Subsystems/SwerveDrivetrain.h"
 #include "Subsystems/HatchSlide.h"
-#include "Subsystems/Elevator.h"
-#include "Subsystems/CargoIntake.h"
+// #include "Subsystems/Elevator.h"
+// #include "Subsystems/CargoIntake.h"
 #include "Subsystems/ToolChanger.h"
 #include "Subsystems/Climber.h"
+#include "Subsystems/CargoIntakeElevator.h"
 
 class CommandBase: public Command
 {
@@ -21,11 +22,12 @@ public:
     static std::unique_ptr<OI> m_pOI;
     static std::unique_ptr<SwerveDrivetrain> m_pSwerveDrivetrain;
     static std::unique_ptr<HatchSlide> m_pHatchSlide;
-    static std::unique_ptr<Elevator> m_pElevator;
-    static std::unique_ptr<CargoIntake> m_pCargoIntake;
+    // static std::unique_ptr<Elevator> m_pElevator;
+    // static std::unique_ptr<CargoIntake> m_pCargoIntake;
     static std::unique_ptr<ToolChanger> m_pToolChanger;
     static std::unique_ptr<Climber> m_pClimber;
     static std::unique_ptr<PowerDistributionPanel> m_pPDP;
+    static std::unique_ptr<CargoIntakeElevator> m_pCargoIntakeElevator;
 };
 
 #endif // COMMAND_BASE_H

@@ -1,24 +1,24 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
+// /*----------------------------------------------------------------------------*/
+// /* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
+// /* Open Source Software - may be modified and shared by FRC teams. The code   */
+// /* must be accompanied by the FIRST BSD license file in the root directory of */
+// /* the project.                                                               */
+// /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CARGOINTAKEZEROCOMMAND
-#define SRC_CARGOINTAKEZEROCOMMAND
+// #ifndef SRC_CARGOINTAKEZEROCOMMAND
+// #define SRC_CARGOINTAKEZEROCOMMAND
 
-#include <frc/commands/InstantCommand.h>
-#include "CommandBase.h"
+// #include <frc/commands/InstantCommand.h>
+// #include "CommandBase.h"
 
-class CargoIntakeZeroCommand : public frc::InstantCommand {
- public:
-  CargoIntakeZeroCommand() : InstantCommand("CargoIntakeZeroCommand"){
-    SetRunWhenDisabled(true);
-  }
-  void Initialize() override{
-    CommandBase::m_pCargoIntake->ZeroCargoIntake();
-  }
-};
+// class CargoIntakeZeroCommand : public frc::InstantCommand {
+//  public:
+//   CargoIntakeZeroCommand() : InstantCommand("CargoIntakeZeroCommand"){
+//     SetRunWhenDisabled(true);
+//   }
+//   void Initialize() override{
+//     CommandBase::m_pCargoIntake->ZeroCargoIntake();
+//   }
+// };
 
-#endif //SRC_CARGOINTAKEZEROCOMMAND
+// #endif //SRC_CARGOINTAKEZEROCOMMAND

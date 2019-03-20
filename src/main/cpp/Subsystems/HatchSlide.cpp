@@ -15,7 +15,7 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
   m_slideEncoder = new CTREMagEncoder(m_motor, "SLIDE_MOTOR_ENCODER");
   ctre::phoenix::motorcontrol::can::TalonSRXConfiguration talonConfig;
 
-  m_hatchSensor = new frc::DigitalInput(TOOL_CHANGER_CAPACITIVE_SENSOR);
+  // m_hatchSensor = new frc::DigitalInput(TOOL_CHANGER_CAPACITIVE_SENSOR);
 
 	m_LED = new Solenoid(LED);
   m_LED->Set(false);
