@@ -79,6 +79,7 @@ void CargoIntake::Periodic() {
   }
   frc::SmartDashboard::PutBoolean("IsBallIntaken", IsBallIntaken());
   frc::SmartDashboard::PutBoolean("IsIntakeIn", IsIntakeIn());
+  frc::SmartDashboard::PutBoolean("IsIntakeInProtectedZone", IsIntakeInProtectedZone());
 }
 
 void CargoIntake::SetSpeedIn(double speed) {

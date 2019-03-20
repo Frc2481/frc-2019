@@ -25,9 +25,6 @@ class CargoIntakeBaseCommand : public frc::Command {
     }
   }
   void Execute() override {
-    if(TimeSinceInitialized() < 3 && INTAKE_POS == 0) {
-      CommandBase::m_pCargoIntake->SetOpenLoopSpeed(-0.8);
-    }
   }
   
   bool IsFinished() override {
@@ -56,7 +53,6 @@ template <int INTAKE_POS>
 class CargoIntakeBaseCommandGroup : public CommandGroup {
   public:
   CargoIntakeBaseCommandGroup(std::string name) : CommandGroup(name) {
-    // AddSequential(new ElevatorRiseForIntakeCommand());
     AddSequential(new CargoIntakeBaseCommand<INTAKE_POS>(name));
   }
 }; 

@@ -75,7 +75,7 @@ namespace RobotParameters {
 
     // CargoIntake
     static constexpr double k_cargoIntakeThresholdIn = 100; // point where it's no longer safe to move elevator down onto it
-    static constexpr double k_cargoIntakeThresholdOut = 17677;
+    static constexpr double k_cargoIntakeThresholdOut = 17000;
     static constexpr double k_cargoIntakeBeltCircumference = 1.128 * 3.14;
     static constexpr double k_cargoIntakeTicksPerRev = 4096;
     static constexpr double k_intakeSpeedFull = 1;

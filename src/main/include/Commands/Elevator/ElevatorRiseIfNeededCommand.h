@@ -17,7 +17,7 @@ class ElevatorRiseForIntakeOutCommandGroup : public frc::CommandGroup {
  public:
   ElevatorRiseForIntakeOutCommandGroup() : CommandGroup("ElevatorRiseForIntakeOutCommandGroup") {
     AddSequential(new ToolChangerHatchExtendCommand());
-    AddSequential(new ElevatorIntakeBallHeightCommand("ElevatorIntakeBallHeightCommand"));
+    AddSequential(new ElevatorIntakeBallHeightCommand("ElevatorIntakeBallHeightCommand", false));
   }
 };
 

@@ -35,23 +35,34 @@ class AcquireCargoCommandGroup : public frc::CommandGroup {
     Requires(CommandBase::m_pCargoIntake.get());
     Requires(CommandBase::m_pHatchSlide.get());
 
+    //set up for command - hatch slide center
     AddParallel(new HatchSlideDisableCommand());
     AddParallel(new HatchSlideToCenterCommand());
     AddParallel(new ToolChangerFreeHatchCommand());
     AddSequential(new WaitCommand(0.5));
     AddSequential(new ToolChangerFreeCargoCommand());
+
+    //elevator up to allow intake out - conditional & only moves elevator & intake when needed
     AddSequential(new ExtendIntakeIfNeededCommand()); //TODO check to see if height is acceptable
+
+    //prep for intaking ball - move height
     AddSequential(new ToolChangerRetractCommand());
     AddSequential(new ElevatorPreIntakeBallHeightCommand("ElevatorPreIntakeBallHeightCommand", false));
+
+    //intake ball
     AddSequential(new CargoIntakeBallCommand(1));
     AddSequential(new CargoIntakeWaitForCargoIntakenCommand());
-    AddSequential(new CargoIntakeBallCommand(0.7));
+    AddSequential(new CargoIntakeBallCommand(0.8));
     AddSequential(new CargoIntakeWaitForBallCommand());
     AddSequential(new CargoIntakeStopCommand());
     AddSequential(new ToolChangerHoldCargoCommand());
     AddSequential(new WaitCommand(0.1));
+
+    //move elevator up to allow intake in
     AddSequential(new ElevatorIntakeBallHeightCommand("ElevatorIntakeBallHeightCommand", false)); //TODO check to see if height is acceptable
     AddSequential(new CargoIntakeInCommand("CargoIntakeBackCommand"));
+
+    //leds & elevator back down
     AddParallel(new SetLEDsCommand(5));
     AddSequential(new ElevatorCargoLowCommand("ElevatorCargoLowCommand"));
     AddParallel(new ToolChangerSetHasCargoCommand(true));

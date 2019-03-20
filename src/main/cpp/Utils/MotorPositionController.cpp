@@ -36,7 +36,7 @@ MotorPositionController::MotorPositionController(
     m_enableMotionMagic(false) {
     
     m_pDriveMotor->SelectProfileSlot(0, 0);
-	m_pDriveMotor->Set(ControlMode::Position, 0);
+	// m_pDriveMotor->Set(ControlMode::Position, 0);
 	m_pDriveMotor->Config_kP(0, kp, 10);
 	m_pDriveMotor->Config_kI(0, ki, 10);
 	m_pDriveMotor->Config_kD(0, kd, 10);
