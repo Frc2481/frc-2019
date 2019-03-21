@@ -15,7 +15,10 @@ class HatchSlideWaitForOnTargetCommand : public frc::Command {
   HatchSlideWaitForOnTargetCommand() : Command("HatchSlideWaitForOnTargetCommand") {}
   bool IsFinished() override {
     if(CommandBase::m_pHatchSlide->IsHatchSlideUserEnabled()) {
-      CommandBase::m_pHatchSlide->IsSlideOnTarget();
+      return CommandBase::m_pHatchSlide->IsSlideOnTarget();
+    }
+    else {
+      return false;
     }
   }
 };

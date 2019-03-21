@@ -9,8 +9,8 @@
 
 Elevator::Elevator() : Subsystem("Elevator") {
   m_masterElevator = new TalonSRX(MASTER_ELEVATOR_MOTOR_ID);
-  m_slaveElevator = new TalonSRX(SLAVE_ELEVATOR_MOTOR_ID);
-  // m_slaveElevator = new VictorSPX(SLAVE_ELEVATOR_MOTOR_ID); // make sure to change back
+  // m_slaveElevator = new TalonSRX(SLAVE_ELEVATOR_MOTOR_ID);
+  m_slaveElevator = new VictorSPX(SLAVE_ELEVATOR_MOTOR_ID); // make sure to change back
 
   m_elevatorEncoder = new CTREMagEncoder(m_masterElevator, "ELEVATOR_ENCODER");
 
