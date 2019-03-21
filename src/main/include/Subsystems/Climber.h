@@ -28,14 +28,15 @@ class Climber : public frc::Subsystem {
   bool m_littleFeetActivated;
   bool m_bigFootActivated;
   bool m_climberManualActivated; 
+  bool m_isClimberZeroed;
+  bool m_areClimberGuidesExtended;
+  double m_desiredSetpoint;
 
  public:
   Climber();
   void InitDefaultCommand() override;
   void Periodic();
-  void ClimberRetract();
-  void ClimberLevel2();
-  void ClimberLevel3();
+  void SetPosition(double setPoint);
   double ConvertInchesToTicks(int inches);
   void ActivateLittleFeet();
   void DeactivateLittleFeet();
@@ -50,14 +51,20 @@ class Climber : public frc::Subsystem {
   void DeactivateLittleFeetToggle();
   void SetOpenLoopSpeed(double speed);
   double GetSpeed();
+  double GetSensorSpeed();
   double GetPos();
+  double GetDesiredPos();
   void ZeroClimber();
   void ExtendGuides();
   void RetractGuides();
+  bool IsGuidesExtended();
   void ReleaseWeights();
+  void ResetWeights();
   bool IsClimberEnabled();
   void EnableClimberManual();
   void DisableClimberManual();
+  bool IsClimberZeroed();
+  bool IsOnTarget();
 };
 
 #endif //SRC_CLIMBER_H

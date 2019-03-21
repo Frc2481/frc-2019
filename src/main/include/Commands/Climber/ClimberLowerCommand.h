@@ -5,19 +5,27 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CARGOINTAKEWAITFORBALLCOMMAND
-#define SRC_CARGOINTAKEWAITFORBALLCOMMAND
+#ifndef SRC_CLIMBERLOWERCOMMAND
+#define SRC_CLIMBERLOWERCOMMAND
+
 #include <frc/commands/Command.h>
 #include "CommandBase.h"
 
-class CargoIntakeWaitForBallCommand : public frc::Command {
+class ClimberLowerCommand : public frc::Command {
  public:
-  CargoIntakeWaitForBallCommand() : Command("CargoIntakeWaitForBallCommand") {
-
+  ClimberLowerCommand() : Command("ClimberLowerCommand"){}
+  void Execute() override{
+      CommandBase::m_pClimber->SetOpenLoopSpeed(-0.8);
   }
-  bool IsFinished() override {
-    return CommandBase::m_pHatchSlide->HasBall();
+  bool IsFinished() override{
+    return false;
+  }
+  void End() override{
+    CommandBase::m_pClimber->SetOpenLoopSpeed(0.0);
+  }
+  void Interrupted() override{
+    End();
   }
 };
 
-#endif //SRC_CARGOINTAKEWAITFORBALLCOMMAND
+#endif //SRC_CLIMBERLOWERCOMMAND

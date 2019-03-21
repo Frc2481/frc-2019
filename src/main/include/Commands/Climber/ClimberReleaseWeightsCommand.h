@@ -21,4 +21,14 @@ class ClimberReleaseWeightsCommand : public frc::InstantCommand {
   }
 };
 
+class ClimberResetWeightsCommand : public frc::InstantCommand {
+ public:
+  ClimberResetWeightsCommand() : InstantCommand("ClimberResetWeightsCommand") {}
+  void Initialize() override {
+    if(!CommandBase::m_pClimber->IsBigFootTilted()) {
+      CommandBase::m_pClimber->ResetWeights();
+    }
+  }
+};
+
 #endif //SRC_CLIMBERRELEASEWEIGHTSCOMMAND

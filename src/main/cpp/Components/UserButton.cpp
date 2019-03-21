@@ -5,20 +5,14 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CARGOINTAKEWAITFORNOBALLCOMMAND
-#define SRC_CARGOINTAKEWAITFORNOBALLCOMMAND
+#include "Components/UserButton.h"
 
-#include "CommandBase.h"
-#include <frc/commands/Command.h>
+UserButton::UserButton(){
+}
 
-class CargoIntakeWaitForNoBallCommand : public frc::Command {
- public:
-  CargoIntakeWaitForNoBallCommand() : Command("CargoIntakeWaitForNoBallCommand") {
+UserButton::~UserButton() {
+}
 
-  }
-  bool IsFinished() override {
-    return !CommandBase::m_pCargoIntake->IsBallIntaken();
-  }
-};
-
-#endif //SRC_CARGOINTAKEWAITFORNOBALLCOMMAND
+bool UserButton::Get() {
+  return frc::RobotController::GetUserButton();
+}

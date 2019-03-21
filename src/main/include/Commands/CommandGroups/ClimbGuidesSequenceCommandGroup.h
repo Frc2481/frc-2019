@@ -9,18 +9,20 @@
 #define SRC_CLIMBERGUIDESSEQUENCECOMMANDGROUP
 
 #include <frc/commands/CommandGroup.h>
+#include <frc/commands/InstantCommand.h>
 #include "Commands/Climber/ClimberGuidesCommand.h"
 #include "Commands/Elevator/ElevatorBaseCommand.h"
 #include "Commands/Elevator/ElevatorWaitForPositionCommand.h"
+#include "CommandBase.h"
 
 class ClimbGuidesSequenceCommandGroup : public frc::CommandGroup {
  public:
   ClimbGuidesSequenceCommandGroup() : CommandGroup("ClimbGuidesSequenceCommandGroup"){
     AddSequential(new ElevatorIntakeBallHeightCommand("ElevatorIntakeBallHeightCommand"));
-    AddSequential(new ElevatorWaitForPositionCommand(0)); // TODO set to the ElevatorInatakeBallHeightCommand Template
+    // AddSequential(new ElevatorWaitForPositionCommand(0)); // TODO set to the ElevatorInatakeBallHeightCommand Template
     AddSequential(new ClimberExtendGuidesCommand());
-    AddSequential(new WaitCommand(0.25));
-    AddSequential(new ElevatorLowCommand("ElevatorLowCommand"));
+    AddSequential(new WaitCommand(0.5));
+    AddSequential(new ElevatorStowCommand("ElevatorStowCommand"));
   }
 };
 

@@ -5,19 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CLIMBERLEVEL2COMMAND
-#define SRC_CLIMBERLEVEL2COMMAND
-#include <frc/commands/InstantCommand.h>
+#ifndef SRC_ZEROCONDITIONALCOMMAND
+#define SRC_ZEROCONDITIONALCOMMAND
+
+#include <frc/commands/ConditionalCommand.h>
 #include "CommandBase.h"
 
-class ClimberLevel2Command : public frc::InstantCommand {
+class ZeroConditionalCommand : public frc::ConditionalCommand {
  public:
-  ClimberLevel2Command() : InstantCommand("ClimberLevel2Command") {
-
-  }
-  void Initialize() override {
-    CommandBase::m_pClimber->ClimberLevel2();
-  }
+  ZeroConditionalCommand() : ConditionalCommand("ZeroConditionalCommand", new Command()){}
+  bool Condition(){}
 };
 
-#endif //SRC_CLIMBERLEVEL2COMMAND
+#endif //SRC_ZEROCONDITIONALCOMMAND

@@ -5,19 +5,19 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CARGOINTAKEWAITFORBALLCOMMAND
-#define SRC_CARGOINTAKEWAITFORBALLCOMMAND
+#ifndef SRC_CARGOINTAKEWAITFORCARGOINTAKENCOMMAND
+#define SRC_CARGOINTAKEWAITFORCARGOINTAKENCOMMAND
 #include <frc/commands/Command.h>
 #include "CommandBase.h"
 
-class CargoIntakeWaitForBallCommand : public frc::Command {
+class CargoIntakeWaitForCargoIntakenCommand : public frc::Command {
  public:
-  CargoIntakeWaitForBallCommand() : Command("CargoIntakeWaitForBallCommand") {
+  CargoIntakeWaitForCargoIntakenCommand() : Command("CargoIntakeWaitForCargoIntakenCommand") {
 
   }
   bool IsFinished() override {
-    return CommandBase::m_pHatchSlide->HasBall();
+    return CommandBase::m_pCargoIntake->IsBallIntaken();
   }
 };
 
-#endif //SRC_CARGOINTAKEWAITFORBALLCOMMAND
+#endif //SRC_CARGOINTAKEWAITFORCARGOINTAKENCOMMAND

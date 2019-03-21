@@ -17,13 +17,13 @@ class HatchSlideJoystickCommand : public frc::Command {
     Requires(CommandBase::m_pHatchSlide.get());
   }
   void Execute() override{
-    if(CommandBase::m_pHatchSlide->IsHatchSlideEnabled()){
-      double percentVelY = -CommandBase::m_pOI->GetOperatorStick()->GetRawAxis(XBOX_LEFT_X_AXIS);
+    // if(CommandBase::m_pHatchSlide->IsHatchSlideEnabled()){
+      double percentVelY = -CommandBase::m_pOI->GetOperatorStick()->GetRawAxis(XBOX_RIGHT_X_AXIS);
       CommandBase::m_pHatchSlide->SetOpenLoopSpeed(percentVelY);    
-    }
+    // }
   }
   bool IsFinished() override{
-    return !CommandBase::m_pHatchSlide->IsHatchSlideEnabled();
+    return false;
   }
   void End() override{
     CommandBase::m_pHatchSlide->SetOpenLoopSpeed(0.0);

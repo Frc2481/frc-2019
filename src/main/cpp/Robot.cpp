@@ -1,11 +1,12 @@
 #include "Robot.h"
 #include "CommandBase.h"
 #include "RobotParameters.h"
+#include "RobotMap.h"
 #include <frc/WPILib.h>
 #include "Commands/SwerveDrivetrain/SwerveDrivetrainZeroSteer.h"
 #include "Commands/HatchSlide/HatchSlideZeroCommand.h"
 #include "Commands/Elevator/ElevatorZeroCommand.h"
-#include "Commands/VibrateCommand.h"
+// #include "Commands/VibrateCommand.h"
 #include "Commands/Elevator/ElevatorHomeCommand.h"
 #include "Commands/ToolChanger/ToolChangerFreeCargoCommand.h"
 #include "Commands/ToolChanger/ToolChangerHoldCargoCommand.h"
@@ -29,6 +30,12 @@
 #include "Commands/CommandGroups/ClimbSequenceCommandGroup.h"
 #include "Commands/Climber/ClimberGuidesCommand.h"
 #include "Commands/ToolChanger/ToolChangerScoreCommand.h"
+#include "Commands/CommandGroups/ZeroAllCommandGroup.h"
+#include "Commands/Climber/ClimberReleaseWeightsCommand.h"
+#include "Commands/Climber/ClimberSetPositionCommand.h"
+#include "Commands/HatchSlide/HatchSlideGoToPosition.h"
+#include "Commands/SetLEDsCommand.h"
+#include "Commands/CommandGroups/StopAllCommand.h"
 
 Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 	m_server = CameraServer::GetInstance();
@@ -38,6 +45,8 @@ void Robot::RobotInit() {
 	CommandBase::Init();
 
 	SmartDashboard::PutData("Score Command", new ToolChangerScoreCommand());
+
+	SmartDashboard::PutData("SetLEDsCommand", new SetLEDsCommand(5));
 
 	SmartDashboard::PutData("SwerveDrivetrainZeroSteer", new SwerveDrivetrainZeroSteer());
 	SmartDashboard::PutData("HatchSlideZeroCommand", new HatchSlideZeroCommand());
@@ -53,15 +62,22 @@ void Robot::RobotInit() {
 	SmartDashboard::PutData("CargoIntakeInCommand", new CargoIntakeInCommand("CargoIntakeInCommand"));
 	SmartDashboard::PutData("CargoIntakeOutCommand", new CargoIntakeOutCommand("CargoIntakeOutCommand"));
 
+	SmartDashboard::PutData("ClimberSetPositionCommand(80)", new ClimberSetPositionCommand(80));
+
 	SmartDashboard::PutData("ClimberLittleFeetUpCommand", new ClimberLittleFeetUpCommand());
 	SmartDashboard::PutData("ClimberLittleFeetDownCommand", new ClimberLittleFeetDownCommand());
 	SmartDashboard::PutData("ClimberTiltBigFootCommand", new ClimberTiltBigFootCommand());
 	SmartDashboard::PutData("ClimberUntiltBigFootCommand", new ClimberUntiltBigFootCommand());
+	
 	SmartDashboard::PutData("ClimberExtendGuidesCommand", new ClimberExtendGuidesCommand());
 	SmartDashboard::PutData("ClimberRetractGuidesCommand", new ClimberRetractGuidesCommand());
-
+	SmartDashboard::PutData("ClimberResetWeightsCommand", new ClimberResetWeightsCommand());
+	
+	SmartDashboard::PutData("ClimbSequence1To2CommandGroup", new ClimbSequence1To2CommandGroup());
 	SmartDashboard::PutData("ClimbSequence2To3CommandGroup", new ClimbSequence2To3CommandGroup());
-
+	SmartDashboard::PutData("ClimbSequenceLevel3CommandGroup", new ClimbSequenceLevel3CommandGroup());
+	
+	SmartDashboard::PutData("PrepForAcquireHatchCommandGroup", new PrepForAcquireHatchCommandGroup());
 	SmartDashboard::PutData("AcquireHatchCommand", new AcquireHatchCommandGroup());
 	SmartDashboard::PutData("AcquireCargoCommand", new AcquireCargoCommandGroup());
 	SmartDashboard::PutData("ScoreHatchCommand", new ToolChangerScoreHatchCommandGroup());
@@ -81,28 +97,37 @@ void Robot::RobotInit() {
 	SmartDashboard::PutData("CargoIntakeZeroCommand", new CargoIntakeZeroCommand());
 	
 	SmartDashboard::PutData("ZeroAllCommandGroup", new ZeroAllCommandGroup());
+
+	SmartDashboard::PutData("StopAllCommand", new StopAllCommand());
 	
 	SmartDashboard::PutData(frc::Scheduler::GetInstance());
 
-	m_pVibrate.reset(new VibrateCommand());
+	// m_pVibrate.reset(new VibrateCommand());
 
 	m_usbCam1 = m_server->StartAutomaticCapture("cam1", 0);
 	m_usbCam1.SetFPS(15);
 	m_usbCam1.SetResolution(320, 180);
-
-	m_usbCam2 = m_server->StartAutomaticCapture("cam2", 1);
-	m_usbCam2.SetFPS(15);
-	m_usbCam2.SetResolution(320, 180);
+	
+	m_zeroAll = new ZeroAllCommandGroup();
+	m_hatchExtend = new ToolChangerHatchExtendCommand();
+	m_elevatorCargoShip = new ElevatorCargoShipCommand("ElevatorLowCommand");
+	m_freeCargo = new ToolChangerFreeCargoCommand();
+	m_zeroAll->Start();
 }
 
 void Robot::RobotPeriodic() {
 	double time0 = frc::Timer::GetFPGATimestamp();
 	frc::Scheduler::GetInstance()->Run();
 	double time1 = frc::Timer::GetFPGATimestamp();
-	printf("dt = %0.1f ms\n", (time1 - time0) * 1000);
+	// printf("dt = %0.1f ms\n", (time1 - time0) * 1000);
+	// printf("LOGGER elevPos: %df, elevDesiredPos: %df, intakePos: %df\n", CommandBase::m_pElevator->GetElevatorPosition(), 
+	// 		CommandBase::m_pElevator->GetDesiredPos(), CommandBase::m_pCargoIntake->GetPosition());
 }
 
 void Robot::AutonomousInit() {
+	m_hatchExtend->Start();
+	m_elevatorCargoShip->Start();
+	m_freeCargo->Start();
 }
 
 void Robot::DisabledInit() {
@@ -110,30 +135,34 @@ void Robot::DisabledInit() {
 	CommandBase::m_pCargoIntake->SetOpenLoopSpeed(0);
 	CommandBase::m_pHatchSlide->SetOpenLoopSpeed(0);
 	CommandBase::m_pCargoIntake->SetSpeedIn(0);
+	frc::Scheduler::GetInstance()->RemoveAll();
 }
+
 
 void Robot::TeleopInit() {
 }
 
 void Robot::AutonomousPeriodic() {
+	RobotPeriodic();
 }
 
 void Robot::TeleopPeriodic() {
-	if(CommandBase::m_pHatchSlide->IsVibratable()) {
-		m_pVibrate->Start();
-		CommandBase::m_pHatchSlide->ResetVibratable();
-	}
+	RobotPeriodic();
+	// if(CommandBase::m_pHatchSlide->IsVibratable()) {
+	// 	m_pVibrate->Start();
+	// 	CommandBase::m_pHatchSlide->ResetVibratable();
+	// }
 
 	SmartDashboard::PutBoolean("All Systems Go ", CommandBase::m_pSwerveDrivetrain->areAllSteerEncodersConnected() 
 		&& CommandBase::m_pHatchSlide->SlideEncoderConnected() && CommandBase::m_pElevator->IsElevatorEncoderConnected());
 }
 
 void Robot::DisabledPeriodic() {
-	frc::SmartDashboard::PutBoolean("ball intook", CommandBase::m_pCargoIntake->IsBallIntaken());
 }
 
 void Robot::TestPeriodic() {
 }
+
 
 #ifndef RUNNING_FRC_TESTS
 int main() {

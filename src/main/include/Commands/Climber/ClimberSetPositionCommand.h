@@ -5,19 +5,26 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CARGOINTAKEWAITFORBALLCOMMAND
-#define SRC_CARGOINTAKEWAITFORBALLCOMMAND
+#ifndef SRC_CLIMBERSETPOSITIONCOMMAND
+#define SRC_CLIMBERSETPOSITIONCOMMAND
+
 #include <frc/commands/Command.h>
 #include "CommandBase.h"
 
-class CargoIntakeWaitForBallCommand : public frc::Command {
+class ClimberSetPositionCommand : public frc::Command {
+  private:
+  double m_pos;
  public:
-  CargoIntakeWaitForBallCommand() : Command("CargoIntakeWaitForBallCommand") {
-
+  ClimberSetPositionCommand(double pos) : Command("ClimberSetPositionCommand") {
+    Requires(CommandBase::m_pClimber.get());
+    m_pos = pos;
+  }
+  void Initialize() override {
+    CommandBase::m_pClimber->SetPosition(m_pos);
   }
   bool IsFinished() override {
-    return CommandBase::m_pHatchSlide->HasBall();
+    return CommandBase::m_pClimber->IsOnTarget();
   }
 };
 
-#endif //SRC_CARGOINTAKEWAITFORBALLCOMMAND
+#endif //SRC_CLIMBERSETPOSITIONCOMMAND

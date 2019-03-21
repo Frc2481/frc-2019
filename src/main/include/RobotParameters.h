@@ -63,6 +63,7 @@ namespace RobotParameters {
     // HatchSlide
     static constexpr double k_beltCircumference = 1.128 * 3.14; //1.625in * pi
     static constexpr double k_feedForwardHatch = 0.148;
+    static constexpr int k_allowableCloseLoopError = 125;
 
     // Elevator
     static constexpr double k_elevatorVelocity = 0;
@@ -73,7 +74,8 @@ namespace RobotParameters {
     static constexpr double k_elevatorCollisionMax = 22; //inches
 
     // CargoIntake
-    static constexpr double k_cargoIntakeThreshold = 1000; // point where it's no longer safe to move elevator down onto it
+    static constexpr double k_cargoIntakeThresholdIn = 100; // point where it's no longer safe to move elevator down onto it
+    static constexpr double k_cargoIntakeThresholdOut = 17000;
     static constexpr double k_cargoIntakeBeltCircumference = 1.128 * 3.14;
     static constexpr double k_cargoIntakeTicksPerRev = 4096;
     static constexpr double k_intakeSpeedFull = 1;

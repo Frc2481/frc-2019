@@ -5,26 +5,23 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CLIMBERGUIDESCOMMAND
-#define SRC_CLIMBERGUIDESCOMMAND
+#ifndef SRC_HATCHSLIDESETSETPOINTCOMMAND
+#define SRC_HATCHSLIDESETSETPOINTCOMMAND
 
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 
-class ClimberExtendGuidesCommand : public frc::InstantCommand{
-  public:
-  ClimberExtendGuidesCommand() : InstantCommand("ClimberExtendGuidesCommand"){}
-  void Initialize() override{
-    CommandBase::m_pClimber->ExtendGuides();
+class HatchSlideSetSetpointCommand : public frc::InstantCommand {
+  private:
+  double m_setPoint;
+ public:
+  HatchSlideSetSetpointCommand(double pos) : InstantCommand("HatchSlideSetSetpointCommand"){
+    Requires(CommandBase::m_pHatchSlide.get());
+    m_setPoint = pos;
+  }
+    void Initialize(){
+    CommandBase::m_pHatchSlide->setSetPoint(CommandBase::m_pHatchSlide->ConvertInchesToTicks(m_setPoint));
   }
 };
 
-class ClimberRetractGuidesCommand : public frc::InstantCommand{
-  public:
-  ClimberRetractGuidesCommand() : InstantCommand("ClimberRetractGuidesCommand"){}
-  void Initialize() override{
-    CommandBase::m_pClimber->RetractGuides();
-  }
-};
-
-#endif //SRC_CLIMBERGUIDESCOMMAND
+#endif //SRC_HATCHSLIDESETSETPOINTCOMMAND

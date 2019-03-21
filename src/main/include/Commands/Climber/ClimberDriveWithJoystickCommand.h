@@ -19,16 +19,16 @@ class ClimberDriveWithJoystickCommand : public frc::Command {
   void Initialize() override {
   }
   void Execute() override {
-    if(CommandBase::m_pClimber->IsClimberEnabled()){
+    // if(CommandBase::m_pClimber->IsClimberEnabled()){
           // get joystick input
       double percentVelY = -CommandBase::m_pOI->GetOperatorStick()->GetRawAxis(XBOX_LEFT_Y_AXIS);
 
       // // update climb
       CommandBase::m_pClimber->SetOpenLoopSpeed(percentVelY);
-    }
+    // }
   }
   bool IsFinished() override{
-    return !CommandBase::m_pClimber->IsClimberEnabled();
+    return false;
   }
   void End() override{
     CommandBase::m_pClimber->SetOpenLoopSpeed(0);

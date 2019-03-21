@@ -12,21 +12,27 @@
 #include <frc/commands/CommandGroup.h>
 #include "CommandBase.h"
 #include "RobotParameters.h"
+#include "Commands/CommandGroups/RetractIntakeIfNeededCommandGroup.h"
+#include "Commands/ToolChanger/ToolChangerFreeCargoCommand.h"
+#include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
 
-template <int CARGO_HEIGHT,int HATCH_HEIGHT>
+template <int CARGO_HEIGHT, int HATCH_HEIGHT>
 class ElevatorBaseCommand : public frc::Command {
  public:
   ElevatorBaseCommand(std::string name) : Command(name) {
     Requires(CommandBase::m_pElevator.get());
   }
   void Initialize() override {
-    if(CommandBase::m_pToolChanger->HasCargo() && IsPositionSetPointAllowed(CARGO_HEIGHT)) {
-      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT, true);
+    if(((HATCH_HEIGHT / 10.0) < 3 || (CARGO_HEIGHT / 10.0) < 3) && CommandBase::m_pCargoIntake->IsIntakeIn()) {
+      CommandBase::m_pToolChanger->ExtendHatch();
     }
-    else if(CommandBase::m_pToolChanger->HasHatch() && IsPositionSetPointAllowed(HATCH_HEIGHT)){
-      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT, true);
-    } else {
-      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT, true);
+    if(CommandBase::m_pToolChanger->HasCargo() && IsPositionSetPointAllowed(CARGO_HEIGHT / 10.0)) {
+      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT / 10.0, true);
+    }
+    else if(CommandBase::m_pToolChanger->HasHatch() && IsPositionSetPointAllowed(HATCH_HEIGHT / 10.0)){
+      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT / 10.0, true);
+    } else if(IsPositionSetPointAllowed(HATCH_HEIGHT / 10.0)){
+      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT / 10.0, true);
     }
   }
   
@@ -37,8 +43,7 @@ class ElevatorBaseCommand : public frc::Command {
 
   bool IsPositionSetPointAllowed(int pos) {
     //if traveling through protected zone while cargoIntake out, don't allow movement
-    return true;
-    if(CommandBase::m_pCargoIntake->IsIntakeOut() &&
+    if(CommandBase::m_pCargoIntake->IsIntakeInProtectedZone() &&
           (CommandBase::m_pElevator->IsPositionInProtectedZone(CommandBase::m_pElevator->GetElevatorPosition()) ||
           CommandBase::m_pElevator->IsPositionInProtectedZone(pos))) {
       return false;
@@ -49,13 +54,13 @@ class ElevatorBaseCommand : public frc::Command {
   }
 
   void End() {
-    if(CommandBase::m_pToolChanger->HasCargo() && IsPositionSetPointAllowed(CARGO_HEIGHT)) {
-      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT, false);
+    if(CommandBase::m_pToolChanger->HasCargo() && IsPositionSetPointAllowed(CARGO_HEIGHT / 10.0)) {
+      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT / 10.0, false);
     }
-    else if(CommandBase::m_pToolChanger->HasHatch() && IsPositionSetPointAllowed(HATCH_HEIGHT)){
-      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT, false);
+    else if(CommandBase::m_pToolChanger->HasHatch() && IsPositionSetPointAllowed(HATCH_HEIGHT / 10.0)){
+      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT / 10.0, false);
     } else {
-      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT, false);
+      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT / 10.0, false);
     }
     SmartDashboard::PutNumber("ElevatorExecutionTime", TimeSinceInitialized());
   }
@@ -68,17 +73,25 @@ class ElevatorBaseCommand : public frc::Command {
 template <int CARGO_HEIGHT, int HATCH_HEIGHT>
 class ElevatorBaseCommandGroup : public CommandGroup {
   public:
-  ElevatorBaseCommandGroup(std::string name) : CommandGroup(name) {
+  ElevatorBaseCommandGroup(std::string name, bool safeIntakeRetract = true) : CommandGroup(name) {
+    if(safeIntakeRetract) {
+      AddSequential(new RetractIntakeIfNeededCommand());
+    }
     AddSequential(new ElevatorBaseCommand<CARGO_HEIGHT, HATCH_HEIGHT>(name), 3.0);
+    if(safeIntakeRetract) {
+      AddSequential(new RetractIntakeIfNeededCommand());
+    }
   }
 }; 
 
-typedef ElevatorBaseCommandGroup<24, 24> ElevatorIntakeBallHeightCommand; //TODO check reasonable height
-typedef ElevatorBaseCommandGroup<65, 59> ElevatorHighCommand; // 27393, 25412
-typedef ElevatorBaseCommandGroup<37, 31> ElevatorMidCommand; // 16075, 13180
-typedef ElevatorBaseCommandGroup<9, 3> ElevatorLowCommand; // 3918, 1273
-typedef ElevatorBaseCommandGroup<9, 9> ElevatorCargoLowCommand; // 3918, 3918
-typedef ElevatorBaseCommandGroup<9, 3> ElevatorCargoShipCommand; // 3918, 1273
+typedef ElevatorBaseCommandGroup<25, 25> ElevatorPreIntakeBallHeightCommand;
+typedef ElevatorBaseCommandGroup<300, 300> ElevatorIntakeBallHeightCommand;
+typedef ElevatorBaseCommandGroup<680, 650> ElevatorHighCommand; //67 cargo height
+typedef ElevatorBaseCommandGroup<400, 360> ElevatorMidCommand;
+typedef ElevatorBaseCommandGroup<110, 60> ElevatorLowCommand;
+typedef ElevatorBaseCommandGroup<90, 90> ElevatorCargoLowCommand;
+typedef ElevatorBaseCommandGroup<300, 30> ElevatorCargoShipCommand;
 typedef ElevatorBaseCommandGroup<0, 0> ElevatorStowCommand;
+typedef ElevatorBaseCommandGroup<0, 0> ElevatorIntakePosCommand;
 
 #endif //SRC_ELEVATORBASECOMMAND

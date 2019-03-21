@@ -21,7 +21,10 @@ private:
 	std::unique_ptr<Command> m_pVibrate;
 	CameraServer* m_server;
 	cs::UsbCamera m_usbCam1;
-	cs::UsbCamera m_usbCam2;
+	Command* m_hatchExtend;
+	Command* m_elevatorCargoShip;
+	Command* m_zeroAll;
+	Command* m_freeCargo;
 };
 
 #endif // ROBOT_H

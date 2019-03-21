@@ -16,23 +16,27 @@
 #include "Commands/ToolChanger/ToolChangerRetractCommand.h"
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
 #include "Commands/ToolChanger/ToolChangerFreeCargoCommand.h"
+#include "Commands/ToolChanger/ToolChangerWaitForHatchCommand.h"
+#include "Commands/ToolChanger/ToolChangerHoldCargoCommand.h"
+#include "Commands/SetLEDsCommand.h"
 
 class PrepForAcquireHatchCommandGroup : public frc::CommandGroup {
   public:
   PrepForAcquireHatchCommandGroup() : CommandGroup("PrepForAcquireHatchCommandGroup") {
-    AddParallel(new ToolChangerSetHasHatchCommand(true));
-    AddParallel(new ToolChangerFreeHatchCommand());
-    AddSequential(new ElevatorLowCommand("ElevatorLowCommand"));
     AddSequential(new ToolChangerHatchExtendCommand());
+    AddSequential(new ToolChangerFreeHatchCommand());
+    AddSequential(new ElevatorIntakePosCommand("ElevatorIntakePosCommand"));
+    AddSequential(new ToolChangerHoldCargoCommand());
   }
 };
 
 class AcquireHatchCommandGroup : public frc::CommandGroup {
  public:
   AcquireHatchCommandGroup() : CommandGroup("AcquireHatchCommandGroup") {
+    // AddSequential(new ToolChangerWaitForHatchCommand());
+    AddParallel(new SetLEDsCommand(5));
     AddSequential(new ToolChangerHoldHatchCommand());
-    AddSequential(new WaitCommand(0.1)); //shrink as we become confident
-    AddSequential(new ToolChangerFreeCargoCommand());
+    AddParallel(new ToolChangerSetHasHatchCommand(true));
 
     // state at end:
     // Elevator: Low

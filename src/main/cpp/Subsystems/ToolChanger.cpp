@@ -12,11 +12,11 @@ ToolChanger::ToolChanger() : Subsystem("ToolChanger") {
   m_cargoTool = new frc::DoubleSolenoid(CARGO_TOOL_SOLENOID);
   m_hatchExtender = new frc::DoubleSolenoid(HATCH_EXTENDER_SOLENOID);
  
-  // m_limitSwitch = new frc::DigitalInput(TOOL_CHANGER_LIMIT_SWITCH);
+  m_capacitiveSensor = new frc::DigitalInput(TOOL_CHANGER_CAPACITIVE_SENSOR);
 
   m_hatchTool->Set(frc::DoubleSolenoid::kReverse);
   m_cargoTool->Set(frc::DoubleSolenoid::kReverse);
-  m_hatchExtender->Set(frc::DoubleSolenoid::kForward);
+  m_hatchExtender->Set(frc::DoubleSolenoid::kReverse);
 
   m_isHatchToolHeld = false;
   m_isCargoToolHeld = false; 
@@ -77,7 +77,3 @@ void ToolChanger::SetHasHatch(bool hasHatch){
   m_hasHatch = hasHatch;
   m_hasCargo = false;
 }
-
-// bool ToolChanger::GetIsLimitSwitchTriggered() {
-//   return m_limitSwitch->Get();
-// }

@@ -56,6 +56,7 @@ public:
     void zeroGyroYaw();
     void setIsOpenLoopFieldFrame(bool isOpenLoopFieldFrame);
     bool areAllSteerEncodersConnected();
+    void setBrakeMode();
 
 private:
     rev::CANSparkMax* m_pFRDriveMotor;

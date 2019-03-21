@@ -5,19 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CLIMBERRETRACTCOMMAND
-#define SRC_CLIMBERRETRACTCOMMAND
-#include <frc/commands/InstantCommand.h>
+#ifndef SRC_TOOLCHANGERWAITFORHATCHCOMMAND
+#define SRC_TOOLCHANGERWAITFORHATCHCOMMAND
+
+#include <frc/commands/Command.h>
 #include "CommandBase.h"
 
-class ClimberRetractCommand : public frc::InstantCommand {
+class ToolChangerWaitForHatchCommand : public frc::Command {
  public:
-  ClimberRetractCommand() : InstantCommand("ClimberRetractCommand") {
-
-  }
-  void Initialize() override {
-    CommandBase::m_pClimber->ClimberRetract();
+  ToolChangerWaitForHatchCommand() : Command("ToolChangerWaitForHatchCommand") {}
+  bool IsFinished() override {
+    return CommandBase::m_pHatchSlide->IsHatchSeen();
   }
 };
 
-#endif //SRC_CLIMBERRETRACTCOMMAND
+#endif //SRC_TOOLCHANGERWAITFORHATCHCOMMAND

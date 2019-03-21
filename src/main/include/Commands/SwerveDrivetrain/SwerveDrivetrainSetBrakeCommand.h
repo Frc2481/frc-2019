@@ -5,19 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CARGOINTAKEWAITFORBALLCOMMAND
-#define SRC_CARGOINTAKEWAITFORBALLCOMMAND
-#include <frc/commands/Command.h>
+#ifndef SRC_SWERVEDRIVETRAINSETBRAKECOMMAND
+#define SRC_SWERVEDRIVETRAINSETBRAKECOMMAND
+
+#include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 
-class CargoIntakeWaitForBallCommand : public frc::Command {
+class SwerveDrivetrainSetBrakeCommand : public frc::InstantCommand {
  public:
-  CargoIntakeWaitForBallCommand() : Command("CargoIntakeWaitForBallCommand") {
-
-  }
-  bool IsFinished() override {
-    return CommandBase::m_pHatchSlide->HasBall();
+  SwerveDrivetrainSetBrakeCommand() : InstantCommand("SwerveDrivetrainSetBrakeCommand") {}
+  void Initialize() override {
+    CommandBase::m_pSwerveDrivetrain->setBrakeMode();
   }
 };
 
-#endif //SRC_CARGOINTAKEWAITFORBALLCOMMAND
+#endif //SRC_SWERVEDRIVETRAINSETBRAKECOMMAND

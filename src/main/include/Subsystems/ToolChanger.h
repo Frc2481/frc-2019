@@ -18,7 +18,7 @@ class ToolChanger : public frc::Subsystem {
   frc::DoubleSolenoid* m_hatchTool;
   frc::DoubleSolenoid* m_cargoTool;
   frc::DoubleSolenoid* m_hatchExtender;
-  // frc::DigitalInput* m_limitSwitch;
+  frc::DigitalInput* m_capacitiveSensor;
   bool m_isHatchToolHeld;
   bool m_isCargoToolHeld;
   bool m_hasCargo;
@@ -42,7 +42,6 @@ class ToolChanger : public frc::Subsystem {
   bool HasHatch();
   void SetHasCargo(bool hasCargo);
   void SetHasHatch(bool hasHatch);
-  // bool GetIsLimitSwitchTriggered();
 };
 
 #endif //SRC_TOOLCHANGER

@@ -5,19 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CLIMBERLEVEL3COMMAND
-#define SRC_CLIMBERLEVEL3COMMAND
+#ifndef SRC_STOPALLCOMMAND
+#define SRC_STOPALLCOMMAND
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 
-class ClimberLevel3Command : public frc::InstantCommand {
+class StopAllCommand : public frc::InstantCommand {
  public:
-  ClimberLevel3Command() : InstantCommand("ClimberLevel3Command") {
-
-  }
+  StopAllCommand() : InstantCommand("StopAllCommand"){}
   void Initialize() override {
-    CommandBase::m_pClimber->ClimberLevel3();
+    CommandBase::m_pElevator->SetOpenLoopSpeed(0);
+    CommandBase::m_pCargoIntake->SetOpenLoopSpeed(0);
+    CommandBase::m_pHatchSlide->SetOpenLoopSpeed(0);
+    CommandBase::m_pCargoIntake->SetSpeedIn(0);
+    frc::Scheduler::GetInstance()->RemoveAll();
   }
 };
 
-#endif //SRC_CLIMBERLEVEL3COMMAND
+#endif //SRC_STOPALLCOMMAND

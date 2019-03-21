@@ -5,19 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CARGOINTAKEWAITFORBALLCOMMAND
-#define SRC_CARGOINTAKEWAITFORBALLCOMMAND
-#include <frc/commands/Command.h>
-#include "CommandBase.h"
+#ifndef SRC_MOTIONINPROGRESSCOMMAND
+#define SRC_MOTIONINPROGRESSCOMMAND
 
-class CargoIntakeWaitForBallCommand : public frc::Command {
+#include <frc/commands/ConditionalCommand.h>
+
+class MotionInProgressCommand : public frc::ConditionalCommand {
+  private:
+  Command* m_command;
  public:
-  CargoIntakeWaitForBallCommand() : Command("CargoIntakeWaitForBallCommand") {
-
+  MotionInProgressCommand(Command* command) : ConditionalCommand("MotionInProgressCommand") {
+    m_command = command;
   }
-  bool IsFinished() override {
-    return CommandBase::m_pHatchSlide->HasBall();
+  bool Condition() {
+
   }
 };
 
-#endif //SRC_CARGOINTAKEWAITFORBALLCOMMAND
+#endif //SRC_MOTIONINPROGRESSCOMMAND

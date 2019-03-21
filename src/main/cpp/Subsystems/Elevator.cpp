@@ -56,7 +56,7 @@ Elevator::Elevator() : Subsystem("Elevator") {
   talonConfig.peakCurrentLimit = 0;
   talonConfig.primaryPID.selectedFeedbackSensor = CTRE_MagEncoder_Relative;
 
-  talonConfig.forwardSoftLimitThreshold = 27450; 
+  talonConfig.forwardSoftLimitThreshold = 29100;
   talonConfig.forwardSoftLimitEnable = true;
   talonConfig.reverseSoftLimitThreshold = 0; //5200;
   talonConfig.reverseSoftLimitEnable = true;
@@ -68,6 +68,8 @@ Elevator::Elevator() : Subsystem("Elevator") {
 
   m_desiredElevatorPosition = 0;
   m_isElevatorManualEnabled = false;
+  m_hasResetOccurred = m_masterElevator->HasResetOccurred();
+  frc::SmartDashboard::PutBoolean("IsElevatorMasterTalonReset", true);
 }
 
 void Elevator::InitDefaultCommand() {
@@ -93,9 +95,8 @@ void Elevator::Periodic() {
     frc::SmartDashboard::PutNumber("ElevatorDesiredPos", GetDesiredPos());
   } 
   else if (loopCounter == 4) {
-    bool hasResetOccurred = m_masterElevator->HasResetOccurred();
-    frc::SmartDashboard::PutBoolean("IsElevatorMasterTalonReset", hasResetOccurred);
-    if(hasResetOccurred && m_isMasterZeroed){
+    if(m_masterElevator->HasResetOccurred() && m_isMasterZeroed){
+      frc::SmartDashboard::PutBoolean("IsElevatorMasterTalonReset", !m_masterElevator->HasResetOccurred());
       m_isMasterZeroed = false;
       SetOpenLoopSpeed(0);
     }
@@ -124,7 +125,7 @@ double Elevator::GetVelocity(){
   return m_masterElevator->GetActiveTrajectoryVelocity();
 }
 bool Elevator::IsOnTarget() {
-  return fabs(m_desiredElevatorPosition - GetElevatorPosition()) < 1;
+  return fabs(m_desiredElevatorPosition - GetElevatorPosition()) < 0.5; //1
 }
 void Elevator::ZeroElevatorEncoder() {
   for(int i = 0; i < 5; i++) {
@@ -192,4 +193,7 @@ void Elevator::DisableElevatorManual(){
 }
 bool Elevator::IsElevatorManualEnabled(){
   return m_isElevatorManualEnabled;
+}
+bool Elevator::IsElevatorGoingUp() {
+  return GetElevatorPosition() - GetDesiredPos() < 0;
 }

@@ -15,6 +15,11 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
   m_slideEncoder = new CTREMagEncoder(m_motor, "SLIDE_MOTOR_ENCODER");
   ctre::phoenix::motorcontrol::can::TalonSRXConfiguration talonConfig;
 
+  m_hatchSensor = new frc::DigitalInput(TOOL_CHANGER_CAPACITIVE_SENSOR);
+
+	m_LED = new Solenoid(LED);
+  m_LED->Set(false);
+
   m_motor->SetInverted(false);
   m_motor->SetSensorPhase(true);
   m_motor->SetNeutralMode(Brake);
@@ -24,12 +29,11 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
 
   talonConfig.motionCurveStrength = 5;
 
-
-  talonConfig.slot0.kF = 0.1; // 1024/max speed //old = 0.1528;
+  talonConfig.slot0.kF = 0.15; // 1024/max speed //old = 0.1528;
   talonConfig.slot0.kP = 1;
-  talonConfig.slot0.allowableClosedloopError = 0;
-  talonConfig.motionCruiseVelocity = 6000; //convert to talonConfig speed: encoder count/100 ms / 2.0
-  talonConfig.motionAcceleration = 2400; //9200
+  talonConfig.slot0.allowableClosedloopError = RobotParameters::k_allowableCloseLoopError;
+  talonConfig.motionCruiseVelocity = 7000; //convert to talonConfig speed: encoder count/100 ms / 2.0
+  talonConfig.motionAcceleration = 56000; //9200
   talonConfig.peakCurrentDuration = 0; 
   talonConfig.continuousCurrentLimit = 30;
   talonConfig.peakCurrentLimit = 0;
@@ -37,8 +41,11 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
 
   talonConfig.forwardSoftLimitEnable = true;
   talonConfig.reverseSoftLimitEnable = true;
-  talonConfig.forwardSoftLimitThreshold = 8984;
-  talonConfig.reverseSoftLimitThreshold = -8678;
+  talonConfig.forwardSoftLimitThreshold = 9000;
+  talonConfig.reverseSoftLimitThreshold = -9000;
+
+  talonConfig.forwardLimitSwitchNormal = LimitSwitchNormal_Disabled;
+  talonConfig.reverseLimitSwitchNormal = LimitSwitchNormal_Disabled;
 
   m_motor->ConfigAllSettings(talonConfig);
   m_motor->SelectProfileSlot(0, 0);
@@ -58,8 +65,14 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
   m_pulseDim = 0.0;
   m_isVibratable = false;
   m_encoderConnected = false;
-  m_hatchSlideEnabled = false;
+  m_hatchSlideUserEnabled = false;
+  m_hatchSlideSafetyEnabled = false;
   m_oldTargetValid = false;
+  m_hasResetOccurred = m_motor->HasResetOccurred();
+  SmartDashboard::PutBoolean("IsSlideTalonReset", true);
+  m_ledDesiredState = false;
+  m_noLineCounter = 0;
+  m_desiredPos = 0.0;
 }
 
 void HatchSlide::InitDefaultCommand() {
@@ -67,12 +80,14 @@ void HatchSlide::InitDefaultCommand() {
 }
 
 void HatchSlide::Periodic() {
-  SmartDashboard::PutNumber("HatchSlideError", m_motor->GetClosedLoopError());;
+  SmartDashboard::PutNumber("HatchSlideError", m_motor->GetClosedLoopError());
   SmartDashboard::PutBoolean("IsHatchZeroed", m_isHatchZeroed);
   SmartDashboard::PutBoolean("IsSlideOnTarget", IsSlideOnTarget());
   SmartDashboard::PutNumber("HatchSlidePos", ConvertTicksToInches(GetHatchPosition()));
-  SmartDashboard::PutBoolean("IsSlideTalonReset", m_motor->HasResetOccurred());
+  frc::SmartDashboard::PutBoolean("IsHatchSeen", IsHatchSeen());
+  frc::SmartDashboard::PutBoolean("HasBall", HasBall());
   if(m_motor->HasResetOccurred() && m_isHatchZeroed){
+  SmartDashboard::PutBoolean("IsSlideTalonReset", !m_motor->HasResetOccurred());
     m_isHatchZeroed = false;
     SetOpenLoopSpeed(0);
   }
@@ -80,13 +95,10 @@ void HatchSlide::Periodic() {
   m_pulseBright = m_irSensorBright->GetPeriod();
   m_pulseDim = m_irSensorDim->GetPeriod();
 
+  SmartDashboard::PutNumber("PWM value", m_pulseBright);
+
   SmartDashboard::PutNumber("Teensy dist bright", GetBrightPulseDist());
   SmartDashboard::PutNumber("Teensy dist dim", GetDimPulseDist());
-
-  if(m_motor->GetControlMode() == ControlMode::MotionMagic) {
-    SmartDashboard::PutNumber("active trajectory position slide", ConvertTicksToInches(m_motor->GetActiveTrajectoryPosition()));
-    SmartDashboard::PutNumber("active trajectory velocity slide", ConvertTicksToInches(m_motor->GetActiveTrajectoryVelocity() * 10));
-  }
 
   SmartDashboard::PutBoolean("is line visible", IsLineVisible());
   
@@ -101,32 +113,64 @@ void HatchSlide::Periodic() {
   }
 
   m_oldTargetValid = IsLineVisible();
+
+  //go to position
+  if(IsHatchSlideUserEnabled()) {
+    if(IsLineVisible() && isZeroed()) {
+      setSetPoint(ConvertInchesToTicks(GetBrightPulseDist() - 13));
+      m_noLineCounter = 0;
+    }
+    else if(!IsLineVisible() && isZeroed()) {
+      m_noLineCounter++;
+      if(m_noLineCounter > 20) {
+        setSetPoint(0);
+      }
+    }
+    else if(!isZeroed()) {
+      SetOpenLoopSpeed(0);
+    }
+    SmartDashboard::PutNumber("hatch slide setpoint", ConvertInchesToTicks(GetBrightPulseDist() - 13));
+  }
+  else {
+    setSetPoint(0);
+  }
+
+  if(RobotParameters::k_allowableCloseLoopError > fabs(m_motor->GetSelectedSensorPosition() - m_desiredPos)) {
+      m_LED->Set(true);
+  }
+  else {
+    m_LED->Set(false);
+  }
 }
 
 void HatchSlide::setSetPoint(int value) {
   if(m_isHatchZeroed){
-    // m_motor->Config_kF(0, CommandBase::m_pLineFinder->getXVel() * RobotParameters::k_lineFinderKp, 0);
-    m_motor->Set(ControlMode::MotionMagic, value);
-    if(m_motor->GetSelectedSensorPosition() < value) {
-      m_motor->Set(ControlMode::MotionMagic, value, DemandType::DemandType_ArbitraryFeedForward, 0.1);
+  // m_motor->Set(ControlMode::MotionMagic, value);
+    // if(m_motor->GetSelectedSensorPosition() < value) {
+    //   m_motor->Set(ControlMode::MotionMagic, value, DemandType::DemandType_ArbitraryFeedForward, 0); //0.1);
+    //           m_LED->Set(true);
+    // }
+    // else if(m_motor->GetSelectedSensorPosition() > value){
+    // }
+    m_desiredPos = value;
+    if(RobotParameters::k_allowableCloseLoopError > fabs(m_motor->GetSelectedSensorPosition() - value)) {
+      SetOpenLoopSpeed(0);
     }
     else {
-      m_motor->Set(ControlMode::MotionMagic, value, DemandType::DemandType_ArbitraryFeedForward, -0.1);
+      m_motor->Set(ControlMode::MotionMagic, value, DemandType::DemandType_ArbitraryFeedForward, 0); //-0.1);
     }
-
-    // m_motor->Set(ControlMode::MotionMagic, value, DemandType_ArbitraryFeedForward, .03 * CommandBase::m_pLineFinder->getXVel());
-    SmartDashboard::PutNumber("HatchDesiredPos", value);
   }
+  SmartDashboard::PutNumber("HatchDesiredPos", value);
 }
 
 void HatchSlide::ZeroHatchPosition() {
-  m_isHatchZeroed = true;
   for(int i = 0; i < 5; i++) {
     ErrorCode error = m_motor->SetSelectedSensorPosition(0, 0, 10);
     if(error == OK) {
       break;
     }
   }
+  m_isHatchZeroed = true;
   m_motor->ClearStickyFaults();
 }
 
@@ -155,7 +199,7 @@ double HatchSlide::GetDimPulseDist() {
 }
 
 bool HatchSlide::IsLineVisible() {
-  return (GetBrightPulseDist() >-1 && GetBrightPulseDist() < 28);
+  return GetBrightPulseDist() < 29;
 }
 
 bool HatchSlide::IsSlideOnTarget() {
@@ -174,18 +218,47 @@ bool HatchSlide::SlideEncoderConnected() {
   return m_encoderConnected;
 }
 
-void HatchSlide::EnableHatchSlide() {
-  m_hatchSlideEnabled = true;
+void HatchSlide::EnableUserHatchSlide() {
+  m_hatchSlideUserEnabled = true;
 }
 
-void HatchSlide::DisableHatchSlide() {
-  m_hatchSlideEnabled = false;
+void HatchSlide::DisableUserHatchSlide() {
+  m_hatchSlideUserEnabled = false;
 }
 
-bool HatchSlide::IsHatchSlideEnabled() {
-  return m_hatchSlideEnabled;
+bool HatchSlide::IsHatchSlideUserEnabled() {
+  return m_hatchSlideUserEnabled;
+}
+
+void HatchSlide::EnableSafetyHatchSlide() {
+  m_hatchSlideSafetyEnabled = true;
+}
+
+void HatchSlide::DisableSafetyHatchSlide() {
+  m_hatchSlideSafetyEnabled = false;
+}
+
+bool HatchSlide::IsHatchSlideSafetyEnabled() {
+  return m_hatchSlideSafetyEnabled;
 }
 
 void HatchSlide::SetOpenLoopSpeed(double speed) {
   m_motor->Set(ControlMode::PercentOutput, speed);
+}
+
+bool HatchSlide::isZeroed(){
+  return m_isHatchZeroed;
+}
+bool HatchSlide::HasBall() {
+  return m_motor->GetSensorCollection().IsFwdLimitSwitchClosed();
+}
+bool HatchSlide::IsHatchSeen() {
+  return m_hatchSensor;
+}
+void HatchSlide::SetLEDs(bool led) {
+  m_LED->Set(led);
+}
+
+bool HatchSlide::GetLEDs() {
+  return m_LED->Get();
 }
