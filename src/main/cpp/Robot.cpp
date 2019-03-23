@@ -105,8 +105,8 @@ void Robot::RobotInit() {
 	// m_pVibrate.reset(new VibrateCommand());
 
 	m_usbCam1 = m_server->StartAutomaticCapture("cam1", 0);
-	m_usbCam1.SetFPS(15);
-	m_usbCam1.SetResolution(320, 180);
+	m_usbCam1.SetFPS(12);
+	m_usbCam1.SetResolution(160, 90);
 	
 	m_zeroAll = new ZeroAllCommandGroup();
 	m_hatchExtend = new ToolChangerHatchExtendCommand();

@@ -92,6 +92,6 @@ typedef ElevatorBaseCommandGroup<110, 60> ElevatorLowCommand;
 typedef ElevatorBaseCommandGroup<90, 90> ElevatorCargoLowCommand;
 typedef ElevatorBaseCommandGroup<300, 30> ElevatorCargoShipCommand;
 typedef ElevatorBaseCommandGroup<0, 0> ElevatorStowCommand;
-typedef ElevatorBaseCommandGroup<0, 0> ElevatorIntakePosCommand;
+typedef ElevatorBaseCommandGroup<3, 3> ElevatorIntakePosCommand;
 
 #endif //SRC_ELEVATORBASECOMMAND

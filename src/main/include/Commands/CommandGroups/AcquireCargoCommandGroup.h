@@ -52,7 +52,7 @@ class AcquireCargoCommandGroup : public frc::CommandGroup {
     //intake ball
     AddSequential(new CargoIntakeBallCommand(1));
     AddSequential(new CargoIntakeWaitForCargoIntakenCommand());
-    AddSequential(new CargoIntakeBallCommand(0.8));
+    AddSequential(new CargoIntakeBallCommand(0.6));
     AddSequential(new CargoIntakeWaitForBallCommand());
     AddSequential(new CargoIntakeStopCommand());
     AddSequential(new ToolChangerHoldCargoCommand());

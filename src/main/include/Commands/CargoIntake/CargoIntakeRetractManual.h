@@ -5,22 +5,38 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_STOPALLCOMMAND
-#define SRC_STOPALLCOMMAND
-#include <frc/commands/InstantCommand.h>
+#ifndef COMMAND_CARGO_INTAKE_RETRACT_MANUAL
+#define COMMAND_CARGO_INTAKE_RETRACT_MANUAL
+
+#include <frc/commands/Command.h>
+#include "Subsystems/CargoIntake.h"
 #include "CommandBase.h"
 
-class StopAllCommand : public frc::InstantCommand {
+class CargoIntakeRetractManual : public frc::Command {
+ private:
+
  public:
-  StopAllCommand() : InstantCommand("StopAllCommand"){}
+  CargoIntakeRetractManual() : Command("CargoIntakeRetractManual") {
+    Requires(CommandBase::m_pCargoIntake.get());
+  }
+
   void Initialize() override {
-    CommandBase::m_pElevator->SetOpenLoopSpeed(0);
+  }
+
+  void Execute() override {
+    CommandBase::m_pCargoIntake->SetOpenLoopSpeed(-0.5);
+  }
+
+  bool IsFinished() override {
+    return false;
+  }
+  void End() override {
     CommandBase::m_pCargoIntake->SetOpenLoopSpeed(0);
-    CommandBase::m_pHatchSlide->SetOpenLoopSpeed(0);
-    CommandBase::m_pClimber->SetOpenLoopSpeed(0);
-    CommandBase::m_pCargoIntake->StopIntake();
-    frc::Scheduler::GetInstance()->RemoveAll();
+  }
+
+  void Interrupted() override {
+    End();
   }
 };
 
-#endif //SRC_STOPALLCOMMAND
+#endif //COMMAND_CARGO_INTAKE_RETRACT_MANUAL

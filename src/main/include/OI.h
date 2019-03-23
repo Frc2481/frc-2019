@@ -37,6 +37,7 @@ public:
     frc::Button* m_climbL1ToL3;
     frc::JoystickButton *m_pSetFieldFrameButton;
     frc::Button* m_zeroGyro;
+    AnalogJoystickButton* m_stopAll;
 
 //operator
     frc::Button* m_shiftWeights;
@@ -52,6 +53,8 @@ public:
     AnalogJoystickButton* m_hatchExtend;
     frc::Button* m_backpedal;
     frc::Button* m_intakeOut;
+    frc::Button* m_cargoRetractManual;
+    frc::Button* m_cargoExtendManual;
 
     frc::Button* m_scoreCargoShip;
     frc::Button* m_scoreHigh;

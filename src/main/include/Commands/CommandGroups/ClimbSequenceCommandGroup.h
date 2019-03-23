@@ -18,6 +18,7 @@
 #include "Commands/Climber/ClimberReleaseWeightsCommand.h"
 #include "Commands/Climber/ClimberSetPositionCommand.h"
 #include "Commands/SwerveDrivetrain/SwerveDrivetrainSetBrakeCommand.h"
+#include "Commands/SwerveDrivetrain/SwerveDrivetrainJoystickSetFieldFrame.h"
 
 class ClimbSequence2To3CommandGroup : public frc::CommandGroup {
  public:
@@ -36,7 +37,8 @@ class ClimbSequence2To3CommandGroup : public frc::CommandGroup {
 class ClimbSequenceLevel3CommandGroup : public frc::CommandGroup {
  public:
   ClimbSequenceLevel3CommandGroup() : CommandGroup("ClimbSequenceLevel3CommandGroup"){
-    AddSequential(new SwerveDrivetrainSetOpenLoop(0.1, 0.0, 0.25, 0.0));
+    AddSequential(new SwerveDrivetrainJoystickSetFieldFrame(false));
+    AddSequential(new SwerveDrivetrainSetOpenLoop(0.1, 0.0, 0.0, 0.0));
     AddSequential(new SwerveDrivetrainSetBrakeCommand());
     AddParallel(new ClimberSetPositionCommand(210));
     AddSequential(new ClimberWaitForHeightCommand(60));
