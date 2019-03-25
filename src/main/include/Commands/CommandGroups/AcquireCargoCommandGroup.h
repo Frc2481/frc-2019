@@ -64,7 +64,7 @@ class AcquireCargoCommandGroup : public frc::CommandGroup {
 
     //leds & elevator back down
     AddParallel(new SetLEDsCommand(5));
-    AddSequential(new ElevatorCargoLowCommand("ElevatorCargoLowCommand"));
+    //AddSequential(new ElevatorCargoLowCommand("ElevatorCargoLowCommand"));
     AddParallel(new ToolChangerSetHasCargoCommand(true));
 
     // state at end:
