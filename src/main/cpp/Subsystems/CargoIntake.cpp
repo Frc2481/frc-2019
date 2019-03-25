@@ -130,7 +130,8 @@ bool CargoIntake::IsIntakeOut() {
   return GetPosition() > RobotParameters::k_cargoIntakeThresholdOut; //assuming zero measures from point that intake is in
 }
 bool CargoIntake::IsIntakeIn() {
-  return m_extendMotor->GetSensorCollection().IsRevLimitSwitchClosed();
+  return GetPosition() < RobotParameters::k_cargoIntakeThresholdIn;
+  // return m_extendMotor->GetSensorCollection().IsRevLimitSwitchClosed();
  //assuming zero measures from point that intake is in
 }
 void CargoIntake::SetOpenLoopSpeed(double speed) {

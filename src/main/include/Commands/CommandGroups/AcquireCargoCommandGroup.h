@@ -52,7 +52,7 @@ class AcquireCargoCommandGroup : public frc::CommandGroup {
     //intake ball
     AddSequential(new CargoIntakeBallCommand(1));
     AddSequential(new CargoIntakeWaitForCargoIntakenCommand());
-    AddSequential(new CargoIntakeBallCommand(0.8));
+    AddSequential(new CargoIntakeBallCommand(0.6));
     AddSequential(new CargoIntakeWaitForBallCommand());
     AddSequential(new CargoIntakeStopCommand());
     AddSequential(new ToolChangerHoldCargoCommand());
@@ -64,7 +64,7 @@ class AcquireCargoCommandGroup : public frc::CommandGroup {
 
     //leds & elevator back down
     AddParallel(new SetLEDsCommand(5));
-    AddSequential(new ElevatorCargoLowCommand("ElevatorCargoLowCommand"));
+    //AddSequential(new ElevatorCargoLowCommand("ElevatorCargoLowCommand"));
     AddParallel(new ToolChangerSetHasCargoCommand(true));
 
     // state at end:

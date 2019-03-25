@@ -93,7 +93,7 @@ void HatchSlide::Periodic() {
   }
 
   m_pulseBright = m_irSensorBright->GetPeriod();
-  m_pulseDim = m_irSensorDim->GetPeriod();
+  // m_pulseDim = m_irSensorDim->GetPeriod();
 
   SmartDashboard::PutNumber("PWM value", m_pulseBright);
 
@@ -195,7 +195,8 @@ double HatchSlide::GetBrightPulseDist() {
 }
 
 double HatchSlide::GetDimPulseDist() {
-  return ((m_pulseDim * 488.0 * 256.0) / 8.0); // pulse * teensy frequency * pulse width / scaling factor
+  //return ((m_pulseDim * 488.0 * 256.0) / 8.0); // pulse * teensy frequency * pulse width / scaling factor
+  return 30;
 }
 
 bool HatchSlide::IsLineVisible() {

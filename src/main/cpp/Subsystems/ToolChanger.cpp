@@ -14,9 +14,9 @@ ToolChanger::ToolChanger() : Subsystem("ToolChanger") {
  
   m_capacitiveSensor = new frc::DigitalInput(TOOL_CHANGER_CAPACITIVE_SENSOR);
 
-  m_hatchTool->Set(frc::DoubleSolenoid::kReverse);
-  m_cargoTool->Set(frc::DoubleSolenoid::kReverse);
-  m_hatchExtender->Set(frc::DoubleSolenoid::kReverse);
+  m_hatchTool->Set(frc::DoubleSolenoid::kReverse); // held
+  m_cargoTool->Set(frc::DoubleSolenoid::kReverse); // held
+  m_hatchExtender->Set(frc::DoubleSolenoid::kReverse); // extended
 
   m_isHatchToolHeld = false;
   m_isCargoToolHeld = false; 

@@ -28,7 +28,7 @@ class CargoIntakeBaseCommand : public frc::Command {
   }
   
   bool IsFinished() override {
-    if(INTAKE_POS == -1000) {
+    if(INTAKE_POS == -500) {
       return CommandBase::m_pCargoIntake->IsIntakeIn();
     }
     else {

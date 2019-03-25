@@ -9,8 +9,8 @@
 
 Elevator::Elevator() : Subsystem("Elevator") {
   m_masterElevator = new TalonSRX(MASTER_ELEVATOR_MOTOR_ID);
-  m_slaveElevator = new TalonSRX(SLAVE_ELEVATOR_MOTOR_ID);
-  // m_slaveElevator = new VictorSPX(SLAVE_ELEVATOR_MOTOR_ID); // make sure to change back
+  // m_slaveElevator = new TalonSRX(SLAVE_ELEVATOR_MOTOR_ID);
+  m_slaveElevator = new VictorSPX(SLAVE_ELEVATOR_MOTOR_ID); // make sure to change back
 
   m_elevatorEncoder = new CTREMagEncoder(m_masterElevator, "ELEVATOR_ENCODER");
 
@@ -21,9 +21,9 @@ Elevator::Elevator() : Subsystem("Elevator") {
   m_masterElevator->Set(ControlMode::MotionMagic, 0);
   m_masterElevator->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
   m_masterElevator->EnableCurrentLimit(false);
-  m_masterElevator->SetInverted(false); //used to be true
+  m_masterElevator->SetInverted(true); // true on actual, false on practice
   m_masterElevator->SetSensorPhase(true);
-  m_slaveElevator->SetInverted(true); //used to be false
+  m_slaveElevator->SetInverted(false); // false on actual, true on practice
   talonConfig.motionCurveStrength = 5;
 
 // up gains

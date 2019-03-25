@@ -42,6 +42,9 @@
 #include "Commands/SwerveDrivetrain/SwerveDrivetrainZeroGyroCommand.h"
 #include "Commands/CargoIntake/CargoIntakeBallCommand.h"
 #include "Commands/CargoIntake/CargoIntakeBackpedalCommandGroup.h"
+#include "Commands/CommandGroups/StopAllCommand.h"
+#include "Commands/CargoIntake/CargoIntakeRetractManual.h"
+#include "Commands/CargoIntake/CargoIntakeExtendManual.h"
 
 OI::OI() {
 	m_pDriverStick = new Joystick2481(DRIVER_XBOX_CONTROLLER_ID);
@@ -79,6 +82,10 @@ OI::OI() {
 
 	m_zeroGyro = new JoystickButton(m_pDriverStick, XBOX_START_BUTTON);
 	m_zeroGyro->WhenPressed(new SwerveDrivetrainZeroGyroCommand());
+
+	m_stopAll = new AnalogJoystickButton(m_pDriverStick, XBOX_LEFT_TRIGGER, 0.5);
+	m_stopAll->WhenPressed(new StopAllCommand());
+
 
 //operator
 	m_shiftWeights = new JoystickButton(m_pOperatorStick, XBOX_BACK_BUTTON);
@@ -123,6 +130,12 @@ OI::OI() {
 	m_backpedal = new JoystickButton(m_pOperatorStick, XBOX_LEFT_BUMPER);
 	m_backpedal->WhenPressed(new CargoIntakeBackpedalCommandGroup());
 	m_backpedal->WhenReleased(new CargoIntakeBallCommand(0));
+
+	m_cargoRetractManual = new POVJoystickButton(m_pOperatorStick, 0, XBOX_DPAD_LEFT);
+	m_cargoRetractManual->WhileHeld(new CargoIntakeRetractManual());
+
+	m_cargoExtendManual = new POVJoystickButton(m_pOperatorStick, 0, XBOX_DPAD_RIGHT);
+	m_cargoExtendManual->WhileHeld(new CargoIntakeExtendManual());
 
 //RoboRio
 	m_userButton = new UserButton();
