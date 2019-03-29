@@ -50,15 +50,19 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
   m_motor->ConfigAllSettings(talonConfig);
   m_motor->SelectProfileSlot(0, 0);
 
-  // nt::NetworkTableInstance::GetDefault().SetUpdateRate(.01);P
+  // nt::NetworkTableInstance::GetDefault().SetUpdateRate(.01);
 
   m_irSensorBright = new frc::Counter();
   m_irSensorBright->SetSemiPeriodMode(true);
   m_irSensorBright->SetUpSource(IR_SENSOR_BRIGHT);
+  m_irSensorBright->SetUpdateWhenEmpty(true);
+  m_irSensorBright->SetMaxPeriod(0.004);
 
   m_irSensorDim = new frc::Counter();
   m_irSensorDim->SetSemiPeriodMode(true);
   m_irSensorDim->SetUpSource(IR_SENSOR_DIM);
+  m_irSensorDim->SetUpdateWhenEmpty(true);
+  m_irSensorDim->SetMaxPeriod(0.004);
 
   m_isHatchZeroed = false;
   m_pulseBright = 0.0;
@@ -93,7 +97,7 @@ void HatchSlide::Periodic() {
   }
 
   m_pulseBright = m_irSensorBright->GetPeriod();
-  // m_pulseDim = m_irSensorDim->GetPeriod();
+  m_pulseDim = m_irSensorDim->GetPeriod();
 
   SmartDashboard::PutNumber("PWM value", m_pulseBright);
 
@@ -101,6 +105,8 @@ void HatchSlide::Periodic() {
   SmartDashboard::PutNumber("Teensy dist dim", GetDimPulseDist());
 
   SmartDashboard::PutBoolean("is line visible", IsLineVisible());
+
+  SmartDashboard::PutBoolean("IsLineSensorDead", IsLineSensorDead());
   
   m_encoderConnected = m_slideEncoder->isConnected();
   SmartDashboard::PutBoolean("slideEncConnnected", m_encoderConnected);
@@ -115,7 +121,7 @@ void HatchSlide::Periodic() {
   m_oldTargetValid = IsLineVisible();
 
   //go to position
-  if(IsHatchSlideUserEnabled()) {
+  if(IsHatchSlideUserEnabled() & !IsLineSensorDead()) {
     if(IsLineVisible() && isZeroed()) {
       setSetPoint(ConvertInchesToTicks(GetBrightPulseDist() - 13));
       m_noLineCounter = 0;
@@ -195,8 +201,8 @@ double HatchSlide::GetBrightPulseDist() {
 }
 
 double HatchSlide::GetDimPulseDist() {
-  //return ((m_pulseDim * 488.0 * 256.0) / 8.0); // pulse * teensy frequency * pulse width / scaling factor
-  return 30;
+  return ((m_pulseDim * 488.0 * 256.0) / 8.0); // pulse * teensy frequency * pulse width / scaling factor
+  // return 30;
 }
 
 bool HatchSlide::IsLineVisible() {
@@ -259,7 +265,9 @@ bool HatchSlide::IsHatchSeen() {
 void HatchSlide::SetLEDs(bool led) {
   m_LED->Set(led);
 }
-
 bool HatchSlide::GetLEDs() {
   return m_LED->Get();
+}
+bool HatchSlide::IsLineSensorDead() {
+  return m_irSensorBright->GetStopped(); // || m_irSensorDim->GetStopped();
 }

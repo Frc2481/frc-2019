@@ -70,6 +70,7 @@ class HatchSlide : public frc::Subsystem {
   bool IsHatchSeen();
   void SetLEDs(bool led);
   bool GetLEDs();
+  bool IsLineSensorDead();
 };
 
 #endif //SRC_HATCH_SLIDE_H
