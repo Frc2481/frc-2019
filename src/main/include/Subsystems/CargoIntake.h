@@ -16,14 +16,9 @@
 class CargoIntake : public frc::Subsystem {
 private:
   VictorSPX* m_intakeMotor;
-  TalonSRX* m_extendMotor;
-  CTREMagEncoder* m_extendEncoder;
   frc::DigitalInput* m_cargoPreIntakeSensor;
-
-  double m_desiredPosition;
-  bool m_isZeroed;
-  bool m_hasResetOccurred;
-  bool m_safeHarborPosition;
+  frc::Solenoid* m_extendIntakeSolenoid;
+  bool m_isIntakeOut;
 
 public:
   CargoIntake();
@@ -32,21 +27,10 @@ public:
   void SetSpeedIn(double speed);
   void SetSpeedOut(double speed);
   void StopIntake();
-  bool HasBall();
-  void SetPosition(double pos);
-  double GetPosition();
-  double GetDesiredPosition();
-  double GetCargoIntakeError();
-  double GetVelocity();
-  double ConvertTicksToInches(int ticks);
-  int ConvertInchesToTicks(double inches);
-  bool IsIntakeInProtectedZone();
-  void SetOpenLoopSpeed(double speed);
-  bool IsOnTarget();
-  void ZeroCargoIntake();
-  bool IsIntakeOut();
-  bool IsIntakeIn();
   bool IsBallIntaken();
+  void ExtendIntake();
+  void RetractIntake();
+  bool IsIntakeOut();
 };
 
 #endif // SRC_CARGO_INTAKE_H

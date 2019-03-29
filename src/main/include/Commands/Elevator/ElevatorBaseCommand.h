@@ -12,7 +12,6 @@
 #include <frc/commands/CommandGroup.h>
 #include "CommandBase.h"
 #include "RobotParameters.h"
-#include "Commands/CommandGroups/RetractIntakeIfNeededCommandGroup.h"
 #include "Commands/ToolChanger/ToolChangerFreeCargoCommand.h"
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
 
@@ -23,16 +22,11 @@ class ElevatorBaseCommand : public frc::Command {
     Requires(CommandBase::m_pElevator.get());
   }
   void Initialize() override {
-    if(((HATCH_HEIGHT / 10.0) < 3 || (CARGO_HEIGHT / 10.0) < 3) && CommandBase::m_pCargoIntake->IsIntakeIn()) {
-      CommandBase::m_pToolChanger->ExtendHatch();
+    if(CommandBase::m_pToolChanger->HasCargo()) {
+      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT / 10.0);
     }
-    if(CommandBase::m_pToolChanger->HasCargo() && IsPositionSetPointAllowed(CARGO_HEIGHT / 10.0)) {
-      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT / 10.0, true);
-    }
-    else if(CommandBase::m_pToolChanger->HasHatch() && IsPositionSetPointAllowed(HATCH_HEIGHT / 10.0)){
-      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT / 10.0, true);
-    } else if(IsPositionSetPointAllowed(HATCH_HEIGHT / 10.0)){
-      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT / 10.0, true);
+    else {
+      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT / 10.0);
     }
   }
   
@@ -41,26 +35,12 @@ class ElevatorBaseCommand : public frc::Command {
     return CommandBase::m_pElevator->IsOnTarget();
   }
 
-  bool IsPositionSetPointAllowed(int pos) {
-    //if traveling through protected zone while cargoIntake out, don't allow movement
-    if(CommandBase::m_pCargoIntake->IsIntakeInProtectedZone() &&
-          (CommandBase::m_pElevator->IsPositionInProtectedZone(CommandBase::m_pElevator->GetElevatorPosition()) ||
-          CommandBase::m_pElevator->IsPositionInProtectedZone(pos))) {
-      return false;
+  void End() {
+    if(CommandBase::m_pToolChanger->HasCargo()) {
+      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT / 10.0);
     }
     else {
-      return true;
-    }
-  }
-
-  void End() {
-    if(CommandBase::m_pToolChanger->HasCargo() && IsPositionSetPointAllowed(CARGO_HEIGHT / 10.0)) {
-      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT / 10.0, false);
-    }
-    else if(CommandBase::m_pToolChanger->HasHatch() && IsPositionSetPointAllowed(HATCH_HEIGHT / 10.0)){
-      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT / 10.0, false);
-    } else {
-      CommandBase::m_pElevator->SetElevatorPosition(CARGO_HEIGHT / 10.0, false);
+      CommandBase::m_pElevator->SetElevatorPosition(HATCH_HEIGHT / 10.0);
     }
     SmartDashboard::PutNumber("ElevatorExecutionTime", TimeSinceInitialized());
   }
@@ -73,14 +53,8 @@ class ElevatorBaseCommand : public frc::Command {
 template <int CARGO_HEIGHT, int HATCH_HEIGHT>
 class ElevatorBaseCommandGroup : public CommandGroup {
   public:
-  ElevatorBaseCommandGroup(std::string name, bool safeIntakeRetract = true) : CommandGroup(name) {
-    if(safeIntakeRetract) {
-      AddSequential(new RetractIntakeIfNeededCommand());
-    }
-    AddSequential(new ElevatorBaseCommand<CARGO_HEIGHT, HATCH_HEIGHT>(name), 3.0);
-    if(safeIntakeRetract) {
-      AddSequential(new RetractIntakeIfNeededCommand());
-    }
+  ElevatorBaseCommandGroup(std::string name) : CommandGroup(name) {
+    AddSequential(new ElevatorBaseCommand<CARGO_HEIGHT, HATCH_HEIGHT>(name), 2.5);
   }
 }; 
 

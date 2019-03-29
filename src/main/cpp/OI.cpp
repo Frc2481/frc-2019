@@ -9,7 +9,6 @@
 #include "Commands/SwerveDrivetrain/SwerveDrivetrainJoystickSetFieldFrame.h"
 #include "Commands/Elevator/ElevatorBaseCommand.h"
 #include "Commands/CargoIntake/CargoIntakeBallCommand.h"
-#include "Commands/CargoIntake/CargoIntakeEjectCommand.h"
 #include "Commands/CommandGroups/AcquireCargoCommandGroup.h"
 #include "Commands/CommandGroups/AcquireHatchCommandGroup.h"
 #include "Commands/HatchSlide/HatchSlideToCenterCommand.h"
@@ -43,18 +42,17 @@
 #include "Commands/CargoIntake/CargoIntakeBallCommand.h"
 #include "Commands/CargoIntake/CargoIntakeBackpedalCommandGroup.h"
 #include "Commands/CommandGroups/StopAllCommand.h"
-#include "Commands/CargoIntake/CargoIntakeRetractManual.h"
-#include "Commands/CargoIntake/CargoIntakeExtendManual.h"
+#include "Commands/Climber/ClimberCheckpointCommand.h"
 
 OI::OI() {
 	m_pDriverStick = new Joystick2481(DRIVER_XBOX_CONTROLLER_ID);
 	m_pOperatorStick = new Joystick2481(OPERATOR_XBOX_CONTROLLER_ID);
 		
 //driver
-
 	m_aDriverButton = new JoystickButton(m_pDriverStick, XBOX_A_BUTTON);
 	m_bDriverButton = new JoystickButton(m_pDriverStick, XBOX_B_BUTTON);
 	m_yDriverButton = new JoystickButton(m_pDriverStick, XBOX_Y_BUTTON);
+	m_xDriverButton = new JoystickButton(m_pDriverStick, XBOX_X_BUTTON);
 	m_backButton = new JoystickButton(m_pDriverStick, XBOX_BACK_BUTTON);
 
 	m_acquireCargo = new AnalogJoystickButton(m_pDriverStick, XBOX_RIGHT_TRIGGER, 0.5);
@@ -64,8 +62,11 @@ OI::OI() {
 	m_acquireHatch->WhenPressed(new PrepForAcquireHatchCommandGroup());
 	m_acquireHatch->WhenReleased(new AcquireHatchCommandGroup());
 
-    m_elevatorStow = new JoystickButton(m_pDriverStick, XBOX_X_BUTTON);
+    m_elevatorStow = new ComboJoystickButton(m_xDriverButton, m_backButton, false);
 	m_elevatorStow->WhenPressed(new RevertElevatorTestingCommandGroup());
+
+	m_climbCheckpoint = new ComboJoystickButton(m_xDriverButton, m_backButton, true);
+	m_climbCheckpoint->WhenPressed(new ClimberCheckpointCommand());
 
 	m_climbL1ToL2 = new ComboJoystickButton(m_aDriverButton, m_backButton, true);
 	m_climbL1ToL2->WhenPressed(new ClimbSequence1To2CommandGroup());
@@ -85,7 +86,6 @@ OI::OI() {
 
 	m_stopAll = new AnalogJoystickButton(m_pDriverStick, XBOX_LEFT_TRIGGER, 0.5);
 	m_stopAll->WhenPressed(new StopAllCommand());
-
 
 //operator
 	m_shiftWeights = new JoystickButton(m_pOperatorStick, XBOX_BACK_BUTTON);
@@ -130,12 +130,6 @@ OI::OI() {
 	m_backpedal = new JoystickButton(m_pOperatorStick, XBOX_LEFT_BUMPER);
 	m_backpedal->WhenPressed(new CargoIntakeBackpedalCommandGroup());
 	m_backpedal->WhenReleased(new CargoIntakeBallCommand(0));
-
-	m_cargoRetractManual = new POVJoystickButton(m_pOperatorStick, 0, XBOX_DPAD_LEFT);
-	m_cargoRetractManual->WhileHeld(new CargoIntakeRetractManual());
-
-	m_cargoExtendManual = new POVJoystickButton(m_pOperatorStick, 0, XBOX_DPAD_RIGHT);
-	m_cargoExtendManual->WhileHeld(new CargoIntakeExtendManual());
 
 //RoboRio
 	m_userButton = new UserButton();

@@ -27,11 +27,13 @@ public:
 	frc::Button* m_aDriverButton;
 	frc::Button* m_bDriverButton;
 	frc::Button* m_yDriverButton;
+    frc::Button* m_xDriverButton;
     frc::Button* m_backButton;
 
     AnalogJoystickButton* m_acquireCargo;
     frc::Button* m_acquireHatch;
     frc::Button* m_elevatorStow;
+    frc::Button* m_climbCheckpoint;
     frc::Button* m_climbL1ToL2;
     frc::Button* m_climbL2ToL3;
     frc::Button* m_climbL1ToL3;
@@ -53,8 +55,6 @@ public:
     AnalogJoystickButton* m_hatchExtend;
     frc::Button* m_backpedal;
     frc::Button* m_intakeOut;
-    frc::Button* m_cargoRetractManual;
-    frc::Button* m_cargoExtendManual;
 
     frc::Button* m_scoreCargoShip;
     frc::Button* m_scoreHigh;

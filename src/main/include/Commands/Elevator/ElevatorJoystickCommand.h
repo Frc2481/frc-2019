@@ -20,12 +20,10 @@ class ElevatorJoystickCommand : public frc::Command {
   void Initialize() override {
   }
   void Execute() override {
-    // if(CommandBase::m_pElevator->IsElevatorManualEnabled()){
-      double percentVelY = -CommandBase::m_pOI->GetOperatorStick()->GetRawAxis(XBOX_RIGHT_Y_AXIS);
+    double percentVelY = -CommandBase::m_pOI->GetOperatorStick()->GetRawAxis(XBOX_RIGHT_Y_AXIS);
 
-      // update climb
-      CommandBase::m_pElevator->SetOpenLoopSpeed(percentVelY);
-    // } 
+    // update climb
+    CommandBase::m_pElevator->SetOpenLoopSpeed(percentVelY);
   }
   void End() {
     CommandBase::m_pElevator->SetOpenLoopSpeed(0);
@@ -34,20 +32,8 @@ class ElevatorJoystickCommand : public frc::Command {
     End();
   }
   bool IsFinished() override {
-    //if traveling through protected zone while cargoIntake out, don't allow movement
-    // if(CommandBase::m_pElevator->IsElevatorManualEnabled()){
-      if(CommandBase::m_pCargoIntake->IsIntakeOut() &&
-          CommandBase::m_pElevator->IsPositionInProtectedZone(CommandBase::m_pElevator->GetElevatorPosition())) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
-    // else {
-    //   return true;
-    // }
-  // }
+    return false;
+  }
 };
 
 #endif //SRC_ELEVATORJOYSTICKCOMMAND

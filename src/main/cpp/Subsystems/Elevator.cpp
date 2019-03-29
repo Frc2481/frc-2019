@@ -9,8 +9,8 @@
 
 Elevator::Elevator() : Subsystem("Elevator") {
   m_masterElevator = new TalonSRX(MASTER_ELEVATOR_MOTOR_ID);
-  // m_slaveElevator = new TalonSRX(SLAVE_ELEVATOR_MOTOR_ID);
-  m_slaveElevator = new VictorSPX(SLAVE_ELEVATOR_MOTOR_ID); // make sure to change back
+  m_slaveElevator = new TalonSRX(SLAVE_ELEVATOR_MOTOR_ID);
+  // m_slaveElevator = new VictorSPX(SLAVE_ELEVATOR_MOTOR_ID); // make sure to change back
 
   m_elevatorEncoder = new CTREMagEncoder(m_masterElevator, "ELEVATOR_ENCODER");
 
@@ -21,9 +21,9 @@ Elevator::Elevator() : Subsystem("Elevator") {
   m_masterElevator->Set(ControlMode::MotionMagic, 0);
   m_masterElevator->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
   m_masterElevator->EnableCurrentLimit(false);
-  m_masterElevator->SetInverted(true); // true on actual, false on practice
+  m_masterElevator->SetInverted(false); // true on actual, false on practice
   m_masterElevator->SetSensorPhase(true);
-  m_slaveElevator->SetInverted(false); // false on actual, true on practice
+  m_slaveElevator->SetInverted(true); // false on actual, true on practice
   talonConfig.motionCurveStrength = 5;
 
 // up gains
@@ -103,7 +103,7 @@ void Elevator::Periodic() {
   }
 }
 
-void Elevator::SetElevatorPosition(double setPos, bool isMoving) {
+void Elevator::SetElevatorPosition(double setPos) {
   if(m_isMasterZeroed){
     if(setPos > 0) {
       m_masterElevator->Set(ControlMode::MotionMagic, ConvertInchesToTicks(setPos), DemandType::DemandType_ArbitraryFeedForward, 0.1);
@@ -125,7 +125,7 @@ double Elevator::GetVelocity(){
   return m_masterElevator->GetActiveTrajectoryVelocity();
 }
 bool Elevator::IsOnTarget() {
-  return fabs(m_desiredElevatorPosition - GetElevatorPosition()) < 0.5; //1
+  return fabs(m_desiredElevatorPosition - GetElevatorPosition()) < 1.0; //0.5
 }
 void Elevator::ZeroElevatorEncoder() {
   for(int i = 0; i < 5; i++) {
