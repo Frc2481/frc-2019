@@ -21,7 +21,7 @@ class Elevator : public frc::Subsystem {
   void InitDefaultCommand() override;
   virtual void Periodic();
 
-  void SetElevatorPosition(double pos, bool isMoving);
+  void SetElevatorPosition(double pos);
   void ZeroElevatorEncoder();
 
   double GetElevatorPosition();
@@ -54,8 +54,8 @@ class Elevator : public frc::Subsystem {
 
  private:
   TalonSRX* m_masterElevator;
-  // TalonSRX* m_slaveElevator;
-  VictorSPX* m_slaveElevator; // make sure to change back
+  TalonSRX* m_slaveElevator;
+  // VictorSPX* m_slaveElevator; // make sure to change back
   CTREMagEncoder* m_elevatorEncoder;
 
   bool m_isMasterZeroed;

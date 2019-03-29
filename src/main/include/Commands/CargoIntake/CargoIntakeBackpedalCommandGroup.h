@@ -9,13 +9,12 @@
 #define SRC_CARGOINTAKEBACKPEDALCOMMANDGROUP
 
 #include <frc/commands/CommandGroup.h>
-#include "Commands/CargoIntake/CargoIntakeBaseCommand.h"
 #include "Commands/CargoIntake/CargoIntakeBallCommand.h"
 
 class CargoIntakeBackpedalCommandGroup : public frc::CommandGroup {
  public:
   CargoIntakeBackpedalCommandGroup() : CommandGroup("CargoIntakeBackpedalCommandGroup") {
-    AddSequential(new CargoIntakeOutCommand("CargoIntakeOutCommand"));
+    AddSequential(new CargoIntakeExtendCommand());
     AddSequential(new CargoIntakeBallCommand(-1));
   }
 };

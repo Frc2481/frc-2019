@@ -5,22 +5,26 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CARGOINTAKEEJECTCOMMAND
-#define SRC_CARGOINTAKEEJECTCOMMAND
+#ifndef SRC_CARGOINTAKEEXTENSIONCOMMAND
+#define SRC_CARGOINTAKEEXTENSIONCOMMAND
 
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 
-class CargoIntakeEjectCommand : public frc::InstantCommand {
- private:
-  double m_speed;
+class CargoIntakeExtendCommand : public frc::InstantCommand {
  public:
-  CargoIntakeEjectCommand(double speed) : InstantCommand("CargoIntakeEjectCommand") {
-    m_speed = speed;
-  }
+  CargoIntakeExtendCommand() : InstantCommand("CargoIntakeExtendCommand") {}
   void Initialize() override {
-    CommandBase::m_pCargoIntake->SetSpeedOut(m_speed);
+    CommandBase::m_pCargoIntake->ExtendIntake();
   }
 };
 
-#endif // SRC_CARGOINTAKEEJECTCOMMAND
+class CargoIntakeRetractCommand : public frc::InstantCommand {
+ public:
+  CargoIntakeRetractCommand() : InstantCommand("CargoIntakeRetractCommand") {}
+  void Initialize() override {
+    CommandBase::m_pCargoIntake->RetractIntake();
+  }
+};
+
+#endif //SRC_CARGOINTAKEEXTENSIONCOMMAND

@@ -15,7 +15,6 @@ class StopAllCommand : public frc::InstantCommand {
   StopAllCommand() : InstantCommand("StopAllCommand"){}
   void Initialize() override {
     CommandBase::m_pElevator->SetOpenLoopSpeed(0);
-    CommandBase::m_pCargoIntake->SetOpenLoopSpeed(0);
     CommandBase::m_pHatchSlide->SetOpenLoopSpeed(0);
     CommandBase::m_pClimber->SetOpenLoopSpeed(0);
     CommandBase::m_pCargoIntake->StopIntake();

@@ -9,18 +9,16 @@
 #define SRC_REVERTELEVATORTESTINGCOMMANDGROUP
 
 #include "Commands/Elevator/ElevatorBaseCommand.h"
-#include "Commands/CargoIntake/CargoIntakeBaseCommand.h"
 #include <frc/commands/CommandGroup.h>
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
-#include "Commands/Elevator/ElevatorRiseIfNeededCommand.h"
+#include "Commands/CargoIntake/CargoIntakeExtensionCommand.h"
 
 class RevertElevatorTestingCommandGroup : public frc::CommandGroup {
  public:
   RevertElevatorTestingCommandGroup() : CommandGroup("RevertElevatorTestingCommandGroup") {
-    AddSequential(new ElevatorRiseForIntakeInCommand());
-    AddSequential(new CargoIntakeInCommand("CargoIntakeBackCommand"));
-    AddSequential(new ToolChangerHatchExtendCommand());
     AddSequential(new ElevatorStowCommand("ElevatorStowCommand"));
+    AddSequential(new CargoIntakeRetractCommand());
+    AddSequential(new CargoIntakeStopCommand());
 
     // state at end:
     // Elevator: Low

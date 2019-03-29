@@ -18,12 +18,10 @@
 #include "Commands/CommandGroups/AcquireCargoCommandGroup.h"
 #include "Commands/ToolChanger/ToolChangerScoreHatchCommandGroup.h"
 #include "Commands/ToolChanger/ToolChangerScoreCargoCommandGroup.h"
-#include "Commands/CargoIntake/CargoIntakeBaseCommand.h"
 #include "Commands/Elevator/ElevatorBaseCommand.h"
 #include "Commands/ToolChanger/ToolChangerSetHasHatchCommand.h"
 #include "Commands/ToolChanger/ToolChangerSetHasCargoCommand.h"
 #include "Commands/CommandGroups/RevertElevatorTestingCommandGroup.h"
-#include "Commands/CargoIntake/CargoIntakeZeroCommand.h"
 #include "Commands/CommandGroups/ZeroAllCommandGroup.h"
 #include "Commands/Climber/ClimberToggleBigFootCommand.h"
 #include "Commands/Climber/ClimberToggleLittleFeetCommand.h"
@@ -36,6 +34,7 @@
 #include "Commands/HatchSlide/HatchSlideGoToPosition.h"
 #include "Commands/SetLEDsCommand.h"
 #include "Commands/CommandGroups/StopAllCommand.h"
+#include "Commands/CargoIntake/CargoIntakeExtensionCommand.h"
 
 Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 	m_server = CameraServer::GetInstance();
@@ -43,6 +42,9 @@ Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 
 void Robot::RobotInit() {
 	CommandBase::Init();
+
+	SmartDashboard::PutData("CargoIntakeExtendCommand", new CargoIntakeExtendCommand());
+	SmartDashboard::PutData("CargoIntakeRetractCommand", new CargoIntakeRetractCommand());
 
 	SmartDashboard::PutData("Score Command", new ToolChangerScoreCommand());
 
@@ -58,11 +60,6 @@ void Robot::RobotInit() {
 	SmartDashboard::PutData("HoldHatchCommand", new ToolChangerHoldHatchCommand());
 	SmartDashboard::PutData("HatchExtendCommand", new ToolChangerHatchExtendCommand());
 	SmartDashboard::PutData("HatchRetractCommand", new ToolChangerRetractCommand());
-
-	SmartDashboard::PutData("CargoIntakeInCommand", new CargoIntakeInCommand("CargoIntakeInCommand"));
-	SmartDashboard::PutData("CargoIntakeOutCommand", new CargoIntakeOutCommand("CargoIntakeOutCommand"));
-
-	SmartDashboard::PutData("ClimberSetPositionCommand(80)", new ClimberSetPositionCommand(80));
 
 	SmartDashboard::PutData("ClimberLittleFeetUpCommand", new ClimberLittleFeetUpCommand());
 	SmartDashboard::PutData("ClimberLittleFeetDownCommand", new ClimberLittleFeetDownCommand());
@@ -94,8 +91,6 @@ void Robot::RobotInit() {
 
 	SmartDashboard::PutData("RevertElevatorCommand", new RevertElevatorTestingCommandGroup());
 
-	SmartDashboard::PutData("CargoIntakeZeroCommand", new CargoIntakeZeroCommand());
-	
 	SmartDashboard::PutData("ZeroAllCommandGroup", new ZeroAllCommandGroup());
 
 	SmartDashboard::PutData("StopAllCommand", new StopAllCommand());
@@ -132,7 +127,6 @@ void Robot::AutonomousInit() {
 
 void Robot::DisabledInit() {
 	CommandBase::m_pElevator->SetOpenLoopSpeed(0);
-	CommandBase::m_pCargoIntake->SetOpenLoopSpeed(0);
 	CommandBase::m_pHatchSlide->SetOpenLoopSpeed(0);
 	CommandBase::m_pCargoIntake->SetSpeedIn(0);
 	frc::Scheduler::GetInstance()->RemoveAll();
