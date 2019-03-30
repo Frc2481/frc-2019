@@ -19,11 +19,13 @@
 #include "Commands/ToolChanger/ToolChangerWaitForHatchCommand.h"
 #include "Commands/ToolChanger/ToolChangerHoldCargoCommand.h"
 #include "Commands/SetLEDsCommand.h"
+#include "Commands/CargoIntake/CargoIntakeExtensionCommand.h"
 
 class PrepForAcquireHatchCommandGroup : public frc::CommandGroup {
   public:
   PrepForAcquireHatchCommandGroup() : CommandGroup("PrepForAcquireHatchCommandGroup") {
-    AddSequential(new ToolChangerHatchExtendCommand());
+    AddParallel(new CargoIntakeRetractCommand());
+    AddParallel(new ToolChangerHatchExtendCommand());
     AddSequential(new ToolChangerFreeHatchCommand());
     AddSequential(new ElevatorIntakePosCommand("ElevatorIntakePosCommand"));
     AddSequential(new ToolChangerHoldCargoCommand());

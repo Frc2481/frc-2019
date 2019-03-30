@@ -66,7 +66,7 @@ OI::OI() {
 	m_elevatorStow->WhenPressed(new RevertElevatorTestingCommandGroup());
 
 	m_climbCheckpoint = new ComboJoystickButton(m_xDriverButton, m_backButton, true);
-	m_climbCheckpoint->WhenPressed(new ClimberCheckpointCommand());
+	m_climbCheckpoint->WhenPressed(new ClimberCheckpointCommand(m_xDriverButton, m_backButton));
 
 	m_climbL1ToL2 = new ComboJoystickButton(m_aDriverButton, m_backButton, true);
 	m_climbL1ToL2->WhenPressed(new ClimbSequence1To2CommandGroup());
