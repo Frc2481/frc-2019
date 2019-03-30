@@ -17,11 +17,9 @@ class ClimberToggleLittleFeetCommand : public frc::InstantCommand {
   void Initialize() override {
     if(CommandBase::m_pClimber->IsLittleFeetToggleActivated()) {
       CommandBase::m_pClimber->DeactivateLittleFeet();
-      CommandBase::m_pClimber->DeactivateLittleFeetToggle();
     }
     else {
       CommandBase::m_pClimber->ActivateLittleFeet();
-      CommandBase::m_pClimber->ActivateLittleFeetToggle();
     }
   }
 };

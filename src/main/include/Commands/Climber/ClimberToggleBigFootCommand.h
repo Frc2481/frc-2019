@@ -17,11 +17,9 @@ class ClimberToggleBigFootCommand : public frc::InstantCommand {
   void Initialize() override {
     if(CommandBase::m_pClimber->IsBigFootToggleActivated()) {
       CommandBase::m_pClimber->DeactivateBigFoot();
-      CommandBase::m_pClimber->DeactivateBigFootToggle();
     }
     else {
       CommandBase::m_pClimber->ActivateBigFoot();
-      CommandBase::m_pClimber->ActivateBigFootToggle();
     }
   }
 };

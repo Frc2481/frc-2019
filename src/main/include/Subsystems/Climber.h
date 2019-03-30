@@ -44,11 +44,7 @@ class Climber : public frc::Subsystem {
   void DeactivateBigFoot();
   bool IsBigFootToggleActivated();
   bool IsLittleFeetToggleActivated();
-  void ActivateBigFootToggle();
-  void DeactivateBigFootToggle();
   bool IsBigFootTilted();
-  void ActivateLittleFeetToggle();
-  void DeactivateLittleFeetToggle();
   void SetOpenLoopSpeed(double speed);
   double GetSpeed();
   double GetSensorSpeed();
