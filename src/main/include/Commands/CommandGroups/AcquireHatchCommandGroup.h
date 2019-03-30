@@ -13,7 +13,7 @@
 #include "Commands/Elevator/ElevatorBaseCommand.h"
 #include "Commands/ToolChanger/ToolChangerHoldHatchCommand.h"
 #include "Commands/ToolChanger/ToolChangerFreeHatchCommand.h"
-#include "Commands/ToolChanger/ToolChangerRetractCommand.h"
+#include "Commands/ToolChanger/ToolChangerHatchRetractCommand.h"
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
 #include "Commands/ToolChanger/ToolChangerFreeCargoCommand.h"
 #include "Commands/ToolChanger/ToolChangerWaitForHatchCommand.h"

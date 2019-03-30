@@ -13,9 +13,7 @@
 
 class ToolChangerFreeHatchCommand : public frc::InstantCommand {
  public:
-  ToolChangerFreeHatchCommand() : InstantCommand("ToolChangerFreeHatchCommand"){
-    Requires(CommandBase::m_pToolChanger.get());
-  }
+  ToolChangerFreeHatchCommand() : InstantCommand("ToolChangerFreeHatchCommand"){}
   void Initialize() override{
     CommandBase::m_pToolChanger->FreeHatch();
   }

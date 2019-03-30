@@ -14,7 +14,7 @@
 #include "Commands/ToolChanger/ToolChangerHoldHatchCommand.h"
 #include "Commands/ToolChanger/ToolChangerFreeCargoCommand.h"
 #include "Commands/ToolChanger/ToolChangerFreeHatchCommand.h"
-#include "Commands/ToolChanger/ToolChangerRetractCommand.h"
+#include "Commands/ToolChanger/ToolChangerHatchRetractCommand.h"
 
 class ToolChangerScoreHatchCommandGroup : public frc::CommandGroup {
  public:
@@ -27,7 +27,7 @@ class ToolChangerScoreHatchCommandGroup : public frc::CommandGroup {
     AddSequential(new ToolChangerFreeHatchCommand());
     AddSequential(new WaitCommand(0.3));
     AddSequential(new ToolChangerHoldCargoCommand());
-    AddSequential(new ToolChangerRetractCommand());
+    AddSequential(new ToolChangerHatchRetractCommand());
   }
 };
 

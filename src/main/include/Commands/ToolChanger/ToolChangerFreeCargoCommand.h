@@ -13,9 +13,7 @@
 
 class ToolChangerFreeCargoCommand : public frc::InstantCommand {
  public:
-  ToolChangerFreeCargoCommand() : InstantCommand("ToolChangerFreeCargoCommand"){
-    Requires(CommandBase::m_pToolChanger.get());
-  }
+  ToolChangerFreeCargoCommand() : InstantCommand("ToolChangerFreeCargoCommand"){}
   void Initialize() override{
     CommandBase::m_pToolChanger->FreeCargo();
   }
