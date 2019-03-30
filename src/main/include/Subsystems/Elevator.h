@@ -40,16 +40,11 @@ class Elevator : public frc::Subsystem {
   void SetFollower();
 
   bool IsElevatorEncoderConnected();
-  bool IsPositionInProtectedZone(double pos);
 
   double ConvertTicksToInches(int ticks);
   int ConvertInchesToTicks(double inches);
 
   bool IsOnTarget();
-  void EnableElevatorManual();
-  void DisableElevatorManual();
-  bool IsElevatorManualEnabled();
-
   bool IsElevatorGoingUp();
 
  private:
@@ -63,8 +58,6 @@ class Elevator : public frc::Subsystem {
   double m_elevatorPosition;
   double m_desiredElevatorPosition;
   bool m_encoderConnected;
-  bool m_isElevatorManualEnabled;
-  bool m_hasResetOccurred;
 };
 
 #endif //SRC_ELEVATOR_H

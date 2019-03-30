@@ -56,7 +56,7 @@ Elevator::Elevator() : Subsystem("Elevator") {
   talonConfig.peakCurrentLimit = 0;
   talonConfig.primaryPID.selectedFeedbackSensor = CTRE_MagEncoder_Relative;
 
-  talonConfig.forwardSoftLimitThreshold = 29100;
+  talonConfig.forwardSoftLimitThreshold = 29920;
   talonConfig.forwardSoftLimitEnable = true;
   talonConfig.reverseSoftLimitThreshold = 0; //5200;
   talonConfig.reverseSoftLimitEnable = true;
@@ -67,8 +67,6 @@ Elevator::Elevator() : Subsystem("Elevator") {
   m_masterElevator->SelectProfileSlot(0, 0);
 
   m_desiredElevatorPosition = 0;
-  m_isElevatorManualEnabled = false;
-  m_hasResetOccurred = m_masterElevator->HasResetOccurred();
   frc::SmartDashboard::PutBoolean("IsElevatorMasterTalonReset", true);
 }
 
@@ -95,8 +93,9 @@ void Elevator::Periodic() {
     frc::SmartDashboard::PutNumber("ElevatorDesiredPos", GetDesiredPos());
   } 
   else if (loopCounter == 4) {
-    if(m_masterElevator->HasResetOccurred() && m_isMasterZeroed){
-      frc::SmartDashboard::PutBoolean("IsElevatorMasterTalonReset", !m_masterElevator->HasResetOccurred());
+    bool hasResetOccurred = m_masterElevator->HasResetOccurred();
+    if(hasResetOccurred && m_isMasterZeroed){
+      frc::SmartDashboard::PutBoolean("IsElevatorMasterTalonReset", !hasResetOccurred);
       m_isMasterZeroed = false;
       SetOpenLoopSpeed(0);
     }
@@ -172,20 +171,8 @@ void Elevator::SetSlaveOpenLoopSpeed(double speed) {
 bool Elevator::IsElevatorEncoderConnected() {
   return m_encoderConnected;
 }
-bool Elevator::IsPositionInProtectedZone(double pos) {
-  return pos < RobotParameters::k_elevatorCollisionMax && pos > RobotParameters::k_elevatorCollisionMin;
-}
 void Elevator::SetFollower() {
   m_slaveElevator->Follow(*m_masterElevator);
-}
-void Elevator::EnableElevatorManual(){
-  m_isElevatorManualEnabled = true;
-}
-void Elevator::DisableElevatorManual(){
-  m_isElevatorManualEnabled = false;
-}
-bool Elevator::IsElevatorManualEnabled(){
-  return m_isElevatorManualEnabled;
 }
 bool Elevator::IsElevatorGoingUp() {
   return GetElevatorPosition() - GetDesiredPos() < 0;
