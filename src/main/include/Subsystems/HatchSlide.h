@@ -35,7 +35,6 @@ class HatchSlide : public frc::Subsystem {
   bool m_hatchSlideUserEnabled;
   bool m_hatchSlideSafetyEnabled;
   bool m_oldTargetValid;
-  bool m_hasResetOccurred;
   bool m_ledDesiredState;
   int m_noLineCounter;
   double m_desiredPos;
@@ -70,7 +69,7 @@ class HatchSlide : public frc::Subsystem {
   bool IsHatchSeen();
   void SetLEDs(bool led);
   bool GetLEDs();
-  bool IsLineSensorDead();
+  bool IsLineSensorWorking();
 };
 
 #endif //SRC_HATCH_SLIDE_H

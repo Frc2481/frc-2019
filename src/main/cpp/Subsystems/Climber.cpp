@@ -92,20 +92,8 @@ bool Climber::IsBigFootToggleActivated() {
 bool Climber::IsLittleFeetToggleActivated() {
   return m_littleFeetActivated;
 }
-void Climber::ActivateBigFootToggle() {
-  m_bigFootActivated = true;
-}
-void Climber::DeactivateBigFootToggle() {
-  m_bigFootActivated = false;
-}
 bool Climber::IsBigFootTilted() {
   return m_bigFootActivated;
-}
-void Climber::ActivateLittleFeetToggle() {
-  m_littleFeetActivated = true;
-}
-void Climber::DeactivateLittleFeetToggle() {
-  m_littleFeetActivated = false;
 }
 void Climber::SetOpenLoopSpeed(double speed) {
   m_climberMotor->Set(speed);

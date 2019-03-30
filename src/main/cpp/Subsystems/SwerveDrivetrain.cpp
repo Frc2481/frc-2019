@@ -186,10 +186,15 @@ void SwerveDrivetrain::Periodic() {
 	m_pBLSteerEncoder->update();
 	m_pFLSteerEncoder->update();
 	
-	SmartDashboard::PutBoolean("FLSteerTalonReset", !m_pFLSteerMotor->HasResetOccurred());
-	SmartDashboard::PutBoolean("FRSteerTalonReset", !m_pFRSteerMotor->HasResetOccurred());
-	SmartDashboard::PutBoolean("BLSteerTalonReset", !m_pBLSteerMotor->HasResetOccurred());
-	SmartDashboard::PutBoolean("BRSteerTalonReset", !m_pBRSteerMotor->HasResetOccurred());
+	bool hasFLReset = !m_pFLSteerMotor->HasResetOccurred();
+	bool hasFRReset = !m_pFRSteerMotor->HasResetOccurred();
+	bool hasBLReset = !m_pBLSteerMotor->HasResetOccurred();
+	bool hasBRReset = !m_pBRSteerMotor->HasResetOccurred();
+
+	SmartDashboard::PutBoolean("FLSteerTalonReset", hasFLReset);
+	SmartDashboard::PutBoolean("FRSteerTalonReset", hasFRReset);
+	SmartDashboard::PutBoolean("BLSteerTalonReset", hasBLReset);
+	SmartDashboard::PutBoolean("BRSteerTalonReset", hasBRReset);
 
 	SmartDashboard::PutBoolean("FLSteerEncCalibrated", m_pFLSteerEncoder->isCalibrated());
 	SmartDashboard::PutBoolean("FRSteerEncCalibrated", m_pFRSteerEncoder->isCalibrated());

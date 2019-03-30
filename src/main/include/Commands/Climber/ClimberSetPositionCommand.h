@@ -17,6 +17,7 @@ class ClimberSetPositionCommand : public frc::Command {
  public:
   ClimberSetPositionCommand(double pos) : Command("ClimberSetPositionCommand") {
     Requires(CommandBase::m_pClimber.get());
+    SetInterruptible(true); //check on this
     m_pos = pos;
   }
   void Initialize() override {
