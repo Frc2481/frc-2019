@@ -5,20 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_CARGOINTAKEZEROCOMMAND
-#define SRC_CARGOINTAKEZEROCOMMAND
+#ifndef SRC_TOOLCHANGERHATCHRETRACTCOMMAND
+#define SRC_TOOLCHANGERHATCHRETRACTCOMMAND
 
 #include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 
-class CargoIntakeZeroCommand : public frc::InstantCommand {
+class ToolChangerHatchRetractCommand : public frc::InstantCommand {
  public:
-  CargoIntakeZeroCommand() : InstantCommand("CargoIntakeZeroCommand"){
-    SetRunWhenDisabled(true);
-  }
-  void Initialize() override{
-    CommandBase::m_pCargoIntake->ZeroCargoIntake();
+  ToolChangerHatchRetractCommand() : InstantCommand("ToolChangerHatchRetractCommand") {}
+  void Initialize() override {
+    CommandBase::m_pToolChanger->RetractHatch();
   }
 };
 
-#endif //SRC_CARGOINTAKEZEROCOMMAND
+#endif //SRC_TOOLCHANGERHATCHRETRACTCOMMAND

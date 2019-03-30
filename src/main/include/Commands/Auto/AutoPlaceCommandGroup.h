@@ -12,7 +12,7 @@
 #include "Commands/Elevator/ElevatorBaseCommand.h"
 #include "Commands/ToolChanger/ToolChangerWaitForReleaseCommand.h"
 #include "Commands/ToolChanger/ToolChangerScoreCommand.h"
-#include "Commands/ToolChanger/ToolChangerRetractCommand.h"
+#include "Commands/ToolChanger/ToolChangerHatchRetractCommand.h"
 
 class AutoPlaceCommandGroup : public frc::CommandGroup {
  public:

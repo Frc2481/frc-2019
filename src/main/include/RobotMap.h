@@ -67,7 +67,6 @@ PDP Layout:
 #define CLIMBER_WEIGHTS_SOLENOID 1, 6 //check
 #define CARGO_INTAKE_EXTEND_SOLENOID 1, 7
 
-
 // digital input/output
 #define IR_SENSOR_BRIGHT 0
 #define IR_SENSOR_DIM 1

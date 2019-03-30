@@ -13,9 +13,7 @@
 
 class ToolChangerHatchExtendCommand : public frc::InstantCommand {
  public:
-  ToolChangerHatchExtendCommand() : InstantCommand("ToolChangerHatchExtendCommand"){
-    Requires(CommandBase::m_pToolChanger.get());
-  }
+  ToolChangerHatchExtendCommand() : InstantCommand("ToolChangerHatchExtendCommand"){}
   void Initialize() override{
     CommandBase::m_pToolChanger->ExtendHatch();
   }

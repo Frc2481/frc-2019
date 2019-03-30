@@ -13,7 +13,7 @@
 #include "Commands/ToolChanger/ToolChangerFreeHatchCommand.h"
 #include "Commands/ToolChanger/ToolChangerHoldHatchCommand.h"
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
-#include "Commands/ToolChanger/ToolChangerRetractCommand.h"
+#include "Commands/ToolChanger/ToolChangerHatchRetractCommand.h"
 #include "Commands/CommandGroups/AcquireHatchCommandGroup.h"
 #include "Commands/CommandGroups/AcquireCargoCommandGroup.h"
 #include "Commands/ToolChanger/ToolChangerScoreHatchCommandGroup.h"
@@ -59,7 +59,7 @@ void Robot::RobotInit() {
 	SmartDashboard::PutData("FreeHatchCommand", new ToolChangerFreeHatchCommand());
 	SmartDashboard::PutData("HoldHatchCommand", new ToolChangerHoldHatchCommand());
 	SmartDashboard::PutData("HatchExtendCommand", new ToolChangerHatchExtendCommand());
-	SmartDashboard::PutData("HatchRetractCommand", new ToolChangerRetractCommand());
+	SmartDashboard::PutData("HatchRetractCommand", new ToolChangerHatchRetractCommand());
 
 	SmartDashboard::PutData("ClimberLittleFeetUpCommand", new ClimberLittleFeetUpCommand());
 	SmartDashboard::PutData("ClimberLittleFeetDownCommand", new ClimberLittleFeetDownCommand());
