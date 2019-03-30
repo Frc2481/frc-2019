@@ -20,12 +20,7 @@ class CargoIntakeBallCommand : public frc::InstantCommand {
     m_speed = speed;
   }
   void Initialize() override {
-    // if(!CommandBase::m_pCargoIntake->IsBallIntaken()) {
-      CommandBase::m_pCargoIntake->SetSpeedIn(-m_speed);
-    // }
-    // else {
-    //   CommandBase::m_pCargoIntake->SetSpeedIn(RobotParameters::k_intakeSpeedPartial);
-    // }
+    CommandBase::m_pCargoIntake->SetSpeedIn(m_speed);
   }
 };
 

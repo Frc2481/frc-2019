@@ -202,7 +202,6 @@ double HatchSlide::GetBrightPulseDist() {
 
 double HatchSlide::GetDimPulseDist() {
   return ((m_pulseDim * 488.0 * 256.0) / 8.0); // pulse * teensy frequency * pulse width / scaling factor
-  // return 30;
 }
 
 bool HatchSlide::IsLineVisible() {

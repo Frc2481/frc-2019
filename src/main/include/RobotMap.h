@@ -37,7 +37,6 @@ PDP Layout:
 
 #define HATCH_SLIDE_MOTOR_ID 5
 #define MASTER_ELEVATOR_MOTOR_ID 6
-#define CARGO_INTAKE_EXTEND_MOTOR_ID 7
 
 #define SLAVE_ELEVATOR_MOTOR_ID 8 //5
 
@@ -66,6 +65,7 @@ PDP Layout:
 
 #define CLIMBER_GUIDES_SOLENOID 1, 2, 3 //check
 #define CLIMBER_WEIGHTS_SOLENOID 1, 6 //check
+#define CARGO_INTAKE_EXTEND_SOLENOID 1, 7
 
 
 // digital input/output

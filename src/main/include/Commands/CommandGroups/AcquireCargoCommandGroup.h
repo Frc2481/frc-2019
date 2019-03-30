@@ -18,7 +18,6 @@
 #include "Commands/ToolChanger/ToolChangerRetractCommand.h"
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
 #include "Commands/Elevator/ElevatorBaseCommand.h"
-#include "Commands/CargoIntake/CargoIntakeStopCommand.h"
 #include "Commands/CargoIntake/CargoIntakeWaitForBallCommand.h"
 #include "Commands/CargoIntake/CargoIntakeWaitForCargoIntakenCommand.h"
 #include "Commands/HatchSlide/HatchSlideEnableCommand.h"
@@ -39,7 +38,8 @@ class AcquireCargoCommandGroup : public frc::CommandGroup {
     AddParallel(new HatchSlideToCenterCommand());
     AddParallel(new ToolChangerFreeHatchCommand());
     AddParallel(new ToolChangerRetractCommand());
-    AddSequential(new WaitCommand(0.5));
+    AddSequential(new ElevatorStowCommand("ElevatorStowCommand"));
+    // AddSequential(new WaitCommand(0.35));
 
     //intake out
     AddSequential(new CargoIntakeExtendCommand());
@@ -52,7 +52,7 @@ class AcquireCargoCommandGroup : public frc::CommandGroup {
     AddSequential(new WaitCommand(0.5));
     AddParallel(new CargoIntakeBallCommand(0.3));
     AddSequential(new CargoIntakeRetractCommand());
-    AddSequential(new CargoIntakeWaitForBallCommand());
+    AddSequential(new CargoIntakeWaitForBallCommand(), 0.75);
     AddParallel(new CargoIntakeStopCommand());
     AddParallel(new ToolChangerHoldCargoCommand());
     AddSequential(new WaitCommand(0.1));

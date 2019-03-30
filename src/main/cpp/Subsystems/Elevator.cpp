@@ -105,14 +105,7 @@ void Elevator::Periodic() {
 
 void Elevator::SetElevatorPosition(double setPos) {
   if(m_isMasterZeroed){
-    if(setPos > 0) {
-      m_masterElevator->Set(ControlMode::MotionMagic, ConvertInchesToTicks(setPos), DemandType::DemandType_ArbitraryFeedForward, 0.1);
-      // m_masterElevator->Set(ControlMode::MotionMagic, setPos, DemandType::DemandType_ArbitraryFeedForward, 0.1);
-    }
-    else {
-      m_masterElevator->Set(ControlMode::MotionMagic, setPos);
-      // m_masterElevator->Set(ControlMode::MotionMagic, ConvertInchesToTicks(setPos));
-    }
+    m_masterElevator->Set(ControlMode::MotionMagic, ConvertInchesToTicks(setPos), DemandType::DemandType_ArbitraryFeedForward, 0.1);
     m_desiredElevatorPosition = setPos;
   }
 }
