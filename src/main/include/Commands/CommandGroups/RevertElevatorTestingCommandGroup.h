@@ -12,10 +12,12 @@
 #include <frc/commands/CommandGroup.h>
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
 #include "Commands/CargoIntake/CargoIntakeExtensionCommand.h"
+#include "Commands/ToolChanger/ToolChangerHoldCargoCommand.h"
 
 class RevertElevatorTestingCommandGroup : public frc::CommandGroup {
  public:
   RevertElevatorTestingCommandGroup() : CommandGroup("RevertElevatorTestingCommandGroup") {
+    AddParallel(new ToolChangerHoldCargoCommand());
     AddSequential(new ElevatorStowCommand("ElevatorStowCommand"));
     AddSequential(new CargoIntakeRetractCommand());
     AddSequential(new CargoIntakeStopCommand());

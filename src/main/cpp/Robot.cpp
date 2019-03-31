@@ -16,8 +16,6 @@
 #include "Commands/ToolChanger/ToolChangerHatchRetractCommand.h"
 #include "Commands/CommandGroups/AcquireHatchCommandGroup.h"
 #include "Commands/CommandGroups/AcquireCargoCommandGroup.h"
-#include "Commands/ToolChanger/ToolChangerScoreHatchCommandGroup.h"
-#include "Commands/ToolChanger/ToolChangerScoreCargoCommandGroup.h"
 #include "Commands/Elevator/ElevatorBaseCommand.h"
 #include "Commands/ToolChanger/ToolChangerSetHasHatchCommand.h"
 #include "Commands/ToolChanger/ToolChangerSetHasCargoCommand.h"
@@ -77,8 +75,6 @@ void Robot::RobotInit() {
 	SmartDashboard::PutData("PrepForAcquireHatchCommandGroup", new PrepForAcquireHatchCommandGroup());
 	SmartDashboard::PutData("AcquireHatchCommand", new AcquireHatchCommandGroup());
 	SmartDashboard::PutData("AcquireCargoCommand", new AcquireCargoCommandGroup());
-	SmartDashboard::PutData("ScoreHatchCommand", new ToolChangerScoreHatchCommandGroup());
-	SmartDashboard::PutData("ScoreCargoCommand", new ToolChangerScoreCargoCommandGroup());
 
 	SmartDashboard::PutData("ElevatorHighCommand", new ElevatorHighCommand("ElevatorHighCommand"));
 	SmartDashboard::PutData("ElevatorMidCommand", new ElevatorMidCommand("ElevatorMidCommand"));

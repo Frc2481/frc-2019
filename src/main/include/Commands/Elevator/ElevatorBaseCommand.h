@@ -14,6 +14,8 @@
 #include "RobotParameters.h"
 #include "Commands/ToolChanger/ToolChangerFreeCargoCommand.h"
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
+#include "Commands/ToolChanger/ToolChangerHoldCargoCommand.h"
+#include "Commands/CargoIntake/CargoIntakeExtensionCommand.h"
 
 template <int CARGO_HEIGHT, int HATCH_HEIGHT>
 class ElevatorBaseCommand : public frc::Command {
@@ -54,12 +56,14 @@ template <int CARGO_HEIGHT, int HATCH_HEIGHT>
 class ElevatorBaseCommandGroup : public CommandGroup {
   public:
   ElevatorBaseCommandGroup(std::string name) : CommandGroup(name) {
+    AddSequential(new ToolChangerHoldCargoCommand());
+    AddSequential(new CargoIntakeRetractCommand());
     AddSequential(new ElevatorBaseCommand<CARGO_HEIGHT, HATCH_HEIGHT>(name), 2.5);
   }
 }; 
 
 typedef ElevatorBaseCommandGroup<25, 25> ElevatorPreIntakeBallHeightCommand;
-typedef ElevatorBaseCommandGroup<300, 300> ElevatorIntakeBallHeightCommand;
+typedef ElevatorBaseCommandGroup<350, 350> ElevatorGuidesHeightCommand;
 typedef ElevatorBaseCommandGroup<680, 650> ElevatorHighCommand; //67 cargo height
 typedef ElevatorBaseCommandGroup<400, 360> ElevatorMidCommand;
 typedef ElevatorBaseCommandGroup<110, 60> ElevatorLowCommand;
