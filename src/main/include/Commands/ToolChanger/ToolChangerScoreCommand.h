@@ -27,7 +27,8 @@ class ToolChangerScoreCommand : public frc::InstantCommand {
       CommandBase::m_pToolChanger->ExtendHatch();
       Wait(0.3);
       CommandBase::m_pToolChanger->RetractHatch();
-      CommandBase::m_pToolChanger->HoldCargo();
+      // Wait(1.0);
+      // CommandBase::m_pToolChanger->HoldCargo();
     }
     CommandBase::m_pHatchSlide->SetLEDs(false);
     CommandBase::m_pToolChanger->SetHasCargo(false);
