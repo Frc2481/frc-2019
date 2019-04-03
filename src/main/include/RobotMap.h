@@ -19,13 +19,13 @@ PDP Layout:
     FR Steer 6
     FL Steer 7
     BLANK 8
-    Intake Slide Motor 9
+    Cargo Intake 9
     Hatch Slide Motor 10
     Upper PCM 11
     BL Drive 12
     BR Drive 13
     Climber 14
-    Cargo Intake 15
+    Intake Slide Motor 15
 */
 
 

@@ -25,6 +25,7 @@ private:
   bool m_isZeroed;
   bool m_isBallIntaken;
   double m_scale;
+  bool m_encoderConnected;
 
 public:
   CargoIntake();
@@ -42,6 +43,7 @@ public:
   int ConvertInchesToTicks(double inches);
   void ZeroCargoIntake();
   void SetOpenLoopSpeed(double speed);
+  void SetSpeed(double scale);
 };
 
 #endif // SRC_CARGO_INTAKE_H

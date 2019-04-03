@@ -16,7 +16,7 @@ class CargoIntakeWaitForBallCommand : public frc::Command {
 
   }
   bool IsFinished() override {
-    return CommandBase::m_pHatchSlide->HasBall();
+    return CommandBase::m_pHatchSlide->HasBall() || CommandBase::m_pCargoIntake->GetPos() < 6000;
   }
 };
 

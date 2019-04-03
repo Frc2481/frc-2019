@@ -21,23 +21,23 @@ CargoIntake::CargoIntake() : Subsystem("CargoIntake") {
   ctre::phoenix::motorcontrol::can::TalonSRXConfiguration talonConfig;
   m_extendMotor->Set(ControlMode::MotionMagic, 0);
   m_extendMotor->SetStatusFramePeriod(Status_10_MotionMagic, 10, 0);
-  m_extendMotor->EnableCurrentLimit(false);
+  m_extendMotor->EnableCurrentLimit(true);
   m_extendMotor->SetSensorPhase(true);
   m_extendMotor->SetInverted(false);
   m_extendMotor->SetNeutralMode(Coast);
 
   talonConfig.slot0.integralZone = 0;
-  talonConfig.slot0.kF = 0.2;
-  talonConfig.slot0.kP = 0.15;
+  talonConfig.slot0.kF = 0.19;
+  talonConfig.slot0.kP = 0.075;
   talonConfig.slot0.kI = 0;
   talonConfig.slot0.kD = 0;
   talonConfig.slot0.maxIntegralAccumulator = 0;
   talonConfig.motionCruiseVelocity = 4000; 
-  talonConfig.motionAcceleration = 100000; 
-  talonConfig.motionCurveStrength = 6;
-  talonConfig.peakCurrentDuration = 0; 
-  talonConfig.continuousCurrentLimit = 0;
-  talonConfig.peakCurrentLimit = 0; 
+  talonConfig.motionAcceleration = 100000;
+  talonConfig.motionCurveStrength = 8;
+  talonConfig.peakCurrentDuration = 500; 
+  talonConfig.continuousCurrentLimit = 40;
+  talonConfig.peakCurrentLimit = 60;
   talonConfig.primaryPID.selectedFeedbackSensor = CTRE_MagEncoder_Relative;
   talonConfig.forwardSoftLimitThreshold = 14280;
   talonConfig.forwardSoftLimitEnable = true;
@@ -61,18 +61,30 @@ void CargoIntake::InitDefaultCommand() {}
 void CargoIntake::Periodic() {
   static int loopCounter = -1;
   loopCounter++;
-  loopCounter %= 2;
+  loopCounter %= 4
+  ;
   if (loopCounter == 0) {
     m_isBallIntaken = !m_cargoPreIntakeSensor->Get();
     frc::SmartDashboard::PutBoolean("IsBallIntaken", m_isBallIntaken);
+    frc::SmartDashboard::PutBoolean("IsCargoIntakeZeroed", m_isZeroed);
   }
   else if (loopCounter == 1) {
     bool hasTalonReset = m_extendMotor->HasResetOccurred();
     if(m_isZeroed && hasTalonReset) {
-      frc::SmartDashboard::PutBoolean("HasCargoIntakeTalonReset", hasTalonReset);
+      frc::SmartDashboard::PutBoolean("CargoIntakeTalonReset", hasTalonReset);
       m_isZeroed = false;
     }
   }
+  else if (loopCounter == 2) {
+    frc::SmartDashboard::PutNumber("CargoIntakeError", GetPos() - GetDesiredPos());
+    frc::SmartDashboard::PutNumber("CargoIntakePos", GetPos());
+    frc::SmartDashboard::PutNumber("CargoIntakeDesiredPos", GetDesiredPos());
+  }
+  else if (loopCounter == 3) {
+    m_encoderConnected = m_extendEncoder->isConnected();
+    frc::SmartDashboard::PutBoolean("IsCargoIntakeEncoderConnected", m_encoderConnected);
+  }
+
 }
 void CargoIntake::SetSpeedIn(double speed) {
   m_intakeMotor->Set(ControlMode::PercentOutput, speed);
@@ -97,14 +109,13 @@ void CargoIntake::SetPosition(double pos) {
     m_desiredPos = pos;
   }
 }
-void CargoIntake::SetSpeed(double scale) {
-	m_scale = scale;
-	m_extendMotor->ConfigMotionCruiseVelocity(4000 * m_scale, 0);
-	m_extendMotor->ConfigMotionAcceleration(100000 * m_scale, 0);
-}
-}
+// void CargoIntake::SetSpeed(double scale) {
+	// m_scale = scale;
+	// m_extendMotor->ConfigMotionCruiseVelocity(2000 * m_scale, 0);
+	// m_extendMotor->ConfigMotionAcceleration(50000 * m_scale, 0);
+// }
 bool CargoIntake::IsOnTarget() {
-  return fabs(GetPos() - GetDesiredPos()) < 0.5;
+  return fabs(GetPos() - GetDesiredPos()) < 200;
 }
 double CargoIntake::GetPos() {
   return m_extendMotor->GetSelectedSensorPosition(0);

@@ -13,13 +13,15 @@
 
 class CargoIntakeExtendCommand : public frc::InstantCommand {
  public:
-  CargoIntakeExtendCommand() : InstantCommand("CargoIntakeExtendCommand") {}
+  CargoIntakeExtendCommand() : InstantCommand("CargoIntakeExtendCommand") {
+    SetTimeout(1);
+  }
   void Initialize() override {
-    CommandBase::m_pCargoIntake->SetSpeed(1);
+    // CommandBase::m_pCargoIntake->SetSpeed(1);
     CommandBase::m_pCargoIntake->SetPosition(14275); //TODO
   }
   bool IsFinished() override {
-    return CommandBase::m_pCargoIntake->IsOnTarget();
+    return CommandBase::m_pCargoIntake->IsOnTarget() || IsTimedOut();
   }
   void End() override {
     CommandBase::m_pCargoIntake->SetOpenLoopSpeed(0);
@@ -28,13 +30,15 @@ class CargoIntakeExtendCommand : public frc::InstantCommand {
 
 class CargoIntakeRetractCommand : public frc::InstantCommand {
  public:
-  CargoIntakeRetractCommand() : InstantCommand("CargoIntakeRetractCommand") {}
+  CargoIntakeRetractCommand() : InstantCommand("CargoIntakeRetractCommand") {
+    SetTimeout(1);
+  }
   void Initialize() override {
-    CommandBase::m_pCargoIntake->SetSpeed(0.7);
-    CommandBase::m_pCargoIntake->SetPosition(0); //TODO
+    // CommandBase::m_pCargoIntake->SetSpeed(1);
+    CommandBase::m_pCargoIntake->SetPosition(-1); //TODO
   }
   bool IsFinished() override {
-    return CommandBase::m_pCargoIntake->IsOnTarget();
+    return IsTimedOut();
   }
   void End() override {
     CommandBase::m_pCargoIntake->SetOpenLoopSpeed(0);

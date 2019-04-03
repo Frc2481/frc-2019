@@ -18,7 +18,7 @@ class ToolChanger : public frc::Subsystem {
   frc::DoubleSolenoid* m_hatchTool;
   frc::DoubleSolenoid* m_cargoTool;
   frc::DoubleSolenoid* m_hatchExtender;
-  frc::DigitalInput* m_capacitiveSensor;
+  // frc::DigitalInput* m_capacitiveSensor;
   bool m_isHatchToolHeld;
   bool m_isCargoToolHeld;
   bool m_hasCargo;
