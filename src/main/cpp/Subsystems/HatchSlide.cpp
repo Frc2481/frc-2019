@@ -80,70 +80,84 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
 void HatchSlide::InitDefaultCommand() {}
 
 void HatchSlide::Periodic() {
-  frc::SmartDashboard::PutNumber("HatchSlideError", m_motor->GetClosedLoopError());
-  frc::SmartDashboard::PutBoolean("IsHatchZeroed", m_isHatchZeroed);
-  frc::SmartDashboard::PutBoolean("IsSlideOnTarget", IsSlideOnTarget());
-  frc::SmartDashboard::PutNumber("HatchSlidePos", ConvertTicksToInches(GetHatchPosition()));
-  frc::SmartDashboard::PutBoolean("IsHatchSeen", IsHatchSeen());
-  frc::SmartDashboard::PutBoolean("HasBall", HasBall());
-  bool hasResetOccurred = m_motor->HasResetOccurred();
-  if(hasResetOccurred && m_isHatchZeroed){
-    frc::SmartDashboard::PutBoolean("IsSlideTalonReset", !hasResetOccurred);
-    m_isHatchZeroed = false;
-    SetOpenLoopSpeed(0);
-    printf("!!! Hatch Slide Talon Reset !!!\n");
+  static int loopCounter = -1;
+  loopCounter++;
+  loopCounter %= 10;
+  if (loopCounter == 0) {
+    frc::SmartDashboard::PutNumber("HatchSlideError", m_motor->GetClosedLoopError());
+    frc::SmartDashboard::PutBoolean("IsHatchZeroed", m_isHatchZeroed);
   }
-
-  m_pulseBright = m_irSensorBright->GetPeriod();
-  m_pulseDim = m_irSensorDim->GetPeriod();
-
-  frc::SmartDashboard::PutNumber("PWM value", m_pulseBright);
-
-  frc::SmartDashboard::PutNumber("Teensy dist bright", GetBrightPulseDist());
-  frc::SmartDashboard::PutNumber("Teensy dist dim", GetDimPulseDist());
-
-  frc::SmartDashboard::PutBoolean("is line visible", IsLineVisible());
-
-  frc::SmartDashboard::PutBoolean("IsLineSensorWorking", IsLineSensorWorking());
-  
-  m_encoderConnected = m_slideEncoder->isConnected();
-  frc::SmartDashboard::PutBoolean("slideEncConnnected", m_encoderConnected);
-
-  if(IsLineVisible() && !m_oldTargetValid) {
-    m_isVibratable = true;
+  else if (loopCounter == 1) {
+    frc::SmartDashboard::PutBoolean("IsSlideOnTarget", IsSlideOnTarget());
+    frc::SmartDashboard::PutNumber("HatchSlidePos", ConvertTicksToInches(GetHatchPosition()));
   }
-  else {
-    m_isVibratable = false;
+  else if (loopCounter == 2) {
+    frc::SmartDashboard::PutBoolean("IsHatchSeen", IsHatchSeen());
+    frc::SmartDashboard::PutBoolean("HasBall", HasBall());
   }
-
-  m_oldTargetValid = IsLineVisible();
-
-  //go to position
-  if(IsHatchSlideUserEnabled() & IsLineSensorWorking()) {
-    if(IsLineVisible() && isZeroed()) {
-      setSetPoint(ConvertInchesToTicks(GetBrightPulseDist() - 13));
-      m_noLineCounter = 0;
-    }
-    else if(!IsLineVisible() && isZeroed()) {
-      m_noLineCounter++;
-      if(m_noLineCounter > 20) {
-        setSetPoint(0);
-      }
-    }
-    else if(!isZeroed()) {
+  else if (loopCounter == 3) {
+    bool hasResetOccurred = m_motor->HasResetOccurred();
+    if(hasResetOccurred && m_isHatchZeroed){
+      frc::SmartDashboard::PutBoolean("IsSlideTalonReset", !hasResetOccurred);
+      m_isHatchZeroed = false;
       SetOpenLoopSpeed(0);
+      printf("!!! Hatch Slide Talon Reset !!!\n");
     }
-    frc::SmartDashboard::PutNumber("hatch slide setpoint", ConvertInchesToTicks(GetBrightPulseDist() - 13));
   }
-  else {
-    setSetPoint(0);
+  else if (loopCounter == 4) {
+    m_pulseBright = m_irSensorBright->GetPeriod();
+    m_pulseDim = m_irSensorDim->GetPeriod();
+    frc::SmartDashboard::PutNumber("PWM value", m_pulseBright);
   }
+  else if (loopCounter == 5) {
+    frc::SmartDashboard::PutNumber("Teensy dist bright", GetBrightPulseDist());
+    frc::SmartDashboard::PutNumber("Teensy dist dim", GetDimPulseDist());
+  }
+  else if (loopCounter == 6) {
+    frc::SmartDashboard::PutBoolean("is line visible", IsLineVisible());
+    frc::SmartDashboard::PutBoolean("IsLineSensorWorking", IsLineSensorWorking());
+    m_encoderConnected = m_slideEncoder->isConnected();
+    frc::SmartDashboard::PutBoolean("slideEncConnnected", m_encoderConnected);
+  }
+  else if (loopCounter == 7) {
+    if(IsLineVisible() && !m_oldTargetValid) {
+      m_isVibratable = true;
+    }
+    else {
+      m_isVibratable = false;
+    }
 
-  if(RobotParameters::k_allowableCloseLoopError > fabs(m_motor->GetSelectedSensorPosition() - m_desiredPos)) {
-      m_LED->Set(true);
+    m_oldTargetValid = IsLineVisible();
   }
-  else {
-    m_LED->Set(false);
+  else if (loopCounter == 8) {
+    //go to position
+    if(IsHatchSlideUserEnabled() & IsLineSensorWorking()) {
+      if(IsLineVisible() && isZeroed()) {
+        setSetPoint(ConvertInchesToTicks(GetBrightPulseDist() - 13));
+        m_noLineCounter = 0;
+      }
+      else if(!IsLineVisible() && isZeroed()) {
+        m_noLineCounter++;
+        if(m_noLineCounter > 20) {
+          setSetPoint(0);
+        }
+      }
+      else if(!isZeroed()) {
+        SetOpenLoopSpeed(0);
+      }
+      frc::SmartDashboard::PutNumber("hatch slide setpoint", ConvertInchesToTicks(GetBrightPulseDist() - 13));
+    }
+    else {
+      setSetPoint(0);
+    }
+  }
+  else if (loopCounter == 9) {
+    if(RobotParameters::k_allowableCloseLoopError > fabs(m_motor->GetSelectedSensorPosition() - m_desiredPos)) {
+        m_LED->Set(true);
+    }
+    else {
+      m_LED->Set(false);
+    }
   }
 }
 

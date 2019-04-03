@@ -7,7 +7,6 @@
 #include "Commands/HatchSlide/HatchSlideZeroCommand.h"
 #include "Commands/Elevator/ElevatorZeroCommand.h"
 // #include "Commands/VibrateCommand.h"
-#include "Commands/Elevator/ElevatorHomeCommand.h"
 #include "Commands/ToolChanger/ToolChangerFreeCargoCommand.h"
 #include "Commands/ToolChanger/ToolChangerHoldCargoCommand.h"
 #include "Commands/ToolChanger/ToolChangerFreeHatchCommand.h"
@@ -29,10 +28,10 @@
 #include "Commands/CommandGroups/ZeroAllCommandGroup.h"
 #include "Commands/Climber/ClimberReleaseWeightsCommand.h"
 #include "Commands/Climber/ClimberSetPositionCommand.h"
-#include "Commands/HatchSlide/HatchSlideGoToPosition.h"
 #include "Commands/SetLEDsCommand.h"
 #include "Commands/CommandGroups/StopAllCommand.h"
 #include "Commands/CargoIntake/CargoIntakeExtensionCommand.h"
+#include "Commands/CargoIntake/CargoIntakeZeroCommand.h"
 
 Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 	m_server = CameraServer::GetInstance();
@@ -43,6 +42,7 @@ void Robot::RobotInit() {
 
 	SmartDashboard::PutData("CargoIntakeExtendCommand", new CargoIntakeExtendCommand());
 	SmartDashboard::PutData("CargoIntakeRetractCommand", new CargoIntakeRetractCommand());
+	SmartDashboard::PutData("CargoIntakeZeroCommand", new CargoIntakeZeroCommand());
 
 	SmartDashboard::PutData("Score Command", new ToolChangerScoreCommand());
 
@@ -50,7 +50,6 @@ void Robot::RobotInit() {
 
 	SmartDashboard::PutData("SwerveDrivetrainZeroSteer", new SwerveDrivetrainZeroSteer());
 	SmartDashboard::PutData("HatchSlideZeroCommand", new HatchSlideZeroCommand());
-	SmartDashboard::PutData("ElevatorHomeCommand", new ElevatorHomeCommand());
 	SmartDashboard::PutData("ElevatorZeroCommand", new ElevatorZeroCommand());
 	SmartDashboard::PutData("FreeCargoCommand", new ToolChangerFreeCargoCommand());
 	SmartDashboard::PutData("HoldCargoCommand", new ToolChangerHoldCargoCommand());
@@ -125,6 +124,8 @@ void Robot::DisabledInit() {
 	CommandBase::m_pElevator->SetOpenLoopSpeed(0);
 	CommandBase::m_pHatchSlide->SetOpenLoopSpeed(0);
 	CommandBase::m_pCargoIntake->SetSpeedIn(0);
+	CommandBase::m_pCargoIntake->SetOpenLoopSpeed(0);
+	CommandBase::m_pClimber->SetOpenLoopSpeed(0);
 	frc::Scheduler::GetInstance()->RemoveAll();
 }
 

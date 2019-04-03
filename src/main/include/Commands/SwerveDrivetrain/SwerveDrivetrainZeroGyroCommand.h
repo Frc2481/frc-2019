@@ -13,7 +13,9 @@
 
 class SwerveDrivetrainZeroGyroCommand : public frc::InstantCommand {
 public:
-	SwerveDrivetrainZeroGyroCommand() : InstantCommand("SwerveDrivetrainZeroGyroCommand") {}
+	SwerveDrivetrainZeroGyroCommand() : InstantCommand("SwerveDrivetrainZeroGyroCommand") {
+		SetRunWhenDisabled(true);
+	}
 	void Initialize() override {
 		CommandBase::m_pSwerveDrivetrain->zeroGyroYaw();
 	}

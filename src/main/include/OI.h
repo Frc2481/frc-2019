@@ -33,7 +33,6 @@ public:
     AnalogJoystickButton* m_acquireCargo;
     frc::Button* m_acquireHatch;
     frc::Button* m_elevatorStow;
-    frc::Button* m_climbCheckpoint;
     frc::Button* m_climbL1ToL2;
     frc::Button* m_climbL2ToL3;
     frc::Button* m_climbL1ToL3;

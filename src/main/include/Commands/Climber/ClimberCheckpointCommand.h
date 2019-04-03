@@ -10,18 +10,14 @@
 
 #include <frc/commands/Command.h>
 #include <frc/WPILib.h>
+#include "CommandBase.h"
 
 class ClimberCheckpointCommand : public frc::Command {
- private:
-  frc::Button* m_primary;
-  frc::Button* m_secondary;
  public:
-  ClimberCheckpointCommand(frc::Button* primary, frc::Button* secondary) : Command("ClimberCheckpointCommand") {
-    m_primary = primary;
-    m_secondary = secondary;
-  }
+  ClimberCheckpointCommand() : Command("ClimberCheckpointCommand") {}
   bool IsFinished() override {
-    return m_primary->Get() && m_secondary->Get();
+    return CommandBase::m_pOI->GetDriverStick()->GetRawButton(XBOX_BACK_BUTTON) &&
+           CommandBase::m_pOI->GetDriverStick()->GetRawButton(XBOX_X_BUTTON);
   }
 };
 

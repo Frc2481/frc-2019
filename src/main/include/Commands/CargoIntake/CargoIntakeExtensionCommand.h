@@ -15,7 +15,14 @@ class CargoIntakeExtendCommand : public frc::InstantCommand {
  public:
   CargoIntakeExtendCommand() : InstantCommand("CargoIntakeExtendCommand") {}
   void Initialize() override {
-    CommandBase::m_pCargoIntake->ExtendIntake();
+    CommandBase::m_pCargoIntake->SetSpeed(1);
+    CommandBase::m_pCargoIntake->SetPosition(14275); //TODO
+  }
+  bool IsFinished() override {
+    return CommandBase::m_pCargoIntake->IsOnTarget();
+  }
+  void End() override {
+    CommandBase::m_pCargoIntake->SetOpenLoopSpeed(0);
   }
 };
 
@@ -23,7 +30,14 @@ class CargoIntakeRetractCommand : public frc::InstantCommand {
  public:
   CargoIntakeRetractCommand() : InstantCommand("CargoIntakeRetractCommand") {}
   void Initialize() override {
-    CommandBase::m_pCargoIntake->RetractIntake();
+    CommandBase::m_pCargoIntake->SetSpeed(0.7);
+    CommandBase::m_pCargoIntake->SetPosition(0); //TODO
+  }
+  bool IsFinished() override {
+    return CommandBase::m_pCargoIntake->IsOnTarget();
+  }
+  void End() override {
+    CommandBase::m_pCargoIntake->SetOpenLoopSpeed(0);
   }
 };
 

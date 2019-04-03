@@ -31,6 +31,7 @@ class ClimbSequence2To3CommandGroup : public frc::CommandGroup {
     AddSequential(new ClimberWaitForHeightCommand(148));
     AddSequential(new SwerveDrivetrainSetOpenLoop(0.5, 0.0, 0.25, 0.0));
     AddSequential(new WaitCommand(3));
+    AddSequential(new ClimberSetPositionCommand(125));
     AddSequential(new ClimberTiltBigFootCommand());
   }
 };
@@ -77,13 +78,10 @@ class ClimbSequence1To2CommandGroup : public frc::CommandGroup {
     AddSequential(new SwerveDrivetrainSetOpenLoop(0.5, 0.0, 0.25, 0.0));
     // AddSequential(new ClimberSetPositionCommand(90));    
     // AddSequential(new ClimberTiltBigFootCommand());
-    // AddSequential(new ClimberSetOpenLoopCommand(-0.5));
-    // AddSequential(new ClimberWaitForHeightCommand(23));
-    // AddSequential(new ClimberSetOpenLoopCommand(0.0));
+    // AddSequential(new ClimberSetPositionCommand(0)); //TODO fix all of this
     // AddSequential(new ClimberUntiltBigFootCommand());
-    // AddSequential(new ClimberSetOpenLoopCommand(0.5));
-    // AddSequential(new ClimberWaitForHeightCommand(0)); //find actual height
-    // AddSequential(new ClimberSetOpenLoopCommand(0.0));    
+    // AddSequential(new ClimberSetPositionCommand(25));
+    // AddSequential(new SwerveDrivetrainSetOpenLoop(0.5, 0.0, 0.25, 0.0));
   }
 };
 

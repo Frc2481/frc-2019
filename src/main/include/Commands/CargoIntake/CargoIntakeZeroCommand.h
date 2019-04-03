@@ -5,16 +5,20 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SRC_ZEROCONDITIONALCOMMAND
-#define SRC_ZEROCONDITIONALCOMMAND
+#ifndef SRC_CARGOINTAKEZEROCOMMAND
+#define SRC_CARGOINTAKEZEROCOMMAND
 
-#include <frc/commands/ConditionalCommand.h>
+#include <frc/commands/InstantCommand.h>
 #include "CommandBase.h"
 
-class ZeroConditionalCommand : public frc::ConditionalCommand {
+class CargoIntakeZeroCommand : public frc::InstantCommand {
  public:
-  ZeroConditionalCommand() : ConditionalCommand("ZeroConditionalCommand", new Command()){}
-  bool Condition(){}
+  CargoIntakeZeroCommand() : InstantCommand("CargoIntakeZeroCommand"){
+    SetRunWhenDisabled(true);
+  }
+  void Initialize() override{
+    CommandBase::m_pCargoIntake->ZeroCargoIntake();
+  }
 };
 
-#endif //SRC_ZEROCONDITIONALCOMMAND
+#endif //SRC_CARGOINTAKEZEROCOMMAND
