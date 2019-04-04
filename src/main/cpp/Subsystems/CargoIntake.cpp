@@ -61,10 +61,9 @@ void CargoIntake::InitDefaultCommand() {}
 void CargoIntake::Periodic() {
   static int loopCounter = -1;
   loopCounter++;
-  loopCounter %= 4
-  ;
+  loopCounter %= 4;
+  m_isBallIntaken = !m_cargoPreIntakeSensor->Get();
   if (loopCounter == 0) {
-    m_isBallIntaken = !m_cargoPreIntakeSensor->Get();
     frc::SmartDashboard::PutBoolean("IsBallIntaken", m_isBallIntaken);
     frc::SmartDashboard::PutBoolean("IsCargoIntakeZeroed", m_isZeroed);
   }

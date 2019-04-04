@@ -33,7 +33,6 @@ class ElevatorBaseCommand : public frc::Command {
   }
   
   bool IsFinished() override {
-    printf("checking is finished\n");
     return CommandBase::m_pElevator->IsOnTarget();
   }
 
@@ -56,8 +55,8 @@ template <int CARGO_HEIGHT, int HATCH_HEIGHT>
 class ElevatorBaseCommandGroup : public CommandGroup {
   public:
   ElevatorBaseCommandGroup(std::string name) : CommandGroup(name) {
-    AddSequential(new ToolChangerHoldCargoCommand());
-    AddSequential(new CargoIntakeRetractCommand());
+    AddParallel(new ToolChangerHoldCargoCommand());
+    // AddSequential(new CargoIntakeRetractCommand());
     AddSequential(new ElevatorBaseCommand<CARGO_HEIGHT, HATCH_HEIGHT>(name), 2.5);
   }
 }; 

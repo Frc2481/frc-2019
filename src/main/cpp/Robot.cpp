@@ -3,6 +3,7 @@
 #include "RobotParameters.h"
 #include "RobotMap.h"
 #include <frc/WPILib.h>
+#include <frc/LiveWindow/LiveWindow.h>
 #include "Commands/SwerveDrivetrain/SwerveDrivetrainZeroSteer.h"
 #include "Commands/HatchSlide/HatchSlideZeroCommand.h"
 #include "Commands/Elevator/ElevatorZeroCommand.h"
@@ -103,6 +104,8 @@ void Robot::RobotInit() {
 	m_elevatorCargoShip = new ElevatorCargoShipCommand("ElevatorLowCommand");
 	m_freeCargo = new ToolChangerFreeCargoCommand();
 	m_zeroAll->Start();
+
+	// frc::LiveWindow::GetInstancew()->DisableAllTelemetry();
 }
 
 void Robot::RobotPeriodic() {

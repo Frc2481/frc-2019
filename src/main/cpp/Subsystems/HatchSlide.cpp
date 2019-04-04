@@ -80,9 +80,11 @@ HatchSlide::HatchSlide() : Subsystem("HatchSlide") {
 void HatchSlide::InitDefaultCommand() {}
 
 void HatchSlide::Periodic() {
+  m_pulseBright = m_irSensorBright->GetPeriod();
+  m_pulseDim = m_irSensorDim->GetPeriod();
   static int loopCounter = -1;
   loopCounter++;
-  loopCounter %= 10;
+  loopCounter %= 8;
   if (loopCounter == 0) {
     frc::SmartDashboard::PutNumber("HatchSlideError", m_motor->GetClosedLoopError());
     frc::SmartDashboard::PutBoolean("IsHatchZeroed", m_isHatchZeroed);
@@ -105,8 +107,6 @@ void HatchSlide::Periodic() {
     }
   }
   else if (loopCounter == 4) {
-    m_pulseBright = m_irSensorBright->GetPeriod();
-    m_pulseDim = m_irSensorDim->GetPeriod();
     frc::SmartDashboard::PutNumber("PWM value", m_pulseBright);
   }
   else if (loopCounter == 5) {
@@ -129,35 +129,30 @@ void HatchSlide::Periodic() {
 
     m_oldTargetValid = IsLineVisible();
   }
-  else if (loopCounter == 8) {
-    //go to position
-    if(IsHatchSlideUserEnabled() & IsLineSensorWorking()) {
-      if(IsLineVisible() && isZeroed()) {
-        setSetPoint(ConvertInchesToTicks(GetBrightPulseDist() - 13));
-        m_noLineCounter = 0;
-      }
-      else if(!IsLineVisible() && isZeroed()) {
-        m_noLineCounter++;
-        if(m_noLineCounter > 20) {
-          setSetPoint(0);
-        }
-      }
-      else if(!isZeroed()) {
-        SetOpenLoopSpeed(0);
-      }
-      frc::SmartDashboard::PutNumber("hatch slide setpoint", ConvertInchesToTicks(GetBrightPulseDist() - 13));
+  if(IsHatchSlideUserEnabled() & IsLineSensorWorking()) {
+    if(IsLineVisible() && isZeroed()) {
+      setSetPoint(ConvertInchesToTicks(GetBrightPulseDist() - 13));
+      m_noLineCounter = 0;
     }
-    else {
-      setSetPoint(0);
+    else if(!IsLineVisible() && isZeroed()) {
+      m_noLineCounter++;
+      if(m_noLineCounter > 20) {
+        setSetPoint(0);
+      }
     }
+    else if(!isZeroed()) {
+      SetOpenLoopSpeed(0);
+    }
+    frc::SmartDashboard::PutNumber("hatch slide setpoint", ConvertInchesToTicks(GetBrightPulseDist() - 13));
   }
-  else if (loopCounter == 9) {
-    if(RobotParameters::k_allowableCloseLoopError > fabs(m_motor->GetSelectedSensorPosition() - m_desiredPos)) {
-        m_LED->Set(true);
-    }
-    else {
-      m_LED->Set(false);
-    }
+  else {
+    setSetPoint(0);
+  }
+  if(RobotParameters::k_allowableCloseLoopError > fabs(m_motor->GetSelectedSensorPosition() - m_desiredPos)) {
+      m_LED->Set(true);
+  }
+  else {
+    m_LED->Set(false);
   }
 }
 

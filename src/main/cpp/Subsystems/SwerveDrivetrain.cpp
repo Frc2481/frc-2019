@@ -183,14 +183,14 @@ void SwerveDrivetrain::Periodic() {
 	static int loopCounter = -1;
 	loopCounter++;
 	loopCounter %= 6;
+	// update encoders
+	m_pFRSteerEncoder->update();
+	m_pBRSteerEncoder->update();
+	m_pBLSteerEncoder->update();
+	m_pFLSteerEncoder->update();
+	m_gyroYaw = -m_pChassisIMU->GetYaw();
+	
 	if (loopCounter == 0) {
-		// update encoders
-		m_pFRSteerEncoder->update();
-		m_pBRSteerEncoder->update();
-		m_pBLSteerEncoder->update();
-		m_pFLSteerEncoder->update();
-	}
-	if (loopCounter == 1) {
 		bool hasFLReset = !m_pFLSteerMotor->HasResetOccurred();
 		bool hasFRReset = !m_pFRSteerMotor->HasResetOccurred();
 		bool hasBLReset = !m_pBLSteerMotor->HasResetOccurred();
@@ -201,13 +201,13 @@ void SwerveDrivetrain::Periodic() {
 		SmartDashboard::PutBoolean("BLSteerTalonReset", hasBLReset);
 		SmartDashboard::PutBoolean("BRSteerTalonReset", hasBRReset);
 	}
-	if (loopCounter == 2) {
+	if (loopCounter == 1) {
 		SmartDashboard::PutBoolean("FLSteerEncCalibrated", m_pFLSteerEncoder->isCalibrated());
 		SmartDashboard::PutBoolean("FRSteerEncCalibrated", m_pFRSteerEncoder->isCalibrated());
 		SmartDashboard::PutBoolean("BLSteerEncCalibrated", m_pBLSteerEncoder->isCalibrated());
 		SmartDashboard::PutBoolean("BRSteerEncCalibrated", m_pBRSteerEncoder->isCalibrated());
 	}
-	if (loopCounter == 3) {
+	if (loopCounter == 2) {
 		bool flEncConnected = m_pFLSteerEncoder->isConnected();
 		bool frEncConnected = m_pFRSteerEncoder->isConnected();
 		bool blEncConnected = m_pBLSteerEncoder->isConnected();
@@ -219,14 +219,13 @@ void SwerveDrivetrain::Periodic() {
 		SmartDashboard::PutBoolean("BR steer encoder connected", brEncConnected);
 		m_areAllSteerEncodersConnected = flEncConnected && frEncConnected && blEncConnected && brEncConnected;
 	}
-	if (loopCounter == 4) {
+	if (loopCounter == 3) {
 		SmartDashboard::PutNumber("FL Steer encoder pos", m_pFLSteerEncoder->getAngle());
 		SmartDashboard::PutNumber("FR Steer encoder pos", m_pFRSteerEncoder->getAngle());
 		SmartDashboard::PutNumber("BL Steer encoder pos", m_pBLSteerEncoder->getAngle());
 		SmartDashboard::PutNumber("BR Steer encoder pos", m_pBRSteerEncoder->getAngle());
 	}
-	if (loopCounter == 5) {
-		m_gyroYaw = -m_pChassisIMU->GetYaw();
+	if (loopCounter == 4) {
 		SmartDashboard::PutNumber("Gyro Yaw", m_gyroYaw);
 	}
 }
