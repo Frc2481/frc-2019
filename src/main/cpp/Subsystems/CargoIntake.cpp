@@ -11,6 +11,7 @@
 
 CargoIntake::CargoIntake() : Subsystem("CargoIntake") {
   m_intakeMotor = new VictorSPX(CARGO_INTAKE_MOTOR_ID);
+  m_intakeMotor->SetInverted(true);
   m_cargoPreIntakeSensor = new frc::DigitalInput(CARGO_PRE_INTAKE_BALL_SENSOR);
   m_extendMotor = new TalonSRX(CARGO_INTAKE_EXTEND_MOTOR_ID);
   m_extendEncoder = new CTREMagEncoder(m_extendMotor, "CARGO_INTAKE_ENCODER");
