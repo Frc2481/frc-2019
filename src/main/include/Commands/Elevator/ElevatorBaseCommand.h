@@ -63,9 +63,9 @@ class ElevatorBaseCommandGroup : public CommandGroup {
 
 typedef ElevatorBaseCommandGroup<25, 25> ElevatorPreIntakeBallHeightCommand;
 typedef ElevatorBaseCommandGroup<350, 350> ElevatorGuidesHeightCommand;
-typedef ElevatorBaseCommandGroup<680, 650> ElevatorHighCommand; //67 cargo height
-typedef ElevatorBaseCommandGroup<400, 360> ElevatorMidCommand;
-typedef ElevatorBaseCommandGroup<110, 60> ElevatorLowCommand;
+typedef ElevatorBaseCommandGroup<680, 635> ElevatorHighCommand; //67 cargo height
+typedef ElevatorBaseCommandGroup<400, 345> ElevatorMidCommand;
+typedef ElevatorBaseCommandGroup<110, 45> ElevatorLowCommand;
 typedef ElevatorBaseCommandGroup<90, 90> ElevatorCargoLowCommand;
 typedef ElevatorBaseCommandGroup<300, 30> ElevatorCargoShipCommand;
 typedef ElevatorBaseCommandGroup<0, 0> ElevatorStowCommand;
