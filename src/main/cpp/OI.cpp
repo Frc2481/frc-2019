@@ -25,7 +25,7 @@
 #include "Commands/ToolChanger/ToolChangerHoldHatchCommand.h"
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
 #include "Commands/ToolChanger/ToolChangerHatchRetractCommand.h"
-#include "Commands/ToolChanger/ToolChangerScoreCommand.h"
+#include "Commands/CommandGroups/ScoreCommandGroup.h"
 #include "Commands/HatchSlide/HatchSlideJoystickCommand.h"
 #include "Commands/CommandGroups/ZeroAllCommandGroup.h"
 #include "Commands/CommandGroups/RevertElevatorTestingCommandGroup.h"
@@ -100,7 +100,7 @@ OI::OI() {
 	m_climberGuides->WhenPressed(new ClimbGuidesSequenceCommandGroup());
 
 	m_scoreGamePiece = new AnalogJoystickButton(m_pOperatorStick, XBOX_LEFT_TRIGGER, 0.5);
-	m_scoreGamePiece->WhenPressed(new ToolChangerScoreCommand());
+	m_scoreGamePiece->WhenPressed(new ScoreCommand());
 	
 	m_elevatorManual = new AnalogJoystickButton(m_pOperatorStick, XBOX_LEFT_Y_AXIS, -0.25);
 	m_elevatorManual->WhileHeld(new ElevatorJoystickCommand());
