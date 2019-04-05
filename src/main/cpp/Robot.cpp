@@ -105,13 +105,13 @@ void Robot::RobotInit() {
 	m_freeCargo = new ToolChangerFreeCargoCommand();
 	m_zeroAll->Start();
 
-	// frc::LiveWindow::GetInstancew()->DisableAllTelemetry();
+	frc::LiveWindow::GetInstance()->DisableAllTelemetry();
 }
 
 void Robot::RobotPeriodic() {
-	double time0 = frc::Timer::GetFPGATimestamp();
+	// double time0 = frc::Timer::GetFPGATimestamp();
 	frc::Scheduler::GetInstance()->Run();
-	double time1 = frc::Timer::GetFPGATimestamp();
+	// double time1 = frc::Timer::GetFPGATimestamp();
 	// printf("dt = %0.1f ms\n", (time1 - time0) * 1000);
 	// printf("LOGGER elevPos: %df, elevDesiredPos: %df, intakePos: %df\n", CommandBase::m_pElevator->GetElevatorPosition(), 
 	// 		CommandBase::m_pElevator->GetDesiredPos(), CommandBase::m_pCargoIntake->GetPosition());
@@ -137,11 +137,11 @@ void Robot::TeleopInit() {
 }
 
 void Robot::AutonomousPeriodic() {
-	RobotPeriodic();
+	// RobotPeriodic();
 }
 
 void Robot::TeleopPeriodic() {
-	RobotPeriodic();
+	// RobotPeriodic();
 	// if(CommandBase::m_pHatchSlide->IsVibratable()) {
 	// 	m_pVibrate->Start();
 	// 	CommandBase::m_pHatchSlide->ResetVibratable();
