@@ -49,16 +49,23 @@ Climber::Climber() : Subsystem("Climber"),
   m_climberGuidesSolenoid->Set(frc::DoubleSolenoid::kReverse);
   m_weightsSolenoid->Set(false);
 
-  m_climberManualActivated = false;
-
   m_isClimberZeroed = false;
   m_areClimberGuidesExtended = false;
   m_desiredSetpoint = 0;
 }
 void Climber::Periodic(){
-  frc::SmartDashboard::PutNumber("Climber Position", GetPos());
-  frc::SmartDashboard::PutNumber("Climber Speed", GetSpeed());
-  frc::SmartDashboard::PutNumber("Climber sensor speed", m_encoder->GetVelocity());
+  static int loopCounter = -1;
+  loopCounter++;
+  loopCounter %= 3;
+  if (loopCounter == 0) {
+    frc::SmartDashboard::PutNumber("Climber Position", GetPos());
+  }
+  else if (loopCounter == 1) {
+    frc::SmartDashboard::PutNumber("Climber Speed", GetSpeed());
+  }
+  else if (loopCounter == 2) {
+    frc::SmartDashboard::PutNumber("Climber sensor speed", m_encoder->GetVelocity());
+  }
 }
 void Climber::InitDefaultCommand() {
   // SetDefaultCommand(new ClimberDriveWithJoystickCommand());
@@ -111,16 +118,16 @@ double Climber::GetDesiredPos(){
   return m_desiredSetpoint;
 }
 void Climber::ZeroClimber(){
-  m_encoder->SetPosition(0.0); //is this right???
+  m_encoder->SetPosition(0.0); //TODO is this right???
   m_isClimberZeroed = true;
 }
 void Climber::ExtendGuides(){
-  m_climberGuidesSolenoid->Set(frc::DoubleSolenoid::kForward);//TODO check if correct
+  m_climberGuidesSolenoid->Set(frc::DoubleSolenoid::kForward);
   m_areClimberGuidesExtended = true;
 }
 
 void Climber::RetractGuides(){
-  m_climberGuidesSolenoid->Set(frc::DoubleSolenoid::kReverse);//TODO check if correct
+  m_climberGuidesSolenoid->Set(frc::DoubleSolenoid::kReverse);
   m_areClimberGuidesExtended = false;
 }
 bool Climber::IsGuidesExtended(){
@@ -131,15 +138,6 @@ void Climber::ReleaseWeights() {
 }
 void Climber::ResetWeights() {
   m_weightsSolenoid->Set(false);
-}
-void Climber::EnableClimberManual(){
-  m_climberManualActivated = true;
-}
-void Climber::DisableClimberManual(){
-  m_climberManualActivated = false;
-}
-bool Climber::IsClimberEnabled(){
-  return m_climberManualActivated;
 }
 bool Climber::IsClimberZeroed(){
   return m_isClimberZeroed;

@@ -25,11 +25,9 @@
 #include "Commands/ToolChanger/ToolChangerHoldHatchCommand.h"
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
 #include "Commands/ToolChanger/ToolChangerHatchRetractCommand.h"
-#include "Commands/ToolChanger/ToolChangerScoreCommand.h"
+#include "Commands/CommandGroups/ScoreCommandGroup.h"
 #include "Commands/HatchSlide/HatchSlideJoystickCommand.h"
-#include "Commands/Climber/ClimberToggleManualControlCommand.h"
 #include "Commands/CommandGroups/ZeroAllCommandGroup.h"
-#include "Commands/CommandGroups/ElevatorStowCommandGroup.h"
 #include "Commands/CommandGroups/RevertElevatorTestingCommandGroup.h"
 #include "Commands/Climber/ClimberRaiseCommand.h"
 #include "Commands/Climber/ClimberLowerCommand.h"
@@ -41,7 +39,6 @@
 #include "Commands/CargoIntake/CargoIntakeBallCommand.h"
 #include "Commands/CargoIntake/CargoIntakeBackpedalCommandGroup.h"
 #include "Commands/CommandGroups/StopAllCommand.h"
-#include "Commands/Climber/ClimberCheckpointCommand.h"
 
 OI::OI() {
 	m_pDriverStick = new Joystick2481(DRIVER_XBOX_CONTROLLER_ID);
@@ -63,9 +60,6 @@ OI::OI() {
 
     m_elevatorStow = new ComboJoystickButton(m_xDriverButton, m_backButton, false);
 	m_elevatorStow->WhenPressed(new RevertElevatorTestingCommandGroup());
-
-	m_climbCheckpoint = new ComboJoystickButton(m_xDriverButton, m_backButton, true);
-	m_climbCheckpoint->WhenPressed(new ClimberCheckpointCommand(m_xDriverButton, m_backButton));
 
 	m_climbL1ToL2 = new ComboJoystickButton(m_aDriverButton, m_backButton, true);
 	m_climbL1ToL2->WhenPressed(new ClimbSequence1To2CommandGroup());
@@ -106,7 +100,7 @@ OI::OI() {
 	m_climberGuides->WhenPressed(new ClimbGuidesSequenceCommandGroup());
 
 	m_scoreGamePiece = new AnalogJoystickButton(m_pOperatorStick, XBOX_LEFT_TRIGGER, 0.5);
-	m_scoreGamePiece->WhenPressed(new ToolChangerScoreCommand());
+	m_scoreGamePiece->WhenPressed(new ScoreCommand());
 	
 	m_elevatorManual = new AnalogJoystickButton(m_pOperatorStick, XBOX_LEFT_Y_AXIS, -0.25);
 	m_elevatorManual->WhileHeld(new ElevatorJoystickCommand());

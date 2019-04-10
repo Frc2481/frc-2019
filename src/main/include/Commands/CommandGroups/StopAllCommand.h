@@ -18,6 +18,7 @@ class StopAllCommand : public frc::InstantCommand {
     CommandBase::m_pHatchSlide->SetOpenLoopSpeed(0);
     CommandBase::m_pClimber->SetOpenLoopSpeed(0);
     CommandBase::m_pCargoIntake->StopIntake();
+    CommandBase::m_pCargoIntake->SetOpenLoopSpeed(0);
     frc::Scheduler::GetInstance()->RemoveAll();
   }
 };

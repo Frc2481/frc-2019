@@ -19,13 +19,13 @@ PDP Layout:
     FR Steer 6
     FL Steer 7
     BLANK 8
-    Intake Slide Motor 9
+    Cargo Intake 9
     Hatch Slide Motor 10
     Upper PCM 11
     BL Drive 12
     BR Drive 13
     Climber 14
-    Cargo Intake 15
+    Intake Slide Motor 15
 */
 
 
@@ -37,6 +37,8 @@ PDP Layout:
 
 #define HATCH_SLIDE_MOTOR_ID 5
 #define MASTER_ELEVATOR_MOTOR_ID 6
+
+#define CARGO_INTAKE_EXTEND_MOTOR_ID 7
 
 #define SLAVE_ELEVATOR_MOTOR_ID 8 //5
 

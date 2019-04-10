@@ -13,6 +13,7 @@
 #include "Commands/ToolChanger/ToolChangerHatchExtendCommand.h"
 #include "Commands/CargoIntake/CargoIntakeExtensionCommand.h"
 #include "Commands/ToolChanger/ToolChangerHoldCargoCommand.h"
+#include "Commands/CargoIntake/CargoIntakeStopCommand.h"
 
 class RevertElevatorTestingCommandGroup : public frc::CommandGroup {
  public:

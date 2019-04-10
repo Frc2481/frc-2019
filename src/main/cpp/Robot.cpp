@@ -3,11 +3,11 @@
 #include "RobotParameters.h"
 #include "RobotMap.h"
 #include <frc/WPILib.h>
+#include <frc/LiveWindow/LiveWindow.h>
 #include "Commands/SwerveDrivetrain/SwerveDrivetrainZeroSteer.h"
 #include "Commands/HatchSlide/HatchSlideZeroCommand.h"
 #include "Commands/Elevator/ElevatorZeroCommand.h"
 // #include "Commands/VibrateCommand.h"
-#include "Commands/Elevator/ElevatorHomeCommand.h"
 #include "Commands/ToolChanger/ToolChangerFreeCargoCommand.h"
 #include "Commands/ToolChanger/ToolChangerHoldCargoCommand.h"
 #include "Commands/ToolChanger/ToolChangerFreeHatchCommand.h"
@@ -29,10 +29,10 @@
 #include "Commands/CommandGroups/ZeroAllCommandGroup.h"
 #include "Commands/Climber/ClimberReleaseWeightsCommand.h"
 #include "Commands/Climber/ClimberSetPositionCommand.h"
-#include "Commands/HatchSlide/HatchSlideGoToPosition.h"
 #include "Commands/SetLEDsCommand.h"
 #include "Commands/CommandGroups/StopAllCommand.h"
 #include "Commands/CargoIntake/CargoIntakeExtensionCommand.h"
+#include "Commands/CargoIntake/CargoIntakeZeroCommand.h"
 
 Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 	m_server = CameraServer::GetInstance();
@@ -43,6 +43,7 @@ void Robot::RobotInit() {
 
 	SmartDashboard::PutData("CargoIntakeExtendCommand", new CargoIntakeExtendCommand());
 	SmartDashboard::PutData("CargoIntakeRetractCommand", new CargoIntakeRetractCommand());
+	SmartDashboard::PutData("CargoIntakeZeroCommand", new CargoIntakeZeroCommand());
 
 	SmartDashboard::PutData("Score Command", new ToolChangerScoreCommand());
 
@@ -50,7 +51,6 @@ void Robot::RobotInit() {
 
 	SmartDashboard::PutData("SwerveDrivetrainZeroSteer", new SwerveDrivetrainZeroSteer());
 	SmartDashboard::PutData("HatchSlideZeroCommand", new HatchSlideZeroCommand());
-	SmartDashboard::PutData("ElevatorHomeCommand", new ElevatorHomeCommand());
 	SmartDashboard::PutData("ElevatorZeroCommand", new ElevatorZeroCommand());
 	SmartDashboard::PutData("FreeCargoCommand", new ToolChangerFreeCargoCommand());
 	SmartDashboard::PutData("HoldCargoCommand", new ToolChangerHoldCargoCommand());
@@ -104,12 +104,14 @@ void Robot::RobotInit() {
 	m_elevatorCargoShip = new ElevatorCargoShipCommand("ElevatorLowCommand");
 	m_freeCargo = new ToolChangerFreeCargoCommand();
 	m_zeroAll->Start();
+
+	frc::LiveWindow::GetInstance()->DisableAllTelemetry();
 }
 
 void Robot::RobotPeriodic() {
-	double time0 = frc::Timer::GetFPGATimestamp();
+	// double time0 = frc::Timer::GetFPGATimestamp();
 	frc::Scheduler::GetInstance()->Run();
-	double time1 = frc::Timer::GetFPGATimestamp();
+	// double time1 = frc::Timer::GetFPGATimestamp();
 	// printf("dt = %0.1f ms\n", (time1 - time0) * 1000);
 	// printf("LOGGER elevPos: %df, elevDesiredPos: %df, intakePos: %df\n", CommandBase::m_pElevator->GetElevatorPosition(), 
 	// 		CommandBase::m_pElevator->GetDesiredPos(), CommandBase::m_pCargoIntake->GetPosition());
@@ -125,6 +127,8 @@ void Robot::DisabledInit() {
 	CommandBase::m_pElevator->SetOpenLoopSpeed(0);
 	CommandBase::m_pHatchSlide->SetOpenLoopSpeed(0);
 	CommandBase::m_pCargoIntake->SetSpeedIn(0);
+	CommandBase::m_pCargoIntake->SetOpenLoopSpeed(0);
+	CommandBase::m_pClimber->SetOpenLoopSpeed(0);
 	frc::Scheduler::GetInstance()->RemoveAll();
 }
 
@@ -133,11 +137,11 @@ void Robot::TeleopInit() {
 }
 
 void Robot::AutonomousPeriodic() {
-	RobotPeriodic();
+	// RobotPeriodic();
 }
 
 void Robot::TeleopPeriodic() {
-	RobotPeriodic();
+	// RobotPeriodic();
 	// if(CommandBase::m_pHatchSlide->IsVibratable()) {
 	// 	m_pVibrate->Start();
 	// 	CommandBase::m_pHatchSlide->ResetVibratable();
