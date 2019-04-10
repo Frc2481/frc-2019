@@ -56,7 +56,7 @@ class ClimbSequenceLevel3CommandGroup : public frc::CommandGroup {
 
     //raise climber and drive on further
     AddSequential(new ClimberSetPositionCommand(190));
-    AddSequential(new WaitCommand(0.3));
+    AddSequential(new WaitCommand(0.1));
     AddParallel(new SwerveDrivetrainSetOpenLoop(10.0, 0.0, 0.2, 0.0));
     AddSequential(new ClimberSetPositionCommand(175));
     AddParallel(new SwerveDrivetrainSetOpenLoop(10.0, 0.0, 0.0, 0.0));
