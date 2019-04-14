@@ -25,17 +25,19 @@
 			#cameracontainer {
     			position:absolute;
 				top: 0%;
-				left: 50%;
-				width: 50%;
-				height: 50%;
+				left: 40%;
+				width: 60%;
+				height: 60%;
     			z-index:5;
+				border-style: solid;
+				border-color: #333333;
 			}
 
 			/* The Modal (background) */
 			.modal {
   				display: none; /* Hidden by default */
   				position: fixed; /* Stay in place */
-  				z-index: 1; /* Sit on top */
+  				z-index: 10; /* Sit on top */
   				left: 0;
   				top: 0;
   				width: 100%; /* Full width */
@@ -89,6 +91,7 @@
 		<script src="camera.js"></script>
 		<script src="js/loaders/STLLoader.js"></script>
 		<script src="js/controls/OrbitControls.js"></script>
+		<script src="js/objects/Reflector.js"></script>
 		<script src="js/WebGL.js"></script>
 		<script src="/networktables/networktables.js" onerror="onLoadNTFailed()"></script>
 
@@ -98,13 +101,11 @@
 				document.body.appendChild(WEBGL.getWebGLErrorMessage());
 			}
 
-			Camera.Start('http://10.24.81.2:1181/?action=stream', 15); //'http://127.0.0.1:8000/camera/mjpeg', 15);
-
 			//Enabling this disables animation and allows meshes to be moved around with the mouse
 			var EDIT_MODE = false;
 
 			var container;
-			var camera, camera2, cameraTarget, scene, renderer, controls, axesHelper, arrowHelper;
+			var camera, camera2, cameraTarget, scene, renderer, controls, axesHelper;
 			var meshLoader, meshes;
 			var plane;
 			var intersectPlane, selection, raycaster, offset;
@@ -117,7 +118,7 @@
 			var cargo, hatchPanel, lineStrip1, lineStrip2;
 
 			var framePos = new THREE.Vector3(0, 0, 28.0);
-			var intakePos = new THREE.Vector3(2.3801880380123013, 12.184616067963722, 21.801895027513734);
+			var intakePos = new THREE.Vector3(-2.504312031976717, -7.969516986852309, 27.44642744606611);
 			var elevatorBasePos = new THREE.Vector3(-0.057937102316749645, 4.6878697981700626, 23.362945503299855);
 			var climberBasePos = new THREE.Vector3(0.6284390907759532, -6.15211443760683, 9.261296229358493);
 			var climberSlidePos = new THREE.Vector3(0.6284390907759532, 3.8, 9.261296229358493);
@@ -158,6 +159,23 @@
 			var swerveWheelBRPos = new THREE.Vector3(-12.561061581849016, 2.536020495364046, 2.504692059650495);
 			var swerveWheelBRRot = new THREE.Euler(-Math.PI/2, 0, 0.0);
 
+			var hatchDropOffPos = new THREE.Vector3(-0.488461512530038, 18.842034966644192, 38.89617339647177);
+			var hatchDropOffRot = new THREE.Euler(-Math.PI/2, 0.0, Math.PI);
+
+			//Variables for holding data from network tables for updating animations
+			var ntIntakePos, ntElevatorPos, ntHatchSlidePos;
+			var hasCargo, hasHatch, ntLineStrip1Pos, ntLineStrip2Pos;
+			var flSteerEncoderConnected, frSteerEncoderConnected, blSteerEncoderConnected, brSteerEncoderConnected;
+			var flSteerEncoderCalibrated, frSteerEncoderCalibrated, blSteerEncoderCalibrated, brSteerEncoderCalibrated;
+			var flSteerEncoderPos, frSteerEncoderPos, blSteerEncoderPos, brSteerEncoderPos;
+			var elevatorEncoderConnected, elevatorZeroed;
+			var intakeEncoderConnected, intakeZeroed;
+			var slideEncoderConnected, slideZeroed;
+			var gyroYaw;
+			var LL_ydist, LL_xdist, LL_skew, LL_vis, LL_tx, LL_ty;
+
+			var modalContent = document.getElementById("modalContent");
+
 			init();
 			animate();
 
@@ -167,13 +185,14 @@
 				//document.body.appendChild(container);
 				container = document.getElementById("world");
 
-				camera = new THREE.PerspectiveCamera(35, (0.5*window.innerWidth) / window.innerHeight, 1, 1500);
+				camera = new THREE.PerspectiveCamera(35, (0.4*window.innerWidth) / window.innerHeight, 1, 1500);
 				camera.position.set(145, 100, 145);
 				cameraTarget = new THREE.Vector3(0, 30.0, 14);
 
-				camera2 = new THREE.PerspectiveCamera(35, (0.5*window.innerWidth) / (0.5*window.innerHeight), 1, 1500);
-				camera2.position.set(0, -55, 14.0);
-				camera2.lookAt(new THREE.Vector3(0.0, 0.0, 14.0));
+				camera2 = new THREE.PerspectiveCamera(35, (0.6*window.innerWidth) / (0.4*window.innerHeight), 1, 1500);
+				//camera2.position.set(0, -55, 14.0);
+				camera2.position.set(0, 80.0, -50.0);
+				camera2.lookAt(new THREE.Vector3(0.0, 35.0, 14.0));
 
 				scene = new THREE.Scene();
 				scene.background = new THREE.Color(0x940000);
@@ -188,6 +207,20 @@
 				plane.position.y = -50.0;
 				scene.add(plane);
 
+				//Ground mirror
+				mirrorGeo = new THREE.CircleBufferGeometry(50, 32);
+				mirror = new THREE.Reflector(mirrorGeo, {
+					clipBias: 0.003,
+					textureWidth: window.innerWidth * window.devicePixelRatio,
+					textureHeight: window.innerHeight * window.devicePixelRatio,
+					color: 0x777777,
+					recursion: 1
+				} );
+				mirror.position.y = -12.5;
+				mirror.position.z = 14.0;
+				mirror.rotation.x = -Math.PI / 2;
+				scene.add( mirror );
+
 				// Model loading
 				meshes = [];
 				meshLoader = new THREE.STLLoader();
@@ -195,72 +228,90 @@
 				meshLoader.load('./RobotModels/FrameParts.stl', function (geometry) {
 					robotFrame = addMesh(geometry, framePos, frameRot);
 					robotFrame.name = "Frame";
+					robotFrame.vars = ["gyroYaw"];
 				});
 
 				meshLoader.load('./RobotModels/BallIntakeAssembly.stl', function (geometry) {
 					cargoIntakeAssembly = addMesh(geometry, intakePos, intakeRot);
 					cargoIntakeAssembly.name = "Intake";
+					cargoIntakeAssembly.vars = ["ntIntakePos", "intakeEncoderConnected", "intakeZeroed"];
 				});
 
 				meshLoader.load('./RobotModels/ElevatorBase.stl', function (geometry) {
 					elevatorBase = addMesh(geometry, elevatorBasePos, elevatorBaseRot);
-					elevatorBase.name = "Elevator Base";
+					elevatorBase.name = "Elevator";
+					elevatorBase.vars = ["ntElevatorPos", "elevatorEncoderConnected", "elevatorZeroed"];
 				});
 
 				meshLoader.load('./RobotModels/ClimberBase.stl', function (geometry) {
 					climberBase = addMesh(geometry, climberBasePos, climberRot);
-					climberBase = "Climber Base";
+					climberBase.name = "Climber";
 				});
 
 				meshLoader.load('./RobotModels/ClimberSlide.stl', function (geometry) {
 					climberSlide = addMesh(geometry, climberSlidePos, climberRot);
-					climberSlide = "Climber Slide";
+					climberSlide.name = "Climber";
 				});
 
 				meshLoader.load('./RobotModels/ElevatorMid.stl', function (geometry) {
 					var elevatorMidPos = new THREE.Vector3(0.0, 0.0, 0.0);
 					elevatorMid = addMesh(geometry, elevatorMidPos, elevatorMidRot);
-					elevatorMid.name = "Elevator Mid";
+					elevatorMid.name = "Elevator";
+					elevatorMid.vars = ["ntElevatorPos", "elevatorEncoderConnected", "elevatorZeroed"];
 				});
 
 				meshLoader.load('./RobotModels/ElevatorTop.stl', function (geometry) {
 					var elevatorTopPos = new THREE.Vector3(0.0, 0.0, 0.0);
 					elevatorTop = addMesh(geometry, elevatorTopPos, elevatorTopRot);
-					elevatorTop.name = "Elevator Top";
+					elevatorTop.name = "Elevator";
+					elevatorTop.vars = ["ntElevatorPos", "elevatorEncoderConnected", "elevatorZeroed"];
 				});
 
 				meshLoader.load('./RobotModels/HatchSlide.stl', function (geometry) {
 					var hatchSlidePos = new THREE.Vector3(0.0, 0.0, 0.0);
 					hatchSlide = addMesh(geometry, hatchSlidePos, hatchSlideRot);
 					hatchSlide.name = "Hatch Slide";
+					hatchSlide.vars = ["ntHatchSlidePos", "slideEncoderConnected", "slideZeroed"];
 				});
 
 				meshLoader.load('./RobotModels/SwerveModule.stl', function (geometry) {
 					swerveModuleFL = addMesh(geometry, swerveModuleFLPos, swerveModuleFLRot);
-					swerveModuleFL.name = "Swerve Module FL";
+					swerveModuleFL.name = "Swerve Drive";
+					swerveModuleFL.vars = ["flSteerEncoderPos", "frSteerEncoderPos", "blSteerEncoderPos", "brSteerEncoderPos", "newLine", "flSteerEncoderConnected", "frSteerEncoderConnected", "blSteerEncoderConnected", "brSteerEncoderConnected", "newLine", "flSteerEncoderCalibrated", "frSteerEncoderCalibrated", "blSteerEncoderCalibrated", "brSteerEncoderCalibrated"];
 
 					swerveModuleFR = addMesh(geometry, swerveModuleFRPos, swerveModuleFRRot);
-					swerveModuleFR.name = "Swerve Module FR";
+					swerveModuleFR.name = "Swerve Drive";
+					swerveModuleFR.vars = swerveModuleFL.vars;
 
 					swerveModuleBL = addMesh(geometry, swerveModuleBLPos, swerveModuleBLRot);
-					swerveModuleBL.name = "Swerve Module BL";
+					swerveModuleBL.name = "Swerve Drive";
+					swerveModuleBL.vars = swerveModuleFL.vars;
 
 					swerveModuleBR = addMesh(geometry, swerveModuleBRPos, swerveModuleBRRot);
-					swerveModuleBR.name = "Swerve Module BR";
+					swerveModuleBR.name = "Swerve Drive";
+					swerveModuleBR.vars = swerveModuleFL.vars;
 				});
 
 				meshLoader.load('./RobotModels/SwerveWheel.stl', function (geometry) {
 					swerveWheelFL = addMesh(geometry, swerveWheelFLPos, swerveWheelFLRot);
-					swerveWheelFL.name = "Swerve Wheel FL";
+					swerveWheelFL.name = "Swerve Drive";
+					swerveWheelFL.vars = ["flSteerEncoderPos", "frSteerEncoderPos", "blSteerEncoderPos", "brSteerEncoderPos", "newLine", "flSteerEncoderConnected", "frSteerEncoderConnected", "blSteerEncoderConnected", "brSteerEncoderConnected", "newLine", "flSteerEncoderCalibrated", "frSteerEncoderCalibrated", "blSteerEncoderCalibrated", "brSteerEncoderCalibrated"];
 
 					swerveWheelFR = addMesh(geometry, swerveWheelFRPos, swerveWheelFRRot);
-					swerveWheelFR.name = "Swerve Wheel FR";
+					swerveWheelFR.name = "Swerve Drive";
+					swerveWheelFR.vars = swerveWheelFL.vars;
 
 					swerveWheelBL = addMesh(geometry, swerveWheelBLPos, swerveWheelBLRot);
-					swerveWheelBL.name = "Swerve Wheel BL";
+					swerveWheelBL.name = "Swerve Drive";
+					swerveWheelBL.vars = swerveWheelFL.vars;
 
 					swerveWheelBR = addMesh(geometry, swerveWheelBRPos, swerveWheelBRRot);
-					swerveWheelBR.name = "Swerve Wheel BR";
+					swerveWheelBR.name = "Swerve Drive";
+					swerveWheelBR.vars - swerveWheelFR.vars;
+				});
+
+				meshLoader.load('./RobotModels/FieldHatchDropPanel.stl', function (geometry) {
+					hatchDropOff = addMesh(geometry, hatchDropOffPos, hatchDropOffRot);
 				});
 
 				var cargoGeometry = new THREE.SphereGeometry(6.5, 32, 32);
@@ -268,14 +319,17 @@
 				cargo.material.color.set(0xff6000);
 				cargo.material.visible = false;
 
-				var hatchGeometry = new THREE.CircleGeometry(9.5, 32);
-				hatchPanel = addMesh(hatchGeometry, new THREE.Vector3(0.0, 0.0, 40.0), new THREE.Euler(0.0, 0.0, 0.0));
-				hatchPanel.material.color.set(0xffff00);
-				hatchPanel.material.visible = false;
+				meshLoader.load('./RobotModels/HatchPanel.stl', function (geometry) {
+					hatchPanel = addMesh(geometry, new THREE.Vector3(0.6327691214493676, 18.422347864149888, 29.05109704451684), new THREE.Euler(0.0, 0.0, 0.0));
+					hatchPanel.material.color.set(0xffff00);
+					hatchPanel.material.visible = false;
+				});
 
 				var lineStripGeometry = new THREE.PlaneBufferGeometry(2.0, 70.0);
 				lineStrip1 = addMesh(lineStripGeometry, lineStripPos, new THREE.Euler(-Math.PI/2, 0.0, 0.0));
 				lineStrip2 = addMesh(lineStripGeometry, lineStripPos, new THREE.Euler(-Math.PI/2, 0.0, 0.0));
+				lineStrip1.material.side = THREE.FrontSide;
+				lineStrip2.material.side = THREE.FrontSide;
 
 				// Lights
 				scene.add(new THREE.HemisphereLight(0xffffff, 0x000000));
@@ -308,10 +362,6 @@
 				axesHelper = new THREE.AxesHelper(50);
 				scene.add(axesHelper);
 
-				arrowHelper = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), new THREE.Vector3(20, 0, 0), 25, 0xffffff, 4, 4);
-				arrowHelper.visible = false;
-				scene.add(arrowHelper);
-
 				// Orbital controls for rotating and panning camera
 				controls = new THREE.OrbitControls(camera, renderer.domElement);
 				controls.target = cameraTarget;
@@ -335,12 +385,21 @@
       					console.log("Websocket connected: " + connected);
   					}, true);
 				} catch(e) {}
+
+				try
+				{
+					NetworkTables.addRobotConnectionListener(function(connected) {
+						//Camera.Start('http://10.24.81.2:1181/?action=stream', 15);
+						Camera.Start('http://10.24.81.11:5800', 10);
+						//Camera.Start('http://127.0.0.1:8000/camera/mjpeg', 15);
+					}, true);
+				} catch(e) {}
 			}
 
 			function addMesh(geometry, position, rotation)
 			{
 				// Create different materials for each mesh so we can change them (and their colors) individually
-				var meshMaterial = new THREE.MeshPhongMaterial({ color: 0xaaaaaa, specular: 0x111111, shininess: 200 });
+				var meshMaterial = new THREE.MeshPhongMaterial({ color: 0xaaaaaa, specular: 0x111111, shininess: 200, side: THREE.DoubleSide });
 				newMesh = new THREE.Mesh(geometry, meshMaterial);
 
 				newMesh.rotation.copy(rotation);
@@ -356,10 +415,10 @@
 
 			function onWindowResize()
 			{
-				camera.aspect = (0.5*window.innerWidth) / window.innerHeight;
+				camera.aspect = (0.4*window.innerWidth) / window.innerHeight;
 				camera.updateProjectionMatrix();
 
-				camera2.aspect = (0.5*window.innerWith) / (0.5*window.innerHeight);
+				camera2.aspect = (0.6*window.innerWidth) / (0.4*window.innerHeight);
 				camera2.updateProjectionMatrix();
 
 				renderer.setSize(window.innerWidth, window.innerHeight);
@@ -367,10 +426,8 @@
 
 			function onDocumentMouseDown(event)
 			{
-				//if(!EDIT_MODE) return;
-
 				// Get mouse position
-  				var mouseX = (event.clientX / (0.5*window.innerWidth)) * 2 - 1;
+  				var mouseX = (event.clientX / (0.4*window.innerWidth)) * 2 - 1;
   				var mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
   				// Get 3D vector from 3D mouse position using 'unproject' function
   				var vector = new THREE.Vector3(mouseX, mouseY, 1);
@@ -392,11 +449,9 @@
 
 			function onDocumentMouseMove(event)
 			{
-				//if(!EDIT_MODE) return;
-
   				event.preventDefault();
   				// Get mouse position
-  				var mouseX = (event.clientX / (0.5*window.innerWidth)) * 2 - 1;
+  				var mouseX = (event.clientX / (0.4*window.innerWidth)) * 2 - 1;
   				var mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
   				// Get 3D vector from 3D mouse position using 'unproject' function
   				var vector = new THREE.Vector3(mouseX, mouseY, 1);
@@ -412,6 +467,12 @@
     					var intersects = raycaster.intersectObject(intersectPlane);
     					// Reposition the object based on the intersection point with the plane
     					selection.position.copy(intersects[0].point.sub(offset));
+					}
+					else
+					{
+						//If we're not in edit mode but we have a selection and moving the mouse, we must be trying to rotate
+						selection = null;
+						controls.enableRotate = true;
 					}
   				}
 				else
@@ -429,8 +490,6 @@
 
 			function onDocumentMouseUp(event)
 			{
-				//if(!EDIT_MODE) return;
-
 				if(selection != null && selection != undefined)
 				{
 					if(EDIT_MODE)
@@ -441,13 +500,12 @@
 					}
 					else
 					{
-						var modal = document.getElementById('modalData');
-						//modal.style.display = "block";
-						var modalContent = document.getElementById("modalContent");
-						if(selection.name != undefined)
+						if(selection.name != undefined && selection.name != "")
 						{
-							modalContent.innerHTML = selection.name;
-							modalContent.updateCode = "test";
+							var modal = document.getElementById('modalData');
+							modal.style.display = "block";
+							modalContent.selectedItem = selection.name;
+							modalContent.vars = selection.vars;
 						}
 					}
 				}
@@ -521,14 +579,6 @@
 
 			function animate()
 			{
-				var ntIntakePos, ntElevatorPos, ntHatchSlidePos;
-				var hasCargo, hasHatch, ntLineStrip1Pos, ntLineStrip2Pos;
-				var flSteerEncoderConnected, frSteerEncoderConnected, blSteerEncoderConnected, brSteerEncoderConnected;
-				var flSteerEncoderCalibrated, frSteerEncoderCalibrated, blSteerEncoderCalibrated, brSteerEncoderCalibrated;
-				var flSteerEncoderPos, frSteerEncoderPos, blSteerEncoderPos, brSteerEncoderPos;
-				var elevatorEncoderConnected, elevatorZeroed;
-				var intakeEncoderConnected, intakeZeroed;
-				var slideEncoderConnected, slideZeroed;
 				try
 				{
 					// Set sky color depending on whether Network Tables is connected
@@ -542,16 +592,15 @@
 					}
 
 					ntElevatorPos = NetworkTables.getValue("/SmartDashboard/ElevatorPos", 0.0);
-					console.log(ntElevatorPos);
 					ntHatchSlidePos = NetworkTables.getValue("/SmartDashboard/HatchSlidePos", 0.0);
 					ntIntakePos = NetworkTables.getValue("/SmartDashboard/CargoPos", 0.0) / 850.0;
 					hasCargo = NetworkTables.getValue("/SmartDashboard/HasCargo", false);
 					hasHatch = NetworkTables.getValue("/SmartDashboard/HasHatch", false);
-					ntLineStrip1Pos = 0.0; //NetworkTables.getValue("/SmartDashboard/LineStrip1Position", 0.0);
-					ntLineStrip2Pos = 0.0; //NetworkTables.getValue("/SmartDashboard/LineStrip2Position", 0.0);
+					ntLineStrip1Pos = NetworkTables.getValue("/SmartDashboard/Teensy dist bright", 0.0) - 13.0;
+					ntLineStrip2Pos = NetworkTables.getValue("/SmartDashboard/Teensy dist dim", 0.0) - 13.0;
 					elevatorEncoderConnected = NetworkTables.getValue("/SmartDashboard/IsElevatorEncoderConnected", false);
 					elevatorZeroed = NetworkTables.getValue("/SmartDashboard/IsElevatorZeroed", false);
-					intakeEncoderConnected = NetworkTables.getValue("/SmartDashboard/intakeEncConnnected", false);
+					intakeEncoderConnected = NetworkTables.getValue("/SmartDashboard/IsCargoIntakeEncoderConnected", false);
 					intakeZeroed = NetworkTables.getValue("/SmartDashboard/IsCargoIntakeZeroed", false);
 					slideEncoderConnected = NetworkTables.getValue("/SmartDashboard/slideEncConnnected", false);
 					slideZeroed = NetworkTables.getValue("/SmartDashboard/IsHatchZeroed", false);
@@ -563,10 +612,23 @@
 					frSteerEncoderCalibrated = NetworkTables.getValue("/SmartDashboard/FRSteerEncCalibrated", false);
 					blSteerEncoderCalibrated = NetworkTables.getValue("/SmartDashboard/BLSteerEncCalibrated", false);
 					brSteerEncoderCalibrated = NetworkTables.getValue("/SmartDashboard/BRSteerEncCalibrated", false);
-					flSteerEncoderPos = NetworkTables.getValue("/SmartDashboard/FL Steer encoder pos", 0.0) * -Math.PI/180.0;
-					frSteerEncoderPos = NetworkTables.getValue("/SmartDashboard/FR Steer encoder pos", 0.0) * -Math.PI/180.0;
-					blSteerEncoderPos = NetworkTables.getValue("/SmartDashboard/BL Steer encoder pos", 0.0) * -Math.PI/180.0;
-					brSteerEncoderPos = NetworkTables.getValue("/SmartDashboard/BR Steer encoder pos", 0.0) * -Math.PI/180.0;
+					flSteerEncoderPos = NetworkTables.getValue("/SmartDashboard/FL Steer encoder pos", 0.0) * Math.PI/180.0;
+					frSteerEncoderPos = NetworkTables.getValue("/SmartDashboard/FR Steer encoder pos", 0.0) * Math.PI/180.0;
+					blSteerEncoderPos = NetworkTables.getValue("/SmartDashboard/BL Steer encoder pos", 0.0) * Math.PI/180.0;
+					brSteerEncoderPos = NetworkTables.getValue("/SmartDashboard/BR Steer encoder pos", 0.0) * Math.PI/180.0;
+
+					gyroYaw = NetworkTables.getValue("/SmartDashboard/Gyro yaw", 0.0);
+
+					LL_vis = NetworkTables.getValue("/limelight/tv", 0);
+					LL_ty = NetworkTables.getValue("/limelight/ty", 0.0);
+					LL_ydist = 15.75*Math.tan((58.04+LL_ty)*Math.PI/180.0) - 20.0; //NetworkTables.getValue("/SmartDashboard/distance ", 14.0);
+					LL_tx = NetworkTables.getValue("/limelight/tx", 0.0);
+					LL_skew = NetworkTables.getValue("/limelight/ts", 0.0);
+					if(LL_skew < -45) LL_skew += 90.0;
+					//LL_xdist = Math.tan(LL_tx*Math.PI/180.0)*LL_ydist;
+					LL_xdist = LL_ydist*Math.tan((LL_tx-LL_skew*5.0)*Math.PI/180.0);
+					//var camtran = [];
+					//camtran = NetworkTables.getValue("/limelight/camtran", []);
 				}
 				catch(e)
 				{
@@ -605,8 +667,8 @@
 
 						lineStrip1.position.setX(lineStripPos.x - ntLineStrip1Pos);
 						lineStrip2.position.setX(lineStripPos.x - ntLineStrip2Pos);
-						//lineStrip1.material.visible = false;
-						lineStrip2.material.visible = false;
+						lineStrip1.material.visible = (ntLineStrip1Pos < 15);
+						lineStrip2.material.visible = (ntLineStrip2Pos < 15);
 
 						elevatorColor = (elevatorEncoderConnected && elevatorZeroed) ? 0xaaaaaa : (elevatorEncoderConnected ? 0xff6000 : 0xff0000);
 						elevatorBase.material.color.set(elevatorColor);
@@ -638,6 +700,12 @@
 						swerveModuleBR.material.color.set(brColor);
 						swerveWheelBR.material.color.set(brColor);
 						swerveWheelBR.rotation.z = brSteerEncoderPos;
+
+						hatchDropOff.position.setZ(hatchDropOffPos.z + LL_ydist);
+						hatchDropOff.position.setX(hatchDropOffPos.x - LL_xdist);
+						hatchDropOff.rotation.z = hatchDropOffRot.z;
+						hatchDropOff.rotateZ(-LL_skew*Math.PI/180.0);
+						hatchDropOff.material.visible = (LL_vis == 1) ? true : false;
 					}
 					catch(e)
 					{
@@ -656,6 +724,27 @@
 					// Doubles as indicator of "Still loading..."
 					setSkyColor(0xff6000);
 				}
+
+				//Update modal
+				if(modalContent.selectedItem != undefined)
+				{
+					modalContent.innerHTML = "<b>" + modalContent.selectedItem + "</b><br/>";
+					if(modalContent.vars != undefined)
+					{
+						for(var i = 0; i < modalContent.vars.length; i++)
+						{
+							modalContent.innerHTML + "<br/>";
+							if(modalContent.vars[i] != "newLine")
+							{
+								modalContent.innerHTML += "<br/>" + modalContent.vars[i] + ": " + window[modalContent.vars[i]];
+							}
+						}
+					}
+					else
+					{
+						modalContent.innerHTML += "<br/>Not tracking any variables for <i>" + modalContent.selectedItem + "</i>.";
+					}
+				}
 				
 				requestAnimationFrame(animate);
 
@@ -669,20 +758,20 @@
 				var origSkyCol = scene.background.color;
 
 				renderer.clear();
-				renderer.setViewport(0, 0, 0.5*window.innerWidth, window.innerHeight);
-				renderer.setScissor(0, 0, 0.5*window.innerWidth, window.innerHeight);
+				renderer.setViewport(0, 0, 0.4*window.innerWidth, window.innerHeight);
+				renderer.setScissor(0, 0, 0.4*window.innerWidth, window.innerHeight);
 				renderer.setScissorTest(true);
 				renderer.render(scene, camera);
 
 				setSkyColor(0x000000);
 				plane.material.visible = false;
-				arrowHelper.visible = true;
-				renderer.setViewport(0.5*window.innerWidth, 0.5*window.innerHeight, 0.5*window.innerWidth, 0.5*window.innerHeight);
-				renderer.setScissor(0.5*window.innerWidth, 0.5*window.innerHeight, 0.5*window.innerWidth, 0.5*window.innerHeight);
+				mirror.material.visible = false;
+				renderer.setViewport(0.4*window.innerWidth, 0.6*window.innerHeight, 0.6*window.innerWidth, 0.4*window.innerHeight);
+				renderer.setScissor(0.4*window.innerWidth, 0.6*window.innerHeight, 0.6*window.innerWidth, 0.4*window.innerHeight);
 				renderer.setScissorTest(true);
 				renderer.render(scene, camera2);
 				plane.material.visible = true;
-				arrowHelper.visible = false;
+				mirror.material.visible = true;
 				setSkyColor(origSkyCol);
 
 				//renderer.setViewport()
