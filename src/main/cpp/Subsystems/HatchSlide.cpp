@@ -216,7 +216,7 @@ bool HatchSlide::IsLineVisible() {
 }
 
 bool HatchSlide::IsSlideOnTarget() {
-  return fabs(m_motor->GetClosedLoopError()) < 0.5;
+  return fabs(m_desiredPos - GetHatchPosition()) < 500;
 }
 
 bool HatchSlide::IsVibratable() {

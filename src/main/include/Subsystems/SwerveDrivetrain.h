@@ -57,6 +57,10 @@ public:
     void setIsOpenLoopFieldFrame(bool isOpenLoopFieldFrame);
     bool areAllSteerEncodersConnected();
     void setBrakeMode();
+    double getGyroYaw();
+    bool getFieldFrame();
+    void setGyroOffset(double offSet);
+    double getGyroOffset();
 
 private:
     rev::CANSparkMax* m_pFRDriveMotor;
@@ -80,6 +84,7 @@ private:
     double m_gyroYaw;
     bool m_isOpenLoopFieldFrame;
     bool m_areAllSteerEncodersConnected;
+    double m_gyroOffset;
 };
 
 #endif // SWERVE_DRIVETRAIN_H

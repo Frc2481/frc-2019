@@ -177,6 +177,7 @@ SwerveDrivetrain::~SwerveDrivetrain() {
 
 void SwerveDrivetrain::InitDefaultCommand() {
 	SetDefaultCommand(new SwerveDrivetrainJoystickDrive());
+	m_gyroOffset = 0.0;
 }
 
 void SwerveDrivetrain::Periodic() {
@@ -226,7 +227,7 @@ void SwerveDrivetrain::Periodic() {
 		SmartDashboard::PutNumber("BR Steer encoder pos", m_pBRSteerEncoder->getAngle());
 	}
 	if (loopCounter == 4) {
-		SmartDashboard::PutNumber("Gyro Yaw", m_gyroYaw);
+		SmartDashboard::PutNumber("Gyro Yaw", getGyroYaw());
 	}
 }
 
@@ -244,7 +245,7 @@ void SwerveDrivetrain::driveOpenLoopControl(
 
 	// field reference frame driving
 	if(m_isOpenLoopFieldFrame) {
-		Rotation2D gyroYaw = Rotation2D::fromDegrees(m_gyroYaw);
+		Rotation2D gyroYaw = Rotation2D::fromDegrees(getGyroYaw());
 		percentVel = percentVel.rotateBy(gyroYaw.inverse());
 	}
 
@@ -416,6 +417,10 @@ void SwerveDrivetrain::setIsOpenLoopFieldFrame(bool isOpenLoopFieldFrame) {
 	m_isOpenLoopFieldFrame = isOpenLoopFieldFrame;
 }
 
+bool SwerveDrivetrain::getFieldFrame(){
+	return m_isOpenLoopFieldFrame;
+}
+
 bool SwerveDrivetrain::areAllSteerEncodersConnected() {
 	return m_areAllSteerEncodersConnected;
 }
@@ -425,4 +430,16 @@ void SwerveDrivetrain::setBrakeMode() {
 	m_pBRDriveMotor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 	m_pFLDriveMotor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 	m_pFRDriveMotor->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+}
+
+double SwerveDrivetrain::getGyroYaw(){
+	return m_gyroYaw - getGyroOffset();
+}
+
+void SwerveDrivetrain::setGyroOffset(double offSet){
+	m_gyroOffset = offSet;
+}
+
+double SwerveDrivetrain::getGyroOffset(){
+	return m_gyroOffset;
 }

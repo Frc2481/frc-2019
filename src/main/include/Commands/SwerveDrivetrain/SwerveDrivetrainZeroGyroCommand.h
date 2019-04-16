@@ -17,6 +17,7 @@ public:
 		SetRunWhenDisabled(true);
 	}
 	void Initialize() override {
+		CommandBase::m_pSwerveDrivetrain->setGyroOffset(0.0);
 		CommandBase::m_pSwerveDrivetrain->zeroGyroYaw();
 	}
 };

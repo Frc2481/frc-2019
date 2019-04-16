@@ -39,7 +39,9 @@ public:
     frc::JoystickButton *m_pSetFieldFrameButton;
     frc::Button* m_zeroGyro;
     AnalogJoystickButton* m_stopAll;
-
+    frc::Button* m_autoAlign;
+    frc::Button* m_AutoPlace;
+    frc::Button* m_AutoPickup;
 //operator
     frc::Button* m_shiftWeights;
     frc::Button* m_prepAcquireHatch;
@@ -59,7 +61,6 @@ public:
     frc::Button* m_scoreHigh;
     frc::Button* m_scoreMid;
     frc::Button* m_scoreLow;
-
 // RoboRio
     UserButton* m_userButton;
 };
