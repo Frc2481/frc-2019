@@ -39,6 +39,10 @@
 #include "Commands/CargoIntake/CargoIntakeBallCommand.h"
 #include "Commands/CargoIntake/CargoIntakeBackpedalCommandGroup.h"
 #include "Commands/CommandGroups/StopAllCommand.h"
+#include "Commands/LimeLight/LimeLightDriverDriveCommand.h"
+#include "Commands/CommandGroups/AutoScoreHatchCommandGroup.h"
+#include "Commands/CommandGroups/LimeLightAbortCommandGroup.h"
+#include "Commands/CommandGroups/AutoCommandGroup.h"
 
 OI::OI() {
 	m_pDriverStick = new Joystick2481(DRIVER_XBOX_CONTROLLER_ID);
@@ -80,6 +84,16 @@ OI::OI() {
 	m_stopAll = new AnalogJoystickButton(m_pDriverStick, XBOX_LEFT_TRIGGER, 0.5);
 	m_stopAll->WhenPressed(new StopAllCommand());
 
+	m_autoAlign = new ComboJoystickButton(m_aDriverButton, m_backButton, false);
+	m_autoAlign->WhenPressed(new AutoCommandGroup());
+	
+	m_AutoPlace = new ComboJoystickButton(m_bDriverButton, m_backButton, false);
+	m_AutoPlace->WhileHeld(new AutoScoreHatchCommandGroup());
+	// m_AutoPlace->WhenReleased(new LimeLightAbortCommandGroup());
+
+	m_AutoPickup = new ComboJoystickButton(m_yDriverButton, m_backButton, false);
+	m_AutoPickup->WhileHeld(new AutoAquireHatchCommandGroup());
+
 //operator
 	m_shiftWeights = new JoystickButton(m_pOperatorStick, XBOX_BACK_BUTTON);
 	m_shiftWeights->WhenPressed(new ClimberReleaseWeightsCommand());
@@ -120,9 +134,9 @@ OI::OI() {
 	m_climberDown = new POVJoystickButton(m_pOperatorStick, 0, XBOX_DPAD_BOTTOM);
 	m_climberDown->WhileHeld(new ClimberLowerCommand());
 
-	m_backpedal = new JoystickButton(m_pOperatorStick, XBOX_LEFT_BUMPER);
-	m_backpedal->WhenPressed(new CargoIntakeBackpedalCommandGroup());
-	m_backpedal->WhenReleased(new CargoIntakeBallCommand(0));
+	// m_backpedal = new JoystickButton(m_pOperatorStick, XBOX_LEFT_BUMPER);
+	// m_backpedal->WhenPressed(new CargoIntakeBackpedalCommandGroup());
+	// m_backpedal->WhenReleased(new CargoIntakeBallCommand(0));
 
 //RoboRio
 	m_userButton = new UserButton();

@@ -33,6 +33,12 @@
 #include "Commands/CommandGroups/StopAllCommand.h"
 #include "Commands/CargoIntake/CargoIntakeExtensionCommand.h"
 #include "Commands/CargoIntake/CargoIntakeZeroCommand.h"
+#include "Commands/CommandGroups/AutoLegCargoToHatchCommandGroup.h"
+#include "Commands/CommandGroups/AutoMoveFromFeederToSecondHabCommandGroup.h"
+#include "Commands/LimeLight/AutoLimeLightDriverDriveCommand.h"
+#include "Commands/CommandGroups/AutoScoreHatchCommandGroup.h"
+#include "Commands/CommandGroups/AutoCommandGroup.h"
+#include "Commands/SwerveDrivetrain/AutoDriveAndRotateCommand.h"
 
 Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 	m_server = CameraServer::GetInstance();
@@ -40,7 +46,10 @@ Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 
 void Robot::RobotInit() {
 	CommandBase::Init();
-
+	SmartDashboard::PutData("AutoDriveAndRotateCommand", new AutoDriveAndRotateCommand(2.0, 15.0, 90.0));
+	SmartDashboard::PutData("AutoCommandGroup", new AutoCommandGroup());
+	SmartDashboard::PutData("AutoLimeLightDriverDriveCommand" , new AutoScoreHatchCommandGroup());
+	SmartDashboard::PutData("AutoLegCargoToHatchCommandGroup",new AutoLegCargoToHatchCommandGroup());
 	SmartDashboard::PutData("CargoIntakeExtendCommand", new CargoIntakeExtendCommand());
 	SmartDashboard::PutData("CargoIntakeRetractCommand", new CargoIntakeRetractCommand());
 	SmartDashboard::PutData("CargoIntakeZeroCommand", new CargoIntakeZeroCommand());
