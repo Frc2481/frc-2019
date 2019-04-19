@@ -25,6 +25,7 @@ private:
 	Command* m_elevatorCargoShip;
 	Command* m_zeroAll;
 	Command* m_freeCargo;
+	Command* m_autoCommand;
 };
 
 #endif // ROBOT_H

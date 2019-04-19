@@ -10,6 +10,7 @@
 
 #include <frc/commands/Command.h>
 #include <frc/commands/CommandGroup.h>
+#include <frc/commands/ConditionalCommand.h>
 #include "CommandBase.h"
 #include "RobotParameters.h"
 #include "Commands/ToolChanger/ToolChangerFreeCargoCommand.h"

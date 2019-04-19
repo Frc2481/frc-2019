@@ -25,7 +25,6 @@ public:
 		double percentVelX = CommandBase::m_pOI->GetDriverStick()->GetRawAxis(XBOX_LEFT_X_AXIS);
 		double percentVelY = -CommandBase::m_pOI->GetDriverStick()->GetRawAxis(XBOX_LEFT_Y_AXIS);
 		double percentYawRate = -CommandBase::m_pOI->GetDriverStick()->GetRawAxis(XBOX_RIGHT_X_AXIS);
-		printf("%f x, %f y, %f yaw\n",percentVelX, percentVelY, percentYawRate);
 		
 		// update drive
 		m_pSwerveDrivetrain->driveOpenLoopControl(percentVelX, percentVelY, percentYawRate);

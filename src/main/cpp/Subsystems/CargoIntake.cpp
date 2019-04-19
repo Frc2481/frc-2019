@@ -55,6 +55,7 @@ CargoIntake::CargoIntake() : Subsystem("CargoIntake") {
   frc::SmartDashboard::PutBoolean("HasCargoIntakeTalonReset", true);
   m_isBallIntaken = false;
   m_scale = 1;
+  m_isIntaking = false;
 }
 
 void CargoIntake::InitDefaultCommand() {}
@@ -83,6 +84,7 @@ void CargoIntake::Periodic() {
   else if (loopCounter == 3) {
     m_encoderConnected = m_extendEncoder->isConnected();
     frc::SmartDashboard::PutBoolean("IsCargoIntakeEncoderConnected", m_encoderConnected);
+    frc::SmartDashboard::PutBoolean("IsElevatorLockedOut", IsIntaking());
   }
 
 }
@@ -141,4 +143,13 @@ void CargoIntake::ZeroCargoIntake() {
 }
 void CargoIntake::SetOpenLoopSpeed(double speed) {
   m_extendMotor->Set(ControlMode::PercentOutput, speed);
+}
+bool CargoIntake::IsIntaking() {
+  return m_isIntaking;
+}
+void CargoIntake::SetIsIntaking(bool isIntaking) {
+  m_isIntaking = isIntaking;
+}
+bool CargoIntake::IsCargoIntakeIn() {
+  return GetPos() < 200;
 }

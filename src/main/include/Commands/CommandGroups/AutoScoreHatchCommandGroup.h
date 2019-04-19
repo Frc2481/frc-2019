@@ -15,6 +15,7 @@
 #include "Commands\SwerveDrivetrain\SwerveDrivetrainSetOpenLoop.h"
 #include "Commands/HatchSlide/HatchSlideWaitForOnTargetCommand.h"
 #include "Commands/CommandGroups/AcquireHatchCommandGroup.h"
+#include "Commands/SwerveDrivetrain/AutoDriveAndRotateCommand.h"
 
 class AutoAquireHatchCommandGroup : public frc::CommandGroup {
  public:
@@ -54,7 +55,7 @@ class AutoScoreHatchCommandGroup : public frc::CommandGroup {
     AddSequential(new AutoLimeLightDriverDriveCommand());
     // AddSequential(new HatchSlideWaitForOnTargetCommand());
     AddParallel(new ScoreCommand());
-    AddSequential(new WaitCommand(0.5));
+    // AddSequential(new WaitCommand(0.2));
     // AddSequential(new SwerveDrivetrainSetOpenLoop(0.3,0.0,-0.3,0.0));
     AddSequential(new InstantCommand([](){CommandBase::m_pHatchSlide->DisableUserHatchSlide();}));
     // AddSequential(new InstantCommand([](){

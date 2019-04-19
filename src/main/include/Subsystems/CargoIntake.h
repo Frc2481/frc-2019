@@ -26,6 +26,7 @@ private:
   bool m_isBallIntaken;
   double m_scale;
   bool m_encoderConnected;
+  bool m_isIntaking;
 
 public:
   CargoIntake();
@@ -44,6 +45,9 @@ public:
   void ZeroCargoIntake();
   void SetOpenLoopSpeed(double speed);
   void SetSpeed(double scale);
+  bool IsIntaking();
+  void SetIsIntaking(bool isIntaking);
+  bool IsCargoIntakeIn();
 };
 
 #endif // SRC_CARGO_INTAKE_H

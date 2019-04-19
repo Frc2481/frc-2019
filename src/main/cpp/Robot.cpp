@@ -33,12 +33,12 @@
 #include "Commands/CommandGroups/StopAllCommand.h"
 #include "Commands/CargoIntake/CargoIntakeExtensionCommand.h"
 #include "Commands/CargoIntake/CargoIntakeZeroCommand.h"
-#include "Commands/CommandGroups/AutoLegCargoToHatchCommandGroup.h"
-#include "Commands/CommandGroups/AutoMoveFromFeederToSecondHabCommandGroup.h"
 #include "Commands/LimeLight/AutoLimeLightDriverDriveCommand.h"
 #include "Commands/CommandGroups/AutoScoreHatchCommandGroup.h"
-#include "Commands/CommandGroups/AutoCommandGroup.h"
+#include "Commands/CommandGroups/CargoAutoCommandGroup.h"
 #include "Commands/SwerveDrivetrain/AutoDriveAndRotateCommand.h"
+#include "Commands/CommandGroups/RocketAutoCommandGroup.h"
+#include "Commands/SwerveDrivetrain/SwerveDrivetrainZeroGyroCommand.h"
 
 Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 	m_server = CameraServer::GetInstance();
@@ -46,13 +46,16 @@ Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 
 void Robot::RobotInit() {
 	CommandBase::Init();
-	SmartDashboard::PutData("AutoDriveAndRotateCommand", new AutoDriveAndRotateCommand(2.0, 15.0, 90.0));
-	SmartDashboard::PutData("AutoCommandGroup", new AutoCommandGroup());
+	SmartDashboard::PutData("RocketAutoCommandGroup", new RocketAutoCommandGroup());
+	SmartDashboard::PutData("AutoDriveAndRotateCommand", new AutoDriveAndRotateCommand(1.0, 15.0, 0.4, 270.0, 1.0));
+	SmartDashboard::PutData("CargoAutoCommandGroup", new CargoAutoCommandGroup());
 	SmartDashboard::PutData("AutoLimeLightDriverDriveCommand" , new AutoScoreHatchCommandGroup());
-	SmartDashboard::PutData("AutoLegCargoToHatchCommandGroup",new AutoLegCargoToHatchCommandGroup());
 	SmartDashboard::PutData("CargoIntakeExtendCommand", new CargoIntakeExtendCommand());
 	SmartDashboard::PutData("CargoIntakeRetractCommand", new CargoIntakeRetractCommand());
 	SmartDashboard::PutData("CargoIntakeZeroCommand", new CargoIntakeZeroCommand());
+
+	SmartDashboard::PutData("LimeLightWaitForTargetSeenCommand", new LimeLightWaitForTargetSeenCommand());
+	SmartDashboard::PutData("LimeLightWaitForLeftTargetSeenCommand", new LimeLightWaitForLeftTargetSeenCommand());
 
 	SmartDashboard::PutData("Score Command", new ToolChangerScoreCommand());
 
@@ -99,6 +102,8 @@ void Robot::RobotInit() {
 	SmartDashboard::PutData("ZeroAllCommandGroup", new ZeroAllCommandGroup());
 
 	SmartDashboard::PutData("StopAllCommand", new StopAllCommand());
+
+	SmartDashboard::PutData("ZeroGyroCommand", new SwerveDrivetrainZeroGyroCommand());
 	
 	SmartDashboard::PutData(frc::Scheduler::GetInstance());
 
@@ -113,6 +118,7 @@ void Robot::RobotInit() {
 	m_elevatorCargoShip = new ElevatorCargoShipCommand("ElevatorLowCommand");
 	m_freeCargo = new ToolChangerFreeCargoCommand();
 	m_zeroAll->Start();
+	m_autoCommand = new CargoAutoCommandGroup();
 
 	frc::LiveWindow::GetInstance()->DisableAllTelemetry();
 }
@@ -130,6 +136,7 @@ void Robot::AutonomousInit() {
 	m_hatchExtend->Start();
 	m_elevatorCargoShip->Start();
 	m_freeCargo->Start();
+	m_autoCommand->Start();
 }
 
 void Robot::DisabledInit() {
