@@ -4,6 +4,13 @@
 #include <frc/WPILib.h>
 #include "CommandBase.h"
 
+// enum Autos {
+// 	LEFT = 1,
+// 	RIGHT = 2,
+// 	ROCKET = 4,
+// 	CARGOSHIP = 8
+// }
+
 class Robot : public frc::TimedRobot {
 public:
 	Robot();
@@ -26,6 +33,12 @@ private:
 	Command* m_zeroAll;
 	Command* m_freeCargo;
 	Command* m_autoCommand;
+	Command* m_leftCargoShipAuto;
+	Command* m_rightCargoShipAuto;
+	Command* m_leftRocketAuto;
+	Command* m_rightRocketAuto;
+	// frc::SendableChooser<Autos>* m_posChooser;
+	// frc::SendableChooser<Autos>* m_scoreChooser;
 };
 
 #endif // ROBOT_H

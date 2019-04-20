@@ -34,6 +34,8 @@ class AutoAquireHatchCommandGroup : public frc::CommandGroup {
     AddSequential(new SwerveDrivetrainSetOpenLoop(0.5, 0.0,-0.6,0.0));//this is in field centric
 
     AddSequential(new InstantCommand([](){CommandBase::m_pHatchSlide->DisableUserHatchSlide();}));
+    
+    //used on while held and don't want it to repeat itself
     if(!noWait){
       AddSequential(new WaitCommand(10.0));
     }

@@ -24,13 +24,13 @@ class RocketAutoCommandGroup : public frc::CommandGroup {
     AddSequential(new SwerveDrivetrainJoystickSetFieldFrame(true));
     AddSequential(new InstantCommand([]() {CommandBase::m_pSwerveDrivetrain->setGyroOffset(180);}));
     AddSequential(new AutoDriveAndRotateCommand(0.5, 0, 0.0, 0.0, 1)); // drive off L2
-    AddSequential(new AutoDriveAndRotateCommand(1.2, -80, 0.4, -45, 1)); //drive and turn to rocket
+    AddSequential(new AutoDriveAndRotateCommand(1.2, -30, 0.4, -150, 1)); //drive and turn to rocket
     AddSequential(new SwerveDrivetrainJoystickSetFieldFrame(false));
-    // AddSequential(new SwerveDrivetrainDriveAndRotateCommand(0.1, 0.2, 0.0, 0.0, 270.0));
+    // AddSequential(new SwerveDrivetrainDriveAndRotateCommand(0.1, 0.2, 0.0, 0.0, -150.0));
 
 // score hatch 1
     // AddSequential(new LimeLightWaitForTargetSeenCommand());
-    // AddSequential(new SwerveDrivetrainDriveAndRotateCommand(0.1, 0.2, 0.0, 0.0, 270.0));
+    // AddSequential(new SwerveDrivetrainDriveAndRotateCommand(0.1, 0.2, 0.0, 0.0, -150.0));
     // AddSequential(new AutoScoreHatchCommandGroup());
 
 // drive to feeder

@@ -118,9 +118,24 @@ void Robot::RobotInit() {
 	m_elevatorCargoShip = new ElevatorCargoShipCommand("ElevatorLowCommand");
 	m_freeCargo = new ToolChangerFreeCargoCommand();
 	m_zeroAll->Start();
+
 	m_autoCommand = new CargoAutoCommandGroup();
+	// m_leftCargoShipAuto = new CargoAutoCommandGroup();
+	// m_rightCargoShipAuto = new CargoAutoCommandGroup();
+	// m_leftRocketAuto = new RocketAutoCommandGroup();
+	// m_rightRocketAuto = new CargoAutoCommandGroup();
+
+
 
 	frc::LiveWindow::GetInstance()->DisableAllTelemetry();
+
+	// m_posChooser = new SendableChooser<Autos>();
+	// m_posChooser->SetDefaultOption("left", LEFT);
+	// m_posChooser->AddOption("right", RIGHT);
+
+	// m_scoreChooser = new SendableChooser<Autos>();
+	// m_scoreChooser->SetDefaultOption("cargo ship", CARGOSHIP);
+	// m_scoreChooser->AddOption("rocket", ROCKET);
 }
 
 void Robot::RobotPeriodic() {
@@ -137,6 +152,19 @@ void Robot::AutonomousInit() {
 	m_elevatorCargoShip->Start();
 	m_freeCargo->Start();
 	m_autoCommand->Start();
+
+	// if(LEFT && CARGOSHIP) {
+	// 	m_leftCargoShipAuto->Start();
+	// }
+	// else if(LEFT && ROCKET) {
+	// 	m_leftRocketAuto->Start();
+	// }
+	// else if(RIGHT && CARGOSHIP) {
+	// 	m_rightCargoShipAuto->Start();
+	// }
+	// else {
+	// 	m_rightRocketAuto->Start();
+	// }
 }
 
 void Robot::DisabledInit() {
