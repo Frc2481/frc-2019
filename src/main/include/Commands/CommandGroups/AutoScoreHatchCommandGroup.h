@@ -16,6 +16,7 @@
 #include "Commands/HatchSlide/HatchSlideWaitForOnTargetCommand.h"
 #include "Commands/CommandGroups/AcquireHatchCommandGroup.h"
 #include "Commands/SwerveDrivetrain/AutoDriveAndRotateCommand.h"
+#include "Commands/HatchSlide/HatchSlideWaitForOnTargetWhenEnabledCommand.h"
 
 class AutoAquireHatchCommandGroup : public frc::CommandGroup {
  public:
@@ -56,6 +57,7 @@ class AutoScoreHatchCommandGroup : public frc::CommandGroup {
     // AddSequential(new InstantCommand([](){CommandBase::m_pHatchSlide->EnableUserHatchSlide();}));
     AddSequential(new AutoLimeLightDriverDriveCommand());
     // AddSequential(new HatchSlideWaitForOnTargetCommand());
+    AddSequential(new HatchSlideWaitForOnTargetWhenEnabledCommand());
     AddParallel(new ScoreCommand());
     // AddSequential(new WaitCommand(0.2));
     // AddSequential(new SwerveDrivetrainSetOpenLoop(0.3,0.0,-0.3,0.0));

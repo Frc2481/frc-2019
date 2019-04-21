@@ -63,9 +63,6 @@ class RocketAutoCommandGroup : public frc::CommandGroup {
     AddSequential(new InstantCommand([]() {CommandBase::m_pHatchSlide->EnableUserHatchSlide();}));
     AddSequential(new AutoScoreHatchCommandGroup());
     AddSequential(new InstantCommand([]() {CommandBase::m_pHatchSlide->DisableUserHatchSlide();}));
-
-// score hatch 2
-    // AddSequential(new AutoScoreHatchCommandGroup());
   }
 };
 

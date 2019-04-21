@@ -53,15 +53,6 @@ class LockOutWhenIntakingCommand : public ConditionalCommand {
   }
 }; 
 
-// class LockOutHatchSlide : public ConditionalCommand {
-//   public:
-//   LockOutHatchSlide(Command* cmd) : ConditionalCommand(cmd->GetName(), cmd) {
-//   }
-//   bool Condition() {
-//     return CommandBase::m_pElevator->GetElevatorPosition() > 1.5;
-//   }
-// }; 
-
 OI::OI() {
 	m_pDriverStick = new Joystick2481(DRIVER_XBOX_CONTROLLER_ID);
 	m_pOperatorStick = new Joystick2481(OPERATOR_XBOX_CONTROLLER_ID);

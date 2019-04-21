@@ -65,7 +65,7 @@ class AutoLimeLightDriverDriveCommand : public frc::Command {
     double distance = 16.5*tan((60.0+angle)*M_PI/180.0);
     // double distance = 15.75*tan((58.04+angle)*M_PI/180.0);
     SmartDashboard::PutNumber("distance ", distance);
-    return distance < 15.0;
+    return distance < 18.0;
   }
   void End() override{
     CommandBase::m_pSwerveDrivetrain->driveOpenLoopControl(0.0,0.0,0.0);
