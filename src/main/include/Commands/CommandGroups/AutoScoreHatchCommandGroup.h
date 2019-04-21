@@ -58,7 +58,8 @@ class AutoScoreHatchCommandGroup : public frc::CommandGroup {
     AddSequential(new AutoLimeLightDriverDriveCommand());
     // AddSequential(new HatchSlideWaitForOnTargetCommand());
     AddSequential(new HatchSlideWaitForOnTargetWhenEnabledCommand());
-    AddParallel(new ScoreCommand());
+    AddSequential(new ScoreCommand());
+    AddSequential(new InstantCommand([](){CommandBase::m_pSwerveDrivetrain->driveOpenLoopControl(0.0,0.0,0.0);}));
     // AddSequential(new WaitCommand(0.2));
     // AddSequential(new SwerveDrivetrainSetOpenLoop(0.3,0.0,-0.3,0.0));
     AddSequential(new InstantCommand([](){CommandBase::m_pHatchSlide->DisableUserHatchSlide();}));

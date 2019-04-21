@@ -44,20 +44,23 @@ class ClimbSequenceLevel3CommandGroup : public frc::CommandGroup {
     AddSequential(new SwerveDrivetrainSetBrakeCommand());
 
     //lower climber & drive on
-    AddParallel(new ClimberSetPositionCommand(210));
+    AddParallel(new ClimberSetPositionCommand(205));
     AddSequential(new ClimberWaitForHeightCommand(60));
     AddSequential(new ClimberLittleFeetDownCommand());
-    AddSequential(new ClimberWaitForHeightCommand(198));
-    AddSequential(new SwerveDrivetrainSetOpenLoop(0.8, 0.0, 0.1, 0.0));
+    AddSequential(new ClimberWaitForHeightCommand(193));
+    AddSequential(new SwerveDrivetrainSetOpenLoop(0.8, 0.0, 0.15, 0.0));
+    AddParallel(new SwerveDrivetrainSetOpenLoop(10.0, 0.0, 0.15, 0.0));
 
     //make adjustments if needed
     // AddSequential(new ClimberCheckpointCommand());
-    AddSequential(new WaitCommand(1.0));
+    // AddSequential(new WaitCommand(0.5));
 
     //raise climber and drive on further
-    AddSequential(new ClimberSetPositionCommand(190));
+    AddParallel(new ClimberSetOpenLoopCommand(-0.3));
+    AddSequential(new ClimberWaitForHeightCommand(185));
+    AddSequential(new ClimberSetOpenLoopCommand(0));
+    // AddSequential(new ClimberSetPositionCommand(180));
     AddSequential(new WaitCommand(0.1));
-    AddParallel(new SwerveDrivetrainSetOpenLoop(10.0, 0.0, 0.2, 0.0));
     AddSequential(new ClimberSetPositionCommand(175));
     AddParallel(new SwerveDrivetrainSetOpenLoop(10.0, 0.0, 0.0, 0.0));
     
@@ -70,11 +73,15 @@ class ClimbSequenceLevel3CommandGroup : public frc::CommandGroup {
 class ClimbSequence1To2CommandGroup : public frc::CommandGroup {
  public:
   ClimbSequence1To2CommandGroup() : CommandGroup("ClimbSequence1To2CommandGroup"){
-    AddSequential(new SwerveDrivetrainSetOpenLoop(0.1, 0.0, 0.25, 0.0));
-    AddSequential(new ClimberSetPositionCommand(105));    
+    AddSequential(new SwerveDrivetrainJoystickSetFieldFrame(false));
+    // AddSequential(new SwerveDrivetrainSetOpenLoop(0.1, 0.0, 0.0, 0.0));
+    AddSequential(new SwerveDrivetrainSetBrakeCommand());
+
+    //lower climber & drive on
+    AddSequential(new ClimberSetPositionCommand(115));
     AddSequential(new ClimberLittleFeetDownCommand());
     AddSequential(new ClimberReleaseWeightsCommand());
-    AddSequential(new WaitCommand(2.0));
+    AddSequential(new WaitCommand(3.0));
     AddSequential(new SwerveDrivetrainSetOpenLoop(0.5, 0.0, 0.25, 0.0));
     // AddSequential(new ClimberSetPositionCommand(90));    
     // AddSequential(new ClimberTiltBigFootCommand());
@@ -89,6 +96,8 @@ class ClimbSequenceFloorTo2CommandGroup : public frc::CommandGroup {
  public:
   ClimbSequenceFloorTo2CommandGroup() : CommandGroup("ClimbSequenceFloorTo2CommandGroup"){
     AddSequential(new SwerveDrivetrainSetOpenLoop(0.1, 0.0, 0.25, 0.0));
+    AddSequential(new SwerveDrivetrainSetBrakeCommand());
+
     AddSequential(new ClimberSetOpenLoopCommand(1.0));    
     AddSequential(new ClimberWaitForHeightCommand(50));
     AddSequential(new ClimberLittleFeetDownCommand());

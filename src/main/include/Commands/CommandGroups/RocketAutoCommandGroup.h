@@ -35,9 +35,7 @@ class RocketAutoCommandGroup : public frc::CommandGroup {
     AddSequential(new LimeLightWaitForTargetSeenCommand());
     AddSequential(new SwerveDrivetrainJoystickSetFieldFrame(false));
     AddSequential(new SwerveDrivetrainDriveAndRotateCommand(0.1, 0.2, 0.0, 0.0, -208.75)); //brake
-    AddSequential(new InstantCommand([]() {CommandBase::m_pHatchSlide->EnableUserHatchSlide();}));
     AddSequential(new AutoScoreHatchCommandGroup());
-    AddSequential(new InstantCommand([]() {CommandBase::m_pHatchSlide->DisableUserHatchSlide();}));
 
 // drive to feeder
     // AddSequential(new SwerveDrivetrainDriveAndRotateCommand(1.5, -0.7, -0.3, 0.0, -208.75));
@@ -60,9 +58,7 @@ class RocketAutoCommandGroup : public frc::CommandGroup {
     AddSequential(new InstantCommand([]() {NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("pipeline", 0);})); //leftmost
     AddSequential(new LimeLightWaitForTargetSeenCommand());
     // AddSequential(new SwerveDrivetrainJoystickSetFieldFrame(false));
-    AddSequential(new InstantCommand([]() {CommandBase::m_pHatchSlide->EnableUserHatchSlide();}));
     AddSequential(new AutoScoreHatchCommandGroup());
-    AddSequential(new InstantCommand([]() {CommandBase::m_pHatchSlide->DisableUserHatchSlide();}));
   }
 };
 

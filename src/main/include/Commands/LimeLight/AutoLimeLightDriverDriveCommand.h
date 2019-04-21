@@ -68,7 +68,7 @@ class AutoLimeLightDriverDriveCommand : public frc::Command {
     return distance < 18.0;
   }
   void End() override{
-    CommandBase::m_pSwerveDrivetrain->driveOpenLoopControl(0.0,0.0,0.0);
+    // CommandBase::m_pSwerveDrivetrain->driveOpenLoopControl(0.0,0.0,0.0);
     CommandBase::m_pSwerveDrivetrain->setIsOpenLoopFieldFrame(m_prevFieldCentric);
   }
   void Interrupted() override{
