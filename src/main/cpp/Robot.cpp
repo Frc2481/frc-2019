@@ -119,7 +119,8 @@ void Robot::RobotInit() {
 	m_freeCargo = new ToolChangerFreeCargoCommand();
 	m_zeroAll->Start();
 
-	m_autoCommand = new CargoAutoCommandGroup();
+	// m_autoCommand = new CargoAutoCommandGroup();
+	m_autoCommand = new RocketAutoCommandGroup();
 	// m_leftCargoShipAuto = new CargoAutoCommandGroup();
 	// m_rightCargoShipAuto = new CargoAutoCommandGroup();
 	// m_leftRocketAuto = new RocketAutoCommandGroup();

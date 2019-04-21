@@ -44,7 +44,6 @@ class CargoAutoCommandGroup : public frc::CommandGroup {
 
 // pickup hatch 2
     AddSequential(new AutoAquireHatchCommandGroup(true));
-    // AddSequential(new SwerveDrivetrainJoystickSetFieldFrame(false)); //remove later
     AddSequential(new SwerveDrivetrainSetOpenLoop(0.1, 0.0,-0.3,0.0));
 
 
