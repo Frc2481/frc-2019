@@ -46,9 +46,8 @@ Robot::Robot() : TimedRobot(1.0 / RobotParameters::k_updateRate) {
 
 void Robot::RobotInit() {
 	CommandBase::Init();
-	SmartDashboard::PutData("RocketAutoCommandGroup", new RocketAutoCommandGroup());
-	SmartDashboard::PutData("AutoDriveAndRotateCommand", new AutoDriveAndRotateCommand(1.0, 15.0, 0.4, 270.0, 1.0));
-	SmartDashboard::PutData("CargoAutoCommandGroup", new CargoAutoCommandGroup());
+	SmartDashboard::PutData("RocketAutoLeftCommandGroup", new RocketAutoLeftCommandGroup());
+	SmartDashboard::PutData("CargoAutoRightCommandGroup", new CargoAutoRightCommandGroup());
 	SmartDashboard::PutData("AutoLimeLightDriverDriveCommand" , new AutoScoreHatchCommandGroup());
 	SmartDashboard::PutData("CargoIntakeExtendCommand", new CargoIntakeExtendCommand());
 	SmartDashboard::PutData("CargoIntakeRetractCommand", new CargoIntakeRetractCommand());
@@ -102,8 +101,6 @@ void Robot::RobotInit() {
 	SmartDashboard::PutData("ZeroAllCommandGroup", new ZeroAllCommandGroup());
 
 	SmartDashboard::PutData("StopAllCommand", new StopAllCommand());
-
-	SmartDashboard::PutData("ZeroGyroCommand", new SwerveDrivetrainZeroGyroCommand());
 	
 	SmartDashboard::PutData(frc::Scheduler::GetInstance());
 
@@ -119,24 +116,20 @@ void Robot::RobotInit() {
 	m_freeCargo = new ToolChangerFreeCargoCommand();
 	m_zeroAll->Start();
 
-	// m_autoCommand = new CargoAutoCommandGroup();
-	m_autoCommand = new RocketAutoCommandGroup();
-	// m_leftCargoShipAuto = new CargoAutoCommandGroup();
-	// m_rightCargoShipAuto = new CargoAutoCommandGroup();
-	// m_leftRocketAuto = new RocketAutoCommandGroup();
-	// m_rightRocketAuto = new CargoAutoCommandGroup();
-
-
-
 	frc::LiveWindow::GetInstance()->DisableAllTelemetry();
 
-	// m_posChooser = new SendableChooser<Autos>();
-	// m_posChooser->SetDefaultOption("left", LEFT);
-	// m_posChooser->AddOption("right", RIGHT);
+	m_leftCargoShipAuto = new CargoAutoLeftCommandGroup();
+	// m_rightCargoShipAuto = new CargoAutoRightCommandGroup();
+	m_leftRocketAuto = new RocketAutoLeftCommandGroup();
+	// m_rightRocketAuto = new CargoAutoRightCommandGroup();
+	
+	m_autoChooser = new frc::SendableChooser<Command*>();
+	m_autoChooser->SetDefaultOption("Left Cargoship Auto", m_leftCargoShipAuto);
+	m_autoChooser->AddOption("Left Rocket Auto", m_leftRocketAuto);
+	// m_autoChooser->AddOption("Right Cargoship Auto", RIGHT_CARGOSHIP);
+	// m_autoChooser->AddOption("Right Rocket Auto", RIGHT_ROCKET);
 
-	// m_scoreChooser = new SendableChooser<Autos>();
-	// m_scoreChooser->SetDefaultOption("cargo ship", CARGOSHIP);
-	// m_scoreChooser->AddOption("rocket", ROCKET);
+	m_autoCommand = NULL;
 }
 
 void Robot::RobotPeriodic() {
@@ -152,20 +145,12 @@ void Robot::AutonomousInit() {
 	m_hatchExtend->Start();
 	m_elevatorCargoShip->Start();
 	m_freeCargo->Start();
-	m_autoCommand->Start();
 
-	// if(LEFT && CARGOSHIP) {
-	// 	m_leftCargoShipAuto->Start();
-	// }
-	// else if(LEFT && ROCKET) {
-	// 	m_leftRocketAuto->Start();
-	// }
-	// else if(RIGHT && CARGOSHIP) {
-	// 	m_rightCargoShipAuto->Start();
-	// }
-	// else {
-	// 	m_rightRocketAuto->Start();
-	// }
+	m_autoCommand = m_autoChooser->GetSelected();
+
+	if(m_autoCommand != NULL) {
+		m_autoCommand->Start();
+	}
 }
 
 void Robot::DisabledInit() {

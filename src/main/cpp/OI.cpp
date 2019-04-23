@@ -92,9 +92,6 @@ OI::OI() {
 
 	m_stopAll = new AnalogJoystickButton(m_pDriverStick, XBOX_LEFT_TRIGGER, 0.5);
 	m_stopAll->WhenPressed(new StopAllCommand());
-
-	m_autoAlign = new ComboJoystickButton(m_aDriverButton, m_backButton, false);
-	m_autoAlign->WhenPressed(new CargoAutoCommandGroup());
 	
 	m_AutoPlace = new ComboJoystickButton(m_bDriverButton, m_backButton, false);
 	m_AutoPlace->WhileHeld(new AutoScoreHatchCommandGroup());

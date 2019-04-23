@@ -86,7 +86,6 @@ void CargoIntake::Periodic() {
     frc::SmartDashboard::PutBoolean("IsCargoIntakeEncoderConnected", m_encoderConnected);
     frc::SmartDashboard::PutBoolean("IsElevatorLockedOut", IsIntaking());
   }
-
 }
 void CargoIntake::SetSpeedIn(double speed) {
   m_intakeMotor->Set(ControlMode::PercentOutput, speed);
