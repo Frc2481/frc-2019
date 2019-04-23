@@ -16,28 +16,44 @@ class AutoDriveAndRotateCommand : public frc::Command {
   double m_duration;
   double m_direction;
   double m_targetAngle;
+  double m_yawRate;
+  bool m_fieldCentric;
+  double m_scaleDirection;
 
  public:
-  AutoDriveAndRotateCommand(double duration, double direction, double angle) : Command("AutoDriveAndRotateCommand"){
+  AutoDriveAndRotateCommand(double duration, double direction, double yawRate, double angle, double scaleDirection) : Command("AutoDriveAndRotateCommand"){
     Requires(CommandBase::m_pSwerveDrivetrain.get());
-    m_direction = direction;
-    m_targetAngle = angle;
+    m_direction = 90 - direction;
+    m_targetAngle = angle ;
+    m_duration = duration;
+    m_yawRate = yawRate;
+    m_fieldCentric = false;
+    m_scaleDirection = scaleDirection;
     SetTimeout(m_duration);
   }
   void Initialize() override{
-    SwerveDrivetrainJoystickSetFieldFrame(true);
+    m_fieldCentric = CommandBase::m_pSwerveDrivetrain->getFieldFrame();
+    CommandBase::m_pSwerveDrivetrain->setIsOpenLoopFieldFrame(true);
   }
   void Execute() override{
     double angleError = CommandBase::m_pSwerveDrivetrain->getGyroYaw() - m_targetAngle;
     angleError += (angleError > 180) ? -360 : (angleError<-180) ? 360 : 0;
-    CommandBase::m_pSwerveDrivetrain->driveOpenLoopControl(cos(m_direction), sin(m_direction), angleError);
+    printf("Sin %f Cos %f\n", cos(m_direction * (M_PI / 180)), sin(m_direction * (M_PI / 180)));
+    if(fabs(angleError) < 5)
+    {
+      CommandBase::m_pSwerveDrivetrain->driveOpenLoopControl(cos(m_direction * (M_PI / 180))*m_scaleDirection, sin(m_direction * (M_PI / 180))*m_scaleDirection, 0.0);
+    }
+    else
+    {
+      CommandBase::m_pSwerveDrivetrain->driveOpenLoopControl(cos(m_direction * (M_PI / 180))*m_scaleDirection, sin(m_direction * (M_PI / 180))*m_scaleDirection, ((angleError < 0) ? 1 : -1) * m_yawRate);
+    }
   }
   bool IsFinished() override{
     return IsTimedOut();
   }
   void End() override{
     CommandBase::m_pSwerveDrivetrain->driveOpenLoopControl(0,0,0);
-    SwerveDrivetrainJoystickSetFieldFrame(false);
+    CommandBase::m_pSwerveDrivetrain->setIsOpenLoopFieldFrame(m_fieldCentric); // TODO: Remove this as needed.
   }
   void Interrupted() override{
     End();

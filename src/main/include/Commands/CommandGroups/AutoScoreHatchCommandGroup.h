@@ -15,6 +15,8 @@
 #include "Commands\SwerveDrivetrain\SwerveDrivetrainSetOpenLoop.h"
 #include "Commands/HatchSlide/HatchSlideWaitForOnTargetCommand.h"
 #include "Commands/CommandGroups/AcquireHatchCommandGroup.h"
+#include "Commands/SwerveDrivetrain/AutoDriveAndRotateCommand.h"
+#include "Commands/HatchSlide/HatchSlideWaitForOnTargetWhenEnabledCommand.h"
 
 class AutoAquireHatchCommandGroup : public frc::CommandGroup {
  public:
@@ -33,6 +35,8 @@ class AutoAquireHatchCommandGroup : public frc::CommandGroup {
     AddSequential(new SwerveDrivetrainSetOpenLoop(0.5, 0.0,-0.6,0.0));//this is in field centric
 
     AddSequential(new InstantCommand([](){CommandBase::m_pHatchSlide->DisableUserHatchSlide();}));
+    
+    //used on while held and don't want it to repeat itself
     if(!noWait){
       AddSequential(new WaitCommand(10.0));
     }
@@ -53,8 +57,10 @@ class AutoScoreHatchCommandGroup : public frc::CommandGroup {
     // AddSequential(new InstantCommand([](){CommandBase::m_pHatchSlide->EnableUserHatchSlide();}));
     AddSequential(new AutoLimeLightDriverDriveCommand());
     // AddSequential(new HatchSlideWaitForOnTargetCommand());
-    AddParallel(new ScoreCommand());
-    AddSequential(new WaitCommand(0.5));
+    AddSequential(new HatchSlideWaitForOnTargetWhenEnabledCommand());
+    AddSequential(new ScoreCommand());
+    AddSequential(new InstantCommand([](){CommandBase::m_pSwerveDrivetrain->driveOpenLoopControl(0.0,0.0,0.0);}));
+    // AddSequential(new WaitCommand(0.2));
     // AddSequential(new SwerveDrivetrainSetOpenLoop(0.3,0.0,-0.3,0.0));
     AddSequential(new InstantCommand([](){CommandBase::m_pHatchSlide->DisableUserHatchSlide();}));
     // AddSequential(new InstantCommand([](){

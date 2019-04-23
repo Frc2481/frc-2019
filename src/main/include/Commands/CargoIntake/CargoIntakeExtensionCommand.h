@@ -31,14 +31,14 @@ class CargoIntakeExtendCommand : public frc::InstantCommand {
 class CargoIntakeRetractCommand : public frc::InstantCommand {
  public:
   CargoIntakeRetractCommand() : InstantCommand("CargoIntakeRetractCommand") {
-    SetTimeout(1);
+    SetTimeout(5); //TODO: make realistic value after testing
   }
   void Initialize() override {
     // CommandBase::m_pCargoIntake->SetSpeed(1);
     CommandBase::m_pCargoIntake->SetPosition(-1); //TODO
   }
   bool IsFinished() override {
-    return IsTimedOut();
+    return CommandBase::m_pCargoIntake->IsOnTarget() || IsTimedOut();
   }
   void End() override {
     CommandBase::m_pCargoIntake->SetOpenLoopSpeed(0);

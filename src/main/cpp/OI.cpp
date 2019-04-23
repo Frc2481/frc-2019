@@ -42,7 +42,16 @@
 #include "Commands/LimeLight/LimeLightDriverDriveCommand.h"
 #include "Commands/CommandGroups/AutoScoreHatchCommandGroup.h"
 #include "Commands/CommandGroups/LimeLightAbortCommandGroup.h"
-#include "Commands/CommandGroups/AutoCommandGroup.h"
+#include "Commands/CommandGroups/CargoAutoCommandGroup.h"
+
+class LockOutWhenIntakingCommand : public ConditionalCommand {
+  public:
+  LockOutWhenIntakingCommand(Command* cmd) : ConditionalCommand(cmd->GetName(), cmd) {
+  }
+  bool Condition() {
+    return !CommandBase::m_pCargoIntake->IsIntaking();
+  }
+}; 
 
 OI::OI() {
 	m_pDriverStick = new Joystick2481(DRIVER_XBOX_CONTROLLER_ID);
@@ -83,9 +92,6 @@ OI::OI() {
 
 	m_stopAll = new AnalogJoystickButton(m_pDriverStick, XBOX_LEFT_TRIGGER, 0.5);
 	m_stopAll->WhenPressed(new StopAllCommand());
-
-	m_autoAlign = new ComboJoystickButton(m_aDriverButton, m_backButton, false);
-	m_autoAlign->WhenPressed(new AutoCommandGroup());
 	
 	m_AutoPlace = new ComboJoystickButton(m_bDriverButton, m_backButton, false);
 	m_AutoPlace->WhileHeld(new AutoScoreHatchCommandGroup());
@@ -99,22 +105,23 @@ OI::OI() {
 	m_shiftWeights->WhenPressed(new ClimberReleaseWeightsCommand());
 
     m_scoreCargoShip = new JoystickButton(m_pOperatorStick, XBOX_X_BUTTON);
-	m_scoreCargoShip->WhenPressed(new ElevatorCargoShipCommand("ElevatorCargoShipCommand"));
+	m_scoreCargoShip->WhenPressed(new LockOutWhenIntakingCommand(new ElevatorCargoShipCommand("ElevatorCargoShipCommand")));
 
 	m_scoreHigh = new JoystickButton(m_pOperatorStick, XBOX_Y_BUTTON);
-	m_scoreHigh->WhenPressed(new ElevatorHighCommand("ElevatorHighCommand"));
+	m_scoreHigh->WhenPressed(new LockOutWhenIntakingCommand(new ElevatorHighCommand("ElevatorHighCommand")));
 
 	m_scoreMid = new JoystickButton(m_pOperatorStick, XBOX_B_BUTTON);
-	m_scoreMid->WhenPressed(new ElevatorMidCommand("ElevatorMidCommand"));
+	m_scoreMid->WhenPressed(new LockOutWhenIntakingCommand(new ElevatorMidCommand("ElevatorMidCommand")));
 
 	m_scoreLow = new JoystickButton(m_pOperatorStick, XBOX_A_BUTTON);
-	m_scoreLow->WhenPressed(new ElevatorLowCommand("ElevatorLowCommand"));
+	m_scoreLow->WhenPressed(new LockOutWhenIntakingCommand(new ElevatorLowCommand("ElevatorLowCommand")));
 
 	m_climberGuides = new JoystickButton(m_pOperatorStick, XBOX_START_BUTTON);
 	m_climberGuides->WhenPressed(new ClimbGuidesSequenceCommandGroup());
 
 	m_scoreGamePiece = new AnalogJoystickButton(m_pOperatorStick, XBOX_LEFT_TRIGGER, 0.5);
 	m_scoreGamePiece->WhenPressed(new ScoreCommand());
+	m_scoreGamePiece->WhenReleased(new ToolChangerHatchRetractCommand());
 	
 	m_elevatorManual = new AnalogJoystickButton(m_pOperatorStick, XBOX_LEFT_Y_AXIS, -0.25);
 	m_elevatorManual->WhileHeld(new ElevatorJoystickCommand());

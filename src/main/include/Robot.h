@@ -25,6 +25,12 @@ private:
 	Command* m_elevatorCargoShip;
 	Command* m_zeroAll;
 	Command* m_freeCargo;
+	Command* m_autoCommand;
+	Command* m_leftCargoShipAuto;
+	Command* m_rightCargoShipAuto;
+	Command* m_leftRocketAuto;
+	Command* m_rightRocketAuto;
+	frc::SendableChooser<Command*>* m_autoChooser;
 };
 
 #endif // ROBOT_H

@@ -25,7 +25,7 @@ class ScoreHatchCommandGroup : public frc::CommandGroup {
     AddSequential(new ToolChangerFreeCargoCommand());
     AddSequential(new WaitCommand(0.1));
     AddSequential(new ToolChangerFreeHatchCommand());
-    AddSequential(new WaitCommand(1.5));
+    AddSequential(new WaitCommand(0.6)); //1.5
     AddSequential(new ToolChangerHoldCargoCommand());
     AddSequential(new ToolChangerSetHasCargoCommand(false));
     AddSequential(new ToolChangerSetHasHatchCommand(false));
@@ -38,7 +38,7 @@ class ScoreCargoCommandGroup : public frc::CommandGroup {
     AddSequential(new ToolChangerFreeCargoCommand());
     AddSequential(new ToolChangerHatchExtendCommand());
     AddSequential(new WaitCommand(0.3));
-    AddSequential(new ToolChangerHatchRetractCommand());
+    // AddSequential(new ToolChangerHatchRetractCommand());
     AddSequential(new ToolChangerSetHasCargoCommand(false));
     AddSequential(new ToolChangerSetHasHatchCommand(false));
   }

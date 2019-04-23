@@ -33,6 +33,7 @@ class AcquireCargoCommandGroup : public frc::CommandGroup {
     Requires(CommandBase::m_pCargoIntake.get());
     Requires(CommandBase::m_pHatchSlide.get());
 
+    AddParallel(new InstantCommand([]() {CommandBase::m_pCargoIntake->SetIsIntaking(true);}));
     //set up for command - hatch slide center
     AddParallel(new HatchSlideDisableCommand());
     AddParallel(new HatchSlideToCenterCommand());
@@ -50,16 +51,17 @@ class AcquireCargoCommandGroup : public frc::CommandGroup {
     AddParallel(new CargoIntakeBallCommand(0.8));
     AddSequential(new CargoIntakeWaitForCargoIntakenCommand());
     AddSequential(new WaitCommand(0.5));
-    AddParallel(new CargoIntakeBallCommand(0.3));
+    // AddParallel(new CargoIntakeBallCommand(0.3));
     AddParallel(new CargoIntakeRetractCommand());
     AddSequential(new CargoIntakeWaitForBallCommand(), 1.0);
     AddParallel(new CargoIntakeStopCommand());
     AddParallel(new ToolChangerHoldCargoCommand());
+    AddParallel(new ToolChangerSetHasCargoCommand(true));
+    AddParallel(new InstantCommand([]() {CommandBase::m_pCargoIntake->SetIsIntaking(false);}));
     AddSequential(new WaitCommand(0.1));
 
     //leds & elevator back down
     AddParallel(new SetLEDsCommand(5));
-    AddParallel(new ToolChangerSetHasCargoCommand(true));
 
     // state at end:
     // Elevator: Low
@@ -67,6 +69,10 @@ class AcquireCargoCommandGroup : public frc::CommandGroup {
     // Cargo: Held
     // Hatch: Held
     // HatchExt: Retracted
+  }
+
+  void Interrupted() {
+    AddParallel(new InstantCommand([]() {CommandBase::m_pCargoIntake->SetIsIntaking(false);}));
   }
 };
 

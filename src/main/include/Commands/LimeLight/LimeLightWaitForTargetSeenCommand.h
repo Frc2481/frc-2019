@@ -43,4 +43,40 @@ class LimeLightWaitForTargetSeenCommand : public frc::Command {
   }
 };
 
+class LimeLightWaitForLeftTargetSeenCommand : public frc::Command {
+ private:
+  double tv;
+  double tvPrev;
+  double txPrev;
+  double tx;
+ public:
+  LimeLightWaitForLeftTargetSeenCommand() : Command("LimeLightWaitForLeftTargetSeenCommand"){}
+  void Initialize() override{
+    txPrev = 0.0;
+    tv = 0.0;
+    tx = 0.0;
+    tvPrev = 0.0;
+  }
+  void Execute() override{
+    tx = NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("tx", 0);
+    tv = NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("tv", 0);
+  }
+  bool IsFinished() override{
+    if((bool)tv && (bool)tvPrev && fabs(tx - txPrev) > 10) {
+      return true;
+    }
+    else {
+      txPrev = tx;
+      tvPrev = tv;
+      return false;
+    }
+  }
+  void End() override{
+    
+  }
+  void Interrupted() override{
+    End();
+  }
+};
+
 #endif //SRC_LIMELIGHTWAITFORTARGETSEENCOMMAND

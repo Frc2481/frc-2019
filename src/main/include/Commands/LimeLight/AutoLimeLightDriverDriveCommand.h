@@ -37,6 +37,7 @@ class AutoLimeLightDriverDriveCommand : public frc::Command {
   void Execute() override{
     double scaleTs = -0.015;
     double scaleTx = 0.01;
+    double scaleTy = 0.0;
     double y = 0.35;
     double skew = NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("ts",0);
     double tx = NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("tx",0);
@@ -44,12 +45,13 @@ class AutoLimeLightDriverDriveCommand : public frc::Command {
     double scaleAll = frc::Preferences::GetInstance()->GetDouble("ScaleAll");
     scaleTs = frc::Preferences::GetInstance()->GetDouble("Scale ts");
     scaleTx = frc::Preferences::GetInstance()->GetDouble("Scale tx");
+    scaleTy = frc::Preferences::GetInstance()->GetDouble("Scale ty");
     if (skew < -45) { skew += 90.0; }
     if((skew > 2) && (tx > 2)){
       y = 0.1;
     }
     else{
-      y = 0.35;
+      y = 0.35*scaleTy;
     }
     if(bool(tv)){
       CommandBase::m_pSwerveDrivetrain->driveOpenLoopControl(-tx*scaleTx*scaleAll, y*scaleAll, skew*scaleAll*scaleTs);
@@ -60,12 +62,13 @@ class AutoLimeLightDriverDriveCommand : public frc::Command {
   }
   bool IsFinished() override{
     double angle = NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("ty",0);
-    double distance = 15.75*tan((58.04+angle)*M_PI/180.0);
+    double distance = 16.5*tan((60.0+angle)*M_PI/180.0);
+    // double distance = 15.75*tan((58.04+angle)*M_PI/180.0);
     SmartDashboard::PutNumber("distance ", distance);
-    return distance < 20.0;
+    return distance < 18.0;
   }
   void End() override{
-    CommandBase::m_pSwerveDrivetrain->driveOpenLoopControl(0.0,0.0,0.0);
+    // CommandBase::m_pSwerveDrivetrain->driveOpenLoopControl(0.0,0.0,0.0);
     CommandBase::m_pSwerveDrivetrain->setIsOpenLoopFieldFrame(m_prevFieldCentric);
   }
   void Interrupted() override{

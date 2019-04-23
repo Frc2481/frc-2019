@@ -158,13 +158,6 @@ void HatchSlide::Periodic() {
 
 void HatchSlide::setSetPoint(int value) {
   if(m_isHatchZeroed){
-  // m_motor->Set(ControlMode::MotionMagic, value);
-    // if(m_motor->GetSelectedSensorPosition() < value) {
-    //   m_motor->Set(ControlMode::MotionMagic, value, DemandType::DemandType_ArbitraryFeedForward, 0); //0.1);
-    //           m_LED->Set(true);
-    // }
-    // else if(m_motor->GetSelectedSensorPosition() > value){
-    // }
     m_desiredPos = value;
     if(RobotParameters::k_allowableCloseLoopError > fabs(m_motor->GetSelectedSensorPosition() - value)) {
       SetOpenLoopSpeed(0);
