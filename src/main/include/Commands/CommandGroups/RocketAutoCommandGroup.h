@@ -24,11 +24,13 @@ class RocketAutoLeftCommandGroup : public frc::CommandGroup {
   RocketAutoLeftCommandGroup() : CommandGroup("RocketAutoLeftCommandGroup"){
 // L2 to rocket
     AddSequential(new SwerveDrivetrainJoystickSetFieldFrame(true));
+    AddSequential(new InstantCommand([]() {NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("pipeline", 1);})); // rightmost target bc coast
     AddSequential(new InstantCommand([]() {CommandBase::m_pSwerveDrivetrain->setGyroOffset(180);}));
     AddSequential(new AutoDriveAndRotateCommand(1.3, 0.0, 0.0, 0.0, 1));  // Drives off hab
-    AddSequential(new AutoDriveAndRotateCommand(0.8, -28.75, 0.3, -208.75, 1)); //drive and turn to rocket
+    AddSequential(new AutoDriveAndRotateCommand(0.9, -28.75, 0.3, -208.75, 1)); //drive and turn to rocket
     AddSequential(new SwerveDrivetrainDriveAndRotateCommand(0.2, 0.02, 0.0, 0.0, -208.75)); //brake
-    AddParallel(new AutoDriveAndRotateCommand(2, -28.75, 0.3, -208.75, 0.2)); //drive and turn to rocket
+    AddSequential(new AutoDriveAndRotateCommand(1, -28.75, 0.3, -208.75, 0.2)); //drive and turn to rocket
+    AddParallel(new AutoDriveAndRotateCommand(1, -28.75, 0.3, -208.75, 0.2)); //drive and turn to rocket
     // AddSequential(new SwerveDrivetrainDriveAndRotateCommand(0.1, 0.2, 0.0, 0.0, -150.0));
 
 // score hatch 1

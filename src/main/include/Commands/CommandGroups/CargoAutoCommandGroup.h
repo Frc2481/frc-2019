@@ -25,7 +25,7 @@ class CargoAutoLeftCommandGroup : public frc::CommandGroup {
     AddSequential(new AutoDriveAndRotateCommand(0.8, 0.0, 0.0, 0.0, 1));  // Drives off hab
     AddSequential(new AutoDriveAndRotateCommand(1.1, -15.0, 0.4, 270.0, 1));   //rotate & move toward cargoship //.75
     AddSequential(new SwerveDrivetrainDriveAndRotateCommand(0.2, 0.02, 0.0, 0.0, 270.0));
-    AddSequential(new AutoDriveAndRotateCommand(2, 0.0, 0.4, 270.0, 0.2));    //rotate & move toward cargoship but slow //1.5
+    AddSequential(new AutoDriveAndRotateCommand(2, 0.0, 0.4, 270.0, 0.25));    //rotate & move toward cargoship but slow //1.5
     // AddSequential(new AutoDriveAndRotateCommand(0.02, 0.01, -0.01, 0.0, 270.0));
     AddSequential(new SwerveDrivetrainJoystickSetFieldFrame(false));
 
@@ -39,7 +39,7 @@ class CargoAutoLeftCommandGroup : public frc::CommandGroup {
 
 // drive to feeder
     AddSequential(new SwerveDrivetrainJoystickSetFieldFrame(true));
-    AddSequential(new AutoDriveAndRotateCommand(2.0, -165, 0.4, 180.0, 1.0));
+    AddSequential(new AutoDriveAndRotateCommand(2.0, -165, 0.45, 180.0, 1.0));
     AddSequential(new SwerveDrivetrainJoystickSetFieldFrame(false));
 
 // pickup hatch 2
