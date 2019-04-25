@@ -32,7 +32,7 @@ class CargoAutoLeftCommandGroup : public frc::CommandGroup {
 // score hatch 1
 
     AddSequential(new LimeLightWaitForTargetSeenCommand());
-    AddSequential(new InstantCommand([]() {NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("pipeline", 1);})); // rightmost target bc coast
+    AddSequential(new InstantCommand([]() {NetworkTableInstance::GetDefault().GetTable("limelight")->PutNumber("pipeline", 1);})); // rightmost target bc coast
     AddSequential(new SwerveDrivetrainDriveAndRotateCommand(0.2, 0.02, 0.0, 0.0, 270.0)); // brake
     
     AddSequential(new AutoScoreHatchCommandGroup());
@@ -49,16 +49,16 @@ class CargoAutoLeftCommandGroup : public frc::CommandGroup {
 
 // drive to cargo ship
     AddSequential(new SwerveDrivetrainJoystickSetFieldFrame(true));
-    AddSequential(new AutoDriveAndRotateCommand(1.6, 20.0, 0.4, 270.0, 1.0));
+    AddSequential(new AutoDriveAndRotateCommand(1.7, 19.5, 0.4, 270.0, 1.0));
     // AddSequential(new SwerveDrivetrainDriveAndRotateCommand(0.2, 0.02, 0.0, 0.0, 270.0));
     // AddSequential(new AutoDriveAndRotateCommand(1.0, 0.0, 0.4, 270.0, 1.0));
     AddSequential(new SwerveDrivetrainDriveAndRotateCommand(0.2, 0.02, 0.0, 0.0, 270.0));
-    AddParallel(new AutoDriveAndRotateCommand(3, 0.0, 0.4, 270.0, 0.2));
+    AddParallel(new AutoDriveAndRotateCommand(3, 0.0, 0.4, 270.0, 0.35));
     // AddSequential(new SwerveDrivetrainDriveAndRotateCommand(2, -0.2, 0.5, 0.4, 270.0));
     // AddSequential(new AutoDriveAndRotateCommand(0.02, 0.01, -0.01, 0.0, 270.0));
 
 // score hatch 2
-    AddSequential(new InstantCommand([]() {NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("pipeline", 0);})); //leftmost
+    AddSequential(new InstantCommand([]() {NetworkTableInstance::GetDefault().GetTable("limelight")->PutNumber("pipeline", 0);})); //leftmost
     AddSequential(new LimeLightWaitForLeftTargetSeenCommand());
     // AddSequential(new SwerveDrivetrainJoystickSetFieldFrame(false));
     AddSequential(new AutoScoreHatchCommandGroup());
@@ -86,7 +86,7 @@ class CargoAutoRightCommandGroup : public frc::CommandGroup {
 // score hatch 1
 
     AddSequential(new LimeLightWaitForTargetSeenCommand());
-    AddSequential(new InstantCommand([]() {NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("pipeline", 1);})); // rightmost target bc coast
+    AddSequential(new InstantCommand([]() {NetworkTableInstance::GetDefault().GetTable("limelight")->PutNumber("pipeline", 1);})); // rightmost target bc coast
     AddSequential(new SwerveDrivetrainDriveAndRotateCommand(0.2, 0.02, 0.0, 0.0, -270.0)); // brake
     
     AddSequential(new AutoScoreHatchCommandGroup());
@@ -112,7 +112,7 @@ class CargoAutoRightCommandGroup : public frc::CommandGroup {
     // AddSequential(new AutoDriveAndRotateCommand(0.02, 0.01, -0.01, 0.0, 270.0));
 
 // score hatch 2
-    AddSequential(new InstantCommand([]() {NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("pipeline", 0);})); //leftmost
+    AddSequential(new InstantCommand([]() {NetworkTableInstance::GetDefault().GetTable("limelight")->PutNumber("pipeline", 0);})); //leftmost
     AddSequential(new LimeLightWaitForLeftTargetSeenCommand());
     // AddSequential(new SwerveDrivetrainJoystickSetFieldFrame(false));
     AddSequential(new AutoScoreHatchCommandGroup());
