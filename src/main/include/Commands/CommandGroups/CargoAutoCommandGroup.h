@@ -53,7 +53,7 @@ class CargoAutoLeftCommandGroup : public frc::CommandGroup {
     // AddSequential(new SwerveDrivetrainDriveAndRotateCommand(0.2, 0.02, 0.0, 0.0, 270.0));
     // AddSequential(new AutoDriveAndRotateCommand(1.0, 0.0, 0.4, 270.0, 1.0));
     AddSequential(new SwerveDrivetrainDriveAndRotateCommand(0.2, 0.02, 0.0, 0.0, 270.0));
-    AddParallel(new AutoDriveAndRotateCommand(3, 0.0, 0.4, 270.0, 0.35));
+    AddParallel(new AutoDriveAndRotateCommand(3, 0.0, 0.4, 270.0, 0.25));
     // AddSequential(new SwerveDrivetrainDriveAndRotateCommand(2, -0.2, 0.5, 0.4, 270.0));
     // AddSequential(new AutoDriveAndRotateCommand(0.02, 0.01, -0.01, 0.0, 270.0));
 
