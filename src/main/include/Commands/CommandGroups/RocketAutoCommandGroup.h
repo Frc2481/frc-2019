@@ -45,7 +45,7 @@ class RocketAutoLeftCommandGroup : public frc::CommandGroup {
     AddSequential(new SwerveDrivetrainJoystickSetFieldFrame(true));
     AddSequential(new AutoDriveAndRotateCommand(0.55, -270, 0.0, -208.75, 1.0)); //change values
     AddSequential(new SwerveDrivetrainDriveAndRotateCommand(0.2, 0.02, 0.0, 0.0, -208.75)); //brake
-    AddSequential(new AutoDriveAndRotateCommand(1.8, -166, 0.3, 180.0, 1.0)); //change values
+    AddSequential(new AutoDriveAndRotateCommand(1.8, -166.5, 0.3, 180.0, 1.0)); //change values
     AddSequential(new SwerveDrivetrainJoystickSetFieldFrame(false));
 
 // pickup hatch 2
