@@ -72,6 +72,18 @@ class AcquireCargoCommandGroup : public frc::CommandGroup {
   }
 
   void Interrupted() {
+    CommandBase::m_pCargoIntake->SetIsIntaking(false);;
+  }
+};
+
+class ManualFinishAquireCargoCommandGroup : public CommandGroup {
+public:
+  ManualFinishAquireCargoCommandGroup() : CommandGroup("ManualFinishAquireCargoCommandGroup") {
+    AddParallel(new CargoIntakeRetractCommand());
+    AddSequential(new CargoIntakeWaitForBallCommand(), 1.0);
+    AddParallel(new CargoIntakeStopCommand());
+    AddParallel(new ToolChangerHoldCargoCommand());
+    AddParallel(new ToolChangerSetHasCargoCommand(true));
     AddParallel(new InstantCommand([]() {CommandBase::m_pCargoIntake->SetIsIntaking(false);}));
   }
 };

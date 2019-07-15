@@ -30,7 +30,7 @@ class AutoAquireHatchCommandGroup : public frc::CommandGroup {
     AddSequential(new AutoLimeLightDriverDriveCommand());
     AddSequential(new HatchSlideWaitForOnTargetCommand());
     AddParallel(new AcquireHatchCommandGroup());
-    AddSequential(new WaitCommand(0.7));
+    AddSequential(new WaitCommand(0.3));
     AddSequential(new SwerveDrivetrainSetOpenLoop(0.2, 0.0,-0.3,0.0));//this is in field centric
     AddSequential(new SwerveDrivetrainSetOpenLoop(0.5, 0.0,-0.6,0.0));//this is in field centric
 

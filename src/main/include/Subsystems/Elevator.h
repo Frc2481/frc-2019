@@ -49,8 +49,8 @@ class Elevator : public frc::Subsystem {
 
  private:
   TalonSRX* m_masterElevator;
-  TalonSRX* m_slaveElevator;
-  // VictorSPX* m_slaveElevator; // make sure to change back
+  // TalonSRX* m_slaveElevator;
+  VictorSPX* m_slaveElevator; // make sure to change back
   CTREMagEncoder* m_elevatorEncoder;
 
   bool m_isMasterZeroed;

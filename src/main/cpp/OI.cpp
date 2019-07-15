@@ -74,6 +74,9 @@ OI::OI() {
     m_elevatorStow = new ComboJoystickButton(m_xDriverButton, m_backButton, false);
 	m_elevatorStow->WhenPressed(new RevertElevatorTestingCommandGroup());
 
+	m_finishCargoIntaking = new ComboJoystickButton(m_aDriverButton, m_backButton, false);
+	m_finishCargoIntaking->WhenPressed(new ManualFinishAquireCargoCommandGroup());
+
 	m_climbL1ToL2 = new ComboJoystickButton(m_aDriverButton, m_backButton, true);
 	m_climbL1ToL2->WhenPressed(new ClimbSequence1To2CommandGroup());
 

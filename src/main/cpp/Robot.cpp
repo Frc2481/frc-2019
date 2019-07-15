@@ -126,6 +126,7 @@ void Robot::RobotInit() {
 	m_autoChooser = new frc::SendableChooser<Command*>();
 	m_autoChooser->SetDefaultOption("Left Cargoship Auto", m_leftCargoShipAuto);
 	m_autoChooser->AddOption("Left Rocket Auto", m_leftRocketAuto);
+	SmartDashboard::PutData("Auto Chooser", m_autoChooser);
 	// m_autoChooser->AddOption("Right Cargoship Auto", RIGHT_CARGOSHIP);
 	// m_autoChooser->AddOption("Right Rocket Auto", RIGHT_ROCKET);
 
@@ -142,6 +143,7 @@ void Robot::RobotPeriodic() {
 }
 
 void Robot::AutonomousInit() {
+	CommandBase::m_pSwerveDrivetrain->setGyroOffset(180);
 	m_hatchExtend->Start();
 	m_elevatorCargoShip->Start();
 	m_freeCargo->Start();

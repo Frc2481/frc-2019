@@ -42,6 +42,8 @@ public:
     frc::Button* m_autoAlign;
     frc::Button* m_AutoPlace;
     frc::Button* m_AutoPickup;
+
+    frc::Button* m_finishCargoIntaking;
 //operator
     frc::Button* m_shiftWeights;
     frc::Button* m_prepAcquireHatch;
